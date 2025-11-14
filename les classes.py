@@ -7,6 +7,7 @@ def confirmation(question):
 
 
 
+
 # -------------------- Class place --------------------
     
 class Place():
