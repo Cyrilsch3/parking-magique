@@ -112,13 +112,22 @@ class Place():
         if self.temp is None:
             return "Étrange, la place était libre !!!!"
 
-    # --- SI Abonnement ---
-        if self.plaque in plaque_abonnement:
+    # --- TEST Abonnement ---
+        aujourdhui = datetime.today().date()
+        abonnement_actif = False
+        
+        for plaque_abonnement, date_fin in Abonnement.plaques:
+            if self.plaque == plaque_abonnement:
+                if date_fin >= aujourdhui:
+                    abonnement_actif = True
+                    break  # on a trouvé un abonnement actif
+
+        if abonnement_actif:
+            # Libère la place quand même
             plaque = self.plaque
-            # On libère quand même la place
             self.temp = None
             self.plaque = None
-            return f"Le client avec la plaque {plaque} a un abonnement"
+            return f"Le client avec la plaque {plaque} a un abonnement actif jusqu'au {date_fin}"
 
     # --- SI pas Abonnement ---
     
@@ -164,6 +173,7 @@ class Place():
 # -------------------- les classes pour les abonnés --------------------
 
 class Abonnement:
+    plaques =[]
     nb = 0 # compteur de tous les abonnements
     def __init__(self, nom, prenom, plaque, duree, date_debut=None):
         self.id = str(Abonnement.nb).zfill(5) # ID sur 5 chiffre avec 0 non sigificatifs 
@@ -174,6 +184,7 @@ class Abonnement:
         self.plaque = plaque 
         self.duree = duree  # durée en mois
         self.date_debut = date_debut or datetime.today().date()  # date actuelle par défaut
+        Abonnement.plaques.append([plaque, self.date_fin()])
         
 
     def date_fin(self):
@@ -185,6 +196,7 @@ class Abonnement:
                                         29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28,
                                         31,30,31,30,31,31,30,31,30,31][month-1])
         return datetime(year, month, day).date()
+    
+    
     def __str__(self):
         return f"L'abonnement de {self.nom} {self.prenom} se termine le {self.date_fin()}"
-
