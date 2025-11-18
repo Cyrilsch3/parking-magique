@@ -23,6 +23,11 @@ class Place():
     
         # Ajouter l'instance à la liste de classe
         Place.les_places.append(self)
+    # ---------- ID ----------
+    @property
+    def id(self):
+        #ID calculé dynamiquement à partir de l'étage, la zone et le numéro
+        return f"{self.__etage}{self.__zone}{self.__numero}"
         
     # ---------- ETAGE ----------
     @property
@@ -165,6 +170,8 @@ class Place():
         self.plaque = None
         
         return f"prix: {prix}"
+    
+        
 
     def __str__(self):
         if self.plaque == None:
@@ -172,6 +179,26 @@ class Place():
         else:
             return f"Dans le parking la place  {self.etage}{self.zone}:{self.numero} de type {self.type} est occupée par la voiture {self.plaque}"
   
+  
+    
+    @classmethod
+    def places_abonnes(cls):
+        #Retourne les places réservées par les abonnés.
+        abonnements_places = [ab.place for ab in Abonnement.les_abonnés if ab.place is not None]
+        return [p for p in cls.les_places if p.id in abonnements_places]
+
+    @classmethod
+    def places_occupees(cls):
+        #Retourne les places actuellement occupées par une voiture.
+        return [p for p in cls.les_places if p.plaque is not None]
+    
+    @classmethod
+    def lister_libres(cls):
+        #Retourne les places libres (ni occupées, ni réservées par un abonnement).
+        occupees = cls.places_occupees()
+        abonnes = cls.places_abonnes()
+        return [p for p in cls.les_places if p not in occupees and p not in abonnes]
+            
          
 # -------------------- les classes pour les abonnés --------------------
 
@@ -204,9 +231,6 @@ class Abonnement:
     
     def __str__(self):
         return f"L'abonnement de {self.nom} {self.prenom} se termine le {self.date_fin()}"
-
-
-
 
 
 def ajout_des_donnees_du_client():
@@ -303,12 +327,12 @@ def ajout_des_donnees_du_client():
     #création des abonnés
     for i in tb_abonnés:
         temp = Abonnement(
-            nom=i[0],
-            prenom=i[1],
-            plaque=i[2],
-            duree=i[3],
-            date_debut=i[4],
-            place_attribuée=i[5]
+            nom = i[0],
+            prenom = i[1],
+            plaque = i[2],
+            duree = i[3],
+            date_debut = i[4],
+            place_attribuée = i[5]
         )
         
         
@@ -316,5 +340,17 @@ def ajout_des_donnees_du_client():
 ajout_des_donnees_du_client()
        
 #---- test----
-for i in Abonnement.les_abonnés:
-    print(i.plaque)
+
+# for i in Abonnement.les_abonnés:
+#     print(i.id, i.nom,i.prenom,i.plaque,i.duree,i.date_debut,i.place)
+# for i in Place.les_places:
+#     print(i.etage,
+#         i.zone,
+#         i.numero,
+#         i.type,
+#         i.plaque,
+#         i.temp)
+
+    
+for i in Place.places_abonnes() :
+    print(i.id)
