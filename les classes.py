@@ -11,7 +11,7 @@ def confirmation(question):
 # -------------------- Class place --------------------
     
 class Place():
-    nb_places = 0
+    les_places=[]
     def __init__(self, etage, zone, numero, type, plaque = None):
         self.__etage = etage
         self.__zone = zone
@@ -20,7 +20,9 @@ class Place():
         self._plaque = plaque 
         self._temp = None
         self.tarif = [15, 2, 2, 1.5, 15] # [minutes gratuites, prix première heure, prix deuxième heure, prix de 3 a 10 h, prix max]
-        Place.nb_places += 1
+    
+        # Ajouter l'instance à la liste de classe
+        Place.les_places.append(self)
         
     # ---------- ETAGE ----------
     @property
@@ -117,9 +119,9 @@ class Place():
         aujourdhui = datetime.today().date()
         abonnement_actif = False
         
-        for plaque_abonnement, date_fin in Abonnement.plaques:
-            if self.plaque == plaque_abonnement:
-                if date_fin >= aujourdhui:
+        for i in Abonnement.les_abonnés:
+            if self.plaque == i.plaque:
+                if i.date_fin() >= aujourdhui:
                     abonnement_actif = True
                     break  # on a trouvé un abonnement actif
 
@@ -174,18 +176,19 @@ class Place():
 # -------------------- les classes pour les abonnés --------------------
 
 class Abonnement:
-    plaques =[]
-    nb = 0 # compteur de tous les abonnements
-    def __init__(self, nom, prenom, plaque, duree, date_debut=None):
-        self.id = str(Abonnement.nb).zfill(5) # ID sur 5 chiffre avec 0 non sigificatifs 
-        Abonnement.nb += 1 #Ajoute un Abonné ()
+    les_abonnés = []
+    def __init__(self, nom, prenom, plaque, duree, date_debut = None, place_attribuée = None):
+        self.id = str(len(Abonnement.les_abonnés)).zfill(5) # ID sur 5 chiffre avec 0 non sigificatifs 
         
         self.nom = nom
         self.prenom = prenom 
         self.plaque = plaque 
         self.duree = duree  # durée en mois
         self.date_debut = date_debut or datetime.today().date()  # date actuelle par défaut
-        Abonnement.plaques.append([plaque, self.date_fin()])
+        self.place = place_attribuée
+        
+        # Ajouter l'instance à la liste de classe
+        Abonnement.les_abonnés.append(self)
         
 
     def date_fin(self):
@@ -206,84 +209,112 @@ class Abonnement:
 
 
 
-# --------- Liste des places du parking ---------
-places_tableau = [
-    [-1, 'A', '01', 'Compacte'],
-    [-1, 'A', '02', 'Compacte'],
-    [-1, 'A', '03', 'Compacte'],
-    [-1, 'A', '04', 'Compacte'],
-    [-1, 'B', '01', 'Compacte'],
-    [-1, 'B', '02', 'Compacte'],
-    [-1, 'B', '03', 'Compacte'],
-    [-1, 'B', '04', 'Compacte'],
-    [-1, 'C', '01', 'Large'],
-    [-1, 'C', '02', 'Large'],
-    [-1, 'C', '03', 'Large'],
-    [-1, 'C', '04', 'Large'],
-    
-    [0, 'A', '01', 'Large'],
-    [0, 'A', '02', 'Large'],
-    [0, 'A', '03', 'Large'],
-    [0, 'A', '04', 'Large'],
-    [0, 'A', '05', 'PMR'],
-    [0, 'A', '06', 'PMR'],
-    [0, 'B', '01', 'Électrique'],
-    [0, 'B', '02', 'Électrique'],
-    [0, 'B', '03', 'Compacte'],
-    [0, 'B', '04', 'Compacte'],
-    [0, 'C', '01', 'Large'],
-    [0, 'C', '02', 'Large'],
-    [0, 'C', '03', 'Large'],
-    [0, 'C', '04', 'Large'],
+def ajout_des_donnees_du_client():
+    # --------- Liste des places du parking donnée par le client ---------
+    places_tableau = [
+        [-1, 'A', '01', 'Compacte'],
+        [-1, 'A', '02', 'Compacte'],
+        [-1, 'A', '03', 'Compacte'],
+        [-1, 'A', '04', 'Compacte'],
+        [-1, 'B', '01', 'Compacte'],
+        [-1, 'B', '02', 'Compacte'],
+        [-1, 'B', '03', 'Compacte'],
+        [-1, 'B', '04', 'Compacte'],
+        [-1, 'C', '01', 'Large'],
+        [-1, 'C', '02', 'Large'],
+        [-1, 'C', '03', 'Large'],
+        [-1, 'C', '04', 'Large'],
+        
+        [0, 'A', '01', 'Large'],
+        [0, 'A', '02', 'Large'],
+        [0, 'A', '03', 'Large'],
+        [0, 'A', '04', 'Large'],
+        [0, 'A', '05', 'PMR'],
+        [0, 'A', '06', 'PMR'],
+        [0, 'B', '01', 'Électrique'],
+        [0, 'B', '02', 'Électrique'],
+        [0, 'B', '03', 'Compacte'],
+        [0, 'B', '04', 'Compacte'],
+        [0, 'C', '01', 'Large'],
+        [0, 'C', '02', 'Large'],
+        [0, 'C', '03', 'Large'],
+        [0, 'C', '04', 'Large'],
 
-    [1, 'A', '01', 'Compacte'],
-    [1, 'A', '02', 'Compacte'],
-    [1, 'A', '03', 'Compacte'],
-    [1, 'A', '04', 'Compacte'],
-    [1, 'A', '05', 'PMR'],
-    [1, 'B', '01', 'Compacte'],
-    [1, 'B', '02', 'Compacte'],
-    [1, 'B', '03', 'Compacte'],
-    [1, 'B', '04', 'Compacte'],
-    [1, 'B', '12', 'Large'],
-    [1, 'C', '01', 'Large'],
-    [1, 'C', '02', 'Large'],
+        [1, 'A', '01', 'Compacte'],
+        [1, 'A', '02', 'Compacte'],
+        [1, 'A', '03', 'Compacte'],
+        [1, 'A', '04', 'Compacte'],
+        [1, 'A', '05', 'PMR'],
+        [1, 'B', '01', 'Compacte'],
+        [1, 'B', '02', 'Compacte'],
+        [1, 'B', '03', 'Compacte'],
+        [1, 'B', '04', 'Compacte'],
+        [1, 'B', '12', 'Large'],
+        [1, 'C', '01', 'Large'],
+        [1, 'C', '02', 'Large'],
 
-    [2, 'A', '01', 'Compacte'],
-    [2, 'A', '02', 'Compacte'],
-    [2, 'A', '03', 'Compacte'],
-    [2, 'A', '04', 'Compacte'],
-    [2, 'A', '05', 'Compacte'],
-    [2, 'B', '01', 'Compacte'],
-    [2, 'B', '02', 'Compacte'],
-    [2, 'B', '03', 'Compacte'],
-    [2, 'B', '04', 'Compacte'],
-    [2, 'C', '01', 'Électrique'],
-    [2, 'C', '02', 'Électrique'],
-    [2, 'C', '03', 'Large'],
-    [2, 'C', '04', 'Large'],
+        [2, 'A', '01', 'Compacte'],
+        [2, 'A', '02', 'Compacte'],
+        [2, 'A', '03', 'Compacte'],
+        [2, 'A', '04', 'Compacte'],
+        [2, 'A', '05', 'Compacte'],
+        [2, 'B', '01', 'Compacte'],
+        [2, 'B', '02', 'Compacte'],
+        [2, 'B', '03', 'Compacte'],
+        [2, 'B', '04', 'Compacte'],
+        [2, 'C', '01', 'Électrique'],
+        [2, 'C', '02', 'Électrique'],
+        [2, 'C', '03', 'Large'],
+        [2, 'C', '04', 'Large'],
 
-    [3, 'A', '01', 'Compacte'],
-    [3, 'A', '02', 'Compacte'],
-    [3, 'A', '03', 'Compacte'],
-    [3, 'A', '04', 'Compacte'],
-    [3, 'B', '01', 'Compacte'],
-    [3, 'B', '02', 'Compacte'],
-    [3, 'B', '03', 'Large'],
-    [3, 'B', '04', 'Large'],
-    [3, 'C', '01', 'Large'],
-    [3, 'C', '02', 'Large'],
-    [3, 'C', '03', 'Large'],
-    [3, 'C', '04', 'Large']
-]
-#création des places 
-tab_class_places = []
-for i in places_tableau:
-    temp = Place(etage= i[0],
-                 zone = i[1],
-                 numero = i[2],
-                 type = i[3],
-                 plaque = None)
-    tab_class_places.append(temp)
-    
-print(Place.nb_places)
+        [3, 'A', '01', 'Compacte'],
+        [3, 'A', '02', 'Compacte'],
+        [3, 'A', '03', 'Compacte'],
+        [3, 'A', '04', 'Compacte'],
+        [3, 'B', '01', 'Compacte'],
+        [3, 'B', '02', 'Compacte'],
+        [3, 'B', '03', 'Large'],
+        [3, 'B', '04', 'Large'],
+        [3, 'C', '01', 'Large'],
+        [3, 'C', '02', 'Large'],
+        [3, 'C', '03', 'Large'],
+        [3, 'C', '04', 'Large']
+    ]
+    #-------- création des places ------
+    for i in places_tableau:
+        temp = Place(etage= i[0],
+                     zone = i[1],
+                     numero = i[2],
+                     type = i[3],
+                     plaque = None)
+        
+    #----- liste des abonné actuels----
+    tb_abonnés = [
+        ["Dupuis", "Marie", "AA-452-KM", 12, datetime(2025, 1, 1).date(), "2A05"],
+        ["Bernard", "Luc", "DB-793-QF", 6, datetime(2025, 3, 15).date(), "1B12"],
+        ["Leclerc", "Antoine", "FG-219-LR", 12, datetime(2025, 2, 1).date(), "0A02"],
+        ["Martin", "Céline", "JH-887-PN", 3, datetime(2025, 4, 1).date(), None],
+        ["Roche", "Damien", "KL-045-TZ", 12, datetime(2025, 1, 10).date(), None],
+        ["Morel", "Sophie", "BC-338-JC", 6, datetime(2025, 2, 20).date(), None],
+        ["Gonzalez", "Thierry", "EV-612-NV", 3, datetime(2025, 4, 5).date(), None],
+        ["Petit", "Hélène", "QW-901-HS", 12, datetime(2025, 3, 1).date(), None]
+    ]
+
+    #création des abonnés
+    for i in tb_abonnés:
+        temp = Abonnement(
+            nom=i[0],
+            prenom=i[1],
+            plaque=i[2],
+            duree=i[3],
+            date_debut=i[4],
+            place_attribuée=i[5]
+        )
+        
+        
+        
+ajout_des_donnees_du_client()
+       
+#---- test----
+for i in Abonnement.les_abonnés:
+    print(i.plaque)
