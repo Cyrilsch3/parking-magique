@@ -11,6 +11,7 @@ def confirmation(question):
 # -------------------- Class place --------------------
     
 class Place():
+    nb_places = 0
     def __init__(self, etage, zone, numero, type, plaque = None):
         self.__etage = etage
         self.__zone = zone
@@ -19,7 +20,7 @@ class Place():
         self._plaque = plaque 
         self._temp = None
         self.tarif = [15, 2, 2, 1.5, 15] # [minutes gratuites, prix première heure, prix deuxième heure, prix de 3 a 10 h, prix max]
-        
+        Place.nb_places += 1
         
     # ---------- ETAGE ----------
     @property
@@ -200,3 +201,89 @@ class Abonnement:
     
     def __str__(self):
         return f"L'abonnement de {self.nom} {self.prenom} se termine le {self.date_fin()}"
+
+
+
+
+
+# --------- Liste des places du parking ---------
+places_tableau = [
+    [-1, 'A', '01', 'Compacte'],
+    [-1, 'A', '02', 'Compacte'],
+    [-1, 'A', '03', 'Compacte'],
+    [-1, 'A', '04', 'Compacte'],
+    [-1, 'B', '01', 'Compacte'],
+    [-1, 'B', '02', 'Compacte'],
+    [-1, 'B', '03', 'Compacte'],
+    [-1, 'B', '04', 'Compacte'],
+    [-1, 'C', '01', 'Large'],
+    [-1, 'C', '02', 'Large'],
+    [-1, 'C', '03', 'Large'],
+    [-1, 'C', '04', 'Large'],
+    
+    [0, 'A', '01', 'Large'],
+    [0, 'A', '02', 'Large'],
+    [0, 'A', '03', 'Large'],
+    [0, 'A', '04', 'Large'],
+    [0, 'A', '05', 'PMR'],
+    [0, 'A', '06', 'PMR'],
+    [0, 'B', '01', 'Électrique'],
+    [0, 'B', '02', 'Électrique'],
+    [0, 'B', '03', 'Compacte'],
+    [0, 'B', '04', 'Compacte'],
+    [0, 'C', '01', 'Large'],
+    [0, 'C', '02', 'Large'],
+    [0, 'C', '03', 'Large'],
+    [0, 'C', '04', 'Large'],
+
+    [1, 'A', '01', 'Compacte'],
+    [1, 'A', '02', 'Compacte'],
+    [1, 'A', '03', 'Compacte'],
+    [1, 'A', '04', 'Compacte'],
+    [1, 'A', '05', 'PMR'],
+    [1, 'B', '01', 'Compacte'],
+    [1, 'B', '02', 'Compacte'],
+    [1, 'B', '03', 'Compacte'],
+    [1, 'B', '04', 'Compacte'],
+    [1, 'B', '12', 'Large'],
+    [1, 'C', '01', 'Large'],
+    [1, 'C', '02', 'Large'],
+
+    [2, 'A', '01', 'Compacte'],
+    [2, 'A', '02', 'Compacte'],
+    [2, 'A', '03', 'Compacte'],
+    [2, 'A', '04', 'Compacte'],
+    [2, 'A', '05', 'Compacte'],
+    [2, 'B', '01', 'Compacte'],
+    [2, 'B', '02', 'Compacte'],
+    [2, 'B', '03', 'Compacte'],
+    [2, 'B', '04', 'Compacte'],
+    [2, 'C', '01', 'Électrique'],
+    [2, 'C', '02', 'Électrique'],
+    [2, 'C', '03', 'Large'],
+    [2, 'C', '04', 'Large'],
+
+    [3, 'A', '01', 'Compacte'],
+    [3, 'A', '02', 'Compacte'],
+    [3, 'A', '03', 'Compacte'],
+    [3, 'A', '04', 'Compacte'],
+    [3, 'B', '01', 'Compacte'],
+    [3, 'B', '02', 'Compacte'],
+    [3, 'B', '03', 'Large'],
+    [3, 'B', '04', 'Large'],
+    [3, 'C', '01', 'Large'],
+    [3, 'C', '02', 'Large'],
+    [3, 'C', '03', 'Large'],
+    [3, 'C', '04', 'Large']
+]
+#création des places 
+tab_class_places = []
+for i in places_tableau:
+    temp = Place(etage= i[0],
+                 zone = i[1],
+                 numero = i[2],
+                 type = i[3],
+                 plaque = None)
+    tab_class_places.append(temp)
+    
+print(Place.nb_places)
