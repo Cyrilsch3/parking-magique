@@ -352,5 +352,5 @@ ajout_des_donnees_du_client()
 #         i.temp)
 
     
-for i in Place.places_abonnes() :
+for i in Place.lister_libres() :
     print(i.id)
