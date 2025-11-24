@@ -5,9 +5,6 @@ def confirmation(question):
     return reponse in ['o', 'oui', 'y', 'yes']
 
 
-
-
-
 # -------------------- Class place --------------------
     
 class Place():
