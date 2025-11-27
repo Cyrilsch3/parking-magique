@@ -1,18 +1,94 @@
 from datetime import datetime 
+
 # -------------------- Fonctions utilitaires --------------------
 def confirmation(question):
     reponse = input(f"{question}  (o/n) : ").strip().lower()
     return reponse in ['o', 'oui', 'y', 'yes']
 
 
+class Parking:
+    places = []
+    abonnements = []
+
+    @classmethod
+    def places_libres(cls):
+        return [p for p in cls.places if p.plaque is None]
+
+    @classmethod
+    def places_occupees(cls):
+        return [p for p in cls.places if p.plaque is not None]
+
+    @classmethod
+    def places_abonnes(cls):
+        result = []
+        for ab in cls.abonnements:
+            if ab.place is not None:
+                # Trouver l'objet Place correspondant à l'ID de l'abonnement
+                place_obj = next((p for p in cls.places if p.id == ab.place), None)
+                if place_obj:
+                    result.append((place_obj, ab.plaque))
+        return result
+    
+    @classmethod
+    def calcul_prix(cls, place, mtn=None):
+        if mtn is None:
+            mtn = datetime.now()
+        duree = mtn - place.temp
+        minutes = int(duree.total_seconds() / 60)
+        return Tarif.calcul(minutes)
+
+    @classmethod
+    def occuper_place(cls, place, plaque):
+        if place.plaque is not None:
+            return f"Place déjà occupée par {place.plaque}"
+        place.plaque = plaque
+        place.temp = datetime.now()
+        return f"Place {place.id} occupée par {plaque}"
+
+    @classmethod
+    def liberer_place(cls, place, ticket_perdu=False):
+        if place.temp is None:
+            return "La place était déjà libre"
+        duree = datetime.now() - place.temp
+        minutes = int(duree.total_seconds() / 60)
+        prix = Tarif.calcul(minutes, ticket_perdu=ticket_perdu)
+        place.plaque = None
+        place.temp = None
+        return f"Place {place.id} libérée — prix : {prix}€"
+
+
+# ---- Classe Tarif ----
+class Tarif:
+    gratuit_minutes = 15
+    prix_premiere_heure = 2
+    prix_deuxieme_heure = 2
+    prix_heures_suivantes = 1.5
+    prix_max_10h = 15
+    prix_ticket_perdu = 20
+
+    @classmethod
+    def calcul(cls, minutes, ticket_perdu=False):
+        if ticket_perdu:
+            return cls.prix_ticket_perdu
+        if minutes < cls.gratuit_minutes:
+            return 0
+        elif minutes <= 60:
+            return cls.prix_premiere_heure
+        elif minutes <= 120:
+            return cls.prix_premiere_heure + cls.prix_deuxieme_heure
+        elif minutes <= 600:
+            extra = minutes - 120
+            heures = extra // 60
+            if extra % 60 > 0:
+                heures += 1
+            return cls.prix_premiere_heure + cls.prix_deuxieme_heure + heures * cls.prix_heures_suivantes
+        else:
+            return cls.prix_max_10h
 
 # -------------------- Class place --------------------
 
-
-#comentaire
     
 class Place():
-    les_places=[]
     def __init__(self, etage, zone, numero, type, plaque = None):
         self.__etage = etage
         self.__zone = zone
@@ -20,10 +96,7 @@ class Place():
         self.__type = type 
         self._plaque = plaque 
         self._temp = None
-        self.tarif = [15, 2, 2, 1.5, 15] # [minutes gratuites, prix première heure, prix deuxième heure, prix de 3 a 10 h, prix max]
-    
-        # Ajouter l'instance à la liste de classe
-        Place.les_places.append(self)
+        Parking.places.append(self)
     # ---------- ID ----------
     @property
     def id(self):
@@ -103,75 +176,6 @@ class Place():
     def temp(self,value):
         self._temp = value
         
-    # ---------- OCCUPER UNE PLACE ----------
-    def occuper_place(self, nouvelle_plaque):
-        if self.plaque != None:
-            print(f"Place déja occupée par {self.plaque}")
-            return f"Place déja occupée par {self.plaque}"
-        self.plaque = nouvelle_plaque
-        self.temp = datetime.now()
-        
-        
-    # ---------- libérer la place et calculer le prix ----------
-    def liberer_place(self, mtn=None):
-        if mtn is None:
-            mtn = datetime.now()
-
-    # --- SI Place vide ---
-        if self.temp is None:
-            return "Étrange, la place était libre !!!!"
-
-    # --- TEST Abonnement ---
-        aujourdhui = datetime.today().date()
-        abonnement_actif = False
-        
-        for i in Abonnement.les_abonnés:
-            if self.plaque == i.plaque:
-                if i.date_fin() >= aujourdhui:
-                    abonnement_actif = True
-                    break  # on a trouvé un abonnement actif
-
-        if abonnement_actif:
-            # Libère la place quand même
-            plaque = self.plaque
-            self.temp = None
-            self.plaque = None
-            return f"Le client avec la plaque {plaque} a un abonnement actif jusqu'au {date_fin}"
-
-    # --- SI pas Abonnement ---
-    
-    # Calcul Durée en minutes
-        duree = mtn - self.temp
-        minutes = int(duree.total_seconds() / 60)
-
-    # Calcul du prix 
-        if minutes < self.tarif[0]:
-            prix = 0
-
-        elif minutes <= 60:
-            prix = self.tarif[1]
-
-        elif minutes <= 120:
-          prix = self.tarif[1] + self.tarif[2]
-
-        elif minutes <= 600:
-            extra = minutes - 120
-            heures_supp = extra // 60 
-            if extra % 60 > 0:  # évite de payer plus si c'est une heure pile 
-                heures_supp += 1
-            prix = self.tarif[1] + self.tarif[2] + heures_supp * self.tarif[3]
-
-        else:
-            prix = self.tarif[4]
-
-        prix = round(prix, 2)
-
-    # On libère la place
-        self.temp = None
-        self.plaque = None
-        
-        return f"prix: {prix}"
-    
         
 
     def __str__(self):
@@ -181,32 +185,13 @@ class Place():
             return f"Dans le parking la place  {self.etage}{self.zone}:{self.numero} de type {self.type} est occupée par la voiture {self.plaque}"
   
   
-    
-    @classmethod
-    def places_abonnes(cls):
-        #Retourne les places réservées par les abonnés.
-        abonnements_places = [ab.place for ab in Abonnement.les_abonnés if ab.place is not None]
-        return [p for p in cls.les_places if p.id in abonnements_places]
-
-    @classmethod
-    def places_occupees(cls):
-        #Retourne les places actuellement occupées par une voiture.
-        return [p for p in cls.les_places if p.plaque is not None]
-    
-    @classmethod
-    def lister_libres(cls):
-        #Retourne les places libres (ni occupées, ni réservées par un abonnement).
-        occupees = cls.places_occupees()
-        abonnes = cls.places_abonnes()
-        return [p for p in cls.les_places if p not in occupees and p not in abonnes]
-            
+        
          
 # -------------------- les classes pour les abonnés --------------------
 
 class Abonnement:
-    les_abonnés = []
     def __init__(self, nom, prenom, plaque, duree, date_debut = None, place_attribuée = None):
-        self.id = str(len(Abonnement.les_abonnés)).zfill(5) # ID sur 5 chiffre avec 0 non sigificatifs 
+        self.id = str(len(Parking.abonnements)).zfill(5) # ID sur 5 chiffre avec 0 non sigificatifs 
         
         self.nom = nom
         self.prenom = prenom 
@@ -216,7 +201,7 @@ class Abonnement:
         self.place = place_attribuée
         
         # Ajouter l'instance à la liste de classe
-        Abonnement.les_abonnés.append(self)
+        Parking.abonnements.append(self)
         
 
     def date_fin(self):
@@ -336,22 +321,15 @@ def ajout_des_donnees_du_client():
             place_attribuée = i[5]
         )
         
-        
-        
+          
 ajout_des_donnees_du_client()
        
 #---- test----
 
-# for i in Abonnement.les_abonnés:
-#     print(i.id, i.nom,i.prenom,i.plaque,i.duree,i.date_debut,i.place)
-# for i in Place.les_places:
-#     print(i.etage,
-#         i.zone,
-#         i.numero,
-#         i.type,
-#         i.plaque,
-#         i.temp)
 
     
-for i in Place.lister_libres() :
+for i in Parking.places_libres() :
     print(i.id)
+
+for place, plaque in Parking.places_abonnes():
+    print(f"Place : {place.id} — Réservée pour la plaque : {plaque}")
