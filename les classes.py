@@ -56,6 +56,14 @@ class Parking:
         place.temp = None
         return f"Place {place.id} libérée — prix : {prix}€"
 
+    @classmethod
+    def creer_abonnement(cls, nom, prenom, plaque, duree, date_debut=None, place_attribuee=None):
+        abonnement = Abonnement(nom, prenom, plaque, duree, date_debut=date_debut, place_attribuée=place_attribuee)
+        if place_attribuee is not None:
+            return Tarif.prix_abonnement_reserver
+        else:
+            return Tarif.prix_abonnement_simple
+
 
 # ---- Classe Tarif ----
 class Tarif:
@@ -65,6 +73,9 @@ class Tarif:
     prix_heures_suivantes = 1.5
     prix_max_10h = 15
     prix_ticket_perdu = 20
+    prix_abonnement_simple = 70
+    prix_abonnement_reserver = 90
+    
 
     @classmethod
     def calcul(cls, minutes, ticket_perdu=False):
@@ -213,6 +224,7 @@ class Abonnement:
                                         29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28,
                                         31,30,31,30,31,31,30,31,30,31][month-1])
         return datetime(year, month, day).date()
+    
     
     
     def __str__(self):
