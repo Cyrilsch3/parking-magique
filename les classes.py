@@ -7,6 +7,9 @@ def confirmation(question):
 
 
 # -------------------- Class place --------------------
+
+
+#comentaire
     
 class Place():
     les_places=[]
