@@ -9,11 +9,7 @@ def confirmation(question):
 class Parking:
     places = []
     abonnements = []
-
-    @classmethod
-    def places_libres(cls):
-        return [p for p in cls.places if p.plaque is None]
-
+    
     @classmethod
     def places_occupees(cls):
         return [p for p in cls.places if p.plaque is not None]
@@ -28,6 +24,16 @@ class Parking:
                 if place_obj:
                     result.append((place_obj, ab.plaque))
         return result
+    
+    @classmethod
+    def places_libres(cls):
+        # Récupérer les places occupées et celles réservées aux abonnés
+        places_occupees_ids = [p.id for p in cls.places_occupees()]
+        places_abonnes_ids = [p.id for p, _ in cls.places_abonnes()]
+    
+        # Retourner toutes les autres places
+        return [p for p in cls.places if p.id not in places_occupees_ids and p.id not in places_abonnes_ids]
+
     
     @classmethod
     def calcul_prix(cls, place, mtn=None):
@@ -343,5 +349,5 @@ ajout_des_donnees_du_client()
 for i in Parking.places_libres() :
     print(i.id)
 
-for place, plaque in Parking.places_abonnes():
-    print(f"Place : {place.id} — Réservée pour la plaque : {plaque}")
+# for place, plaque in Parking.places_abonnes():
+#     print(f"Place : {place.id} — Réservée pour la plaque : {plaque}")
