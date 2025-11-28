@@ -52,12 +52,12 @@ class Parking:
         return f"Place {place.id} occupée par {plaque}"
 
     @classmethod
-    def liberer_place(cls, place, ticket_perdu=False):
+    def liberer_place(cls, place):
         if place.temp is None:
             return "La place était déjà libre"
         duree = datetime.now() - place.temp
         minutes = int(duree.total_seconds() / 60)
-        prix = Tarif.calcul(minutes, ticket_perdu=ticket_perdu)
+        prix = Tarif.calcul(minutes)
         place.plaque = None
         place.temp = None
         return f"Place {place.id} libérée — prix : {prix}€"
@@ -78,15 +78,12 @@ class Tarif:
     prix_deuxieme_heure = 2
     prix_heures_suivantes = 1.5
     prix_max_10h = 15
-    prix_ticket_perdu = 20
     prix_abonnement_simple = 70
     prix_abonnement_reserver = 90
     
 
     @classmethod
-    def calcul(cls, minutes, ticket_perdu=False):
-        if ticket_perdu:
-            return cls.prix_ticket_perdu
+    def calcul(cls, minutes):
         if minutes < cls.gratuit_minutes:
             return 0
         elif minutes <= 60:
