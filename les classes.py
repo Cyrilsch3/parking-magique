@@ -1,4 +1,6 @@
 from datetime import datetime 
+from dateutil.relativedelta import relativedelta #Module de nbr de jour par mois
+
 
 # -------------------- Fonctions utilitaires --------------------
 def confirmation(question):
@@ -62,13 +64,35 @@ class Parking:
         place.temp = None
         return f"Place {place.id} libérée — prix : {prix}€"
 
-    @classmethod
-    def creer_abonnement(cls, nom, prenom, plaque, duree, date_debut=None, place_attribuee=None):
-        abonnement = Abonnement(nom, prenom, plaque, duree, date_debut=date_debut, place_attribuée=place_attribuee)
+@classmethod
+def creer_abonnement(cls, nom, prenom, plaque, duree, date_debut=None, place_attribuee=None):
+
+    abonnement_existant = next((ab for ab in cls.abonnements if ab.plaque == plaque), None)
+
+    if abonnement_existant:  # si Renouvellement abo
+        ancienne_date_fin = abonnement_existant.date_fin()
+        nouvelle_date_fin = ancienne_date_fin + relativedelta(months=duree) #renouvellemnt abo
+
+        abonnement_existant.date_debut = ancienne_date_fin
+        abonnement_existant.duree = duree  # la durée ajoutée
+
+        # mise à jour propre de date_fin
+        abonnement_existant.date_fin = lambda d=nouvelle_date_fin: d
+
+        return f"Renouvellement effectué. Nouvelle date de fin : {nouvelle_date_fin}"
+
+    else:  # Nouvel abonnement
+        abonnement = Abonnement(
+            nom, prenom, plaque, duree,
+            date_debut=date_debut,
+            place_attribuée=place_attribuee
+        )
+
         if place_attribuee is not None:
             return Tarif.prix_abonnement_reserver
         else:
             return Tarif.prix_abonnement_simple
+
 
 
 # ---- Classe Tarif ----
