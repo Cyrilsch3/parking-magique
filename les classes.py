@@ -97,13 +97,62 @@ def creer_abonnement(cls, nom, prenom, plaque, duree, date_debut=None, place_att
 
 # ---- Classe Tarif ----
 class Tarif:
-    gratuit_minutes = 15
-    prix_premiere_heure = 2
-    prix_deuxieme_heure = 2
-    prix_heures_suivantes = 1.5
-    prix_max_10h = 15
-    prix_abonnement_simple = 70
-    prix_abonnement_reserver = 90
+    _gratuit_minutes = 15
+    _prix_premiere_heure = 2
+    _prix_deuxieme_heure = 2
+    _prix_heures_suivantes = 1.5
+    _prix_max_10h = 15
+    _prix_abonnement_simple = 70
+    _prix_abonnement_reserver = 90
+
+    @property   
+    def gratuit_minutes(cls):
+        return cls._gratuit_minutes
+    
+    @gratuit_minutes.setter
+    def gratuit_minutes(cls, value):
+        cls._gratuit_minutes = cls._verif(value)
+    @property
+    def prix_premiere_heure(cls):
+        return cls._prix_premiere_heure
+    @property
+    def prix_deuxieme_heure(cls):
+        return cls._prix_deuxieme_heure
+
+    @prix_deuxieme_heure.setter
+    def prix_deuxieme_heure(cls, value):
+        cls._prix_deuxieme_heure = cls._verif(value)
+
+    @property
+    def prix_heures_suivantes(cls):
+        return cls._prix_heures_suivantes
+
+    @prix_heures_suivantes.setter
+    def prix_heures_suivantes(cls, value):
+        cls._prix_heures_suivantes = cls._verif(value)
+
+    @property
+    def prix_max_10h(cls):
+        return cls._prix_max_10h
+
+    @prix_max_10h.setter
+    def prix_max_10h(cls, value):
+        cls._prix_max_10h = cls._verif(value)
+
+    @property
+    def prix_abonnement_simple(cls):
+        return cls._prix_abonnement_simple
+    @prix_abonnement_simple.setter
+    def prix_abonnement_simple(cls, value):
+        cls._prix_abonnement_simple = cls._verif(value)
+
+    @property
+    def prix_abonnement_reserver(cls):
+        return cls._prix_abonnement_reserver
+
+    @prix_abonnement_reserver.setter
+    def prix_abonnement_reserver(cls, value):
+        cls._prix_abonnement_reserver = cls._verif(value)
     
 
     @classmethod
