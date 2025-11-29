@@ -414,7 +414,7 @@ ajout_des_donnees_du_client()
        
 #---- test----
 
-
+#sofiane
     
 for i in Parking.places_libres() :
     print(i.id)
