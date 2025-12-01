@@ -11,104 +11,120 @@ class Terminal:
     le terminale pour hardCoder pour par exemple ajouter des palces, des abbonées et annuler ou commencer des abbonements sur base des info qu'il reçoit
     """
     def __init__(self):
-        self.places = []
-        self.abbonnes = []
+        self.__places = []
+        self.__abbonnes = []
         self.initalise_donnees()
         self.ajouter_abonne()
         self.lancerTerminal()
+    @property
+    def abbonnes(self):
+        return self.__abbonnes
+
+    @property
+    def places(self):
+        return self.__places
     
     def initalise_donnees(self):
             """
             Ici on ajoute les abbonées et toutes les palces de parkin qui existait
             """
-            self.places.append(Place(-1, 'A', '01', 'Compacte'))
-            self.places.append(Place(-1, 'A', '02', 'Compacte'))
-            self.places.append(Place(-1, 'A', '03', 'Compacte'))
-            self.places.append(Place(-1, 'A', '04', 'Compacte'))
-            self.places.append(Place(-1, 'B', '01', 'Compacte'))
-            self.places.append(Place(-1, 'B', '02', 'Compacte'))
-            self.places.append(Place(-1, 'B', '03', 'Compacte'))
-            self.places.append(Place(-1, 'B', '04', 'Compacte'))
-            self.places.append(Place(-1, 'C', '01', 'Large'))
-            self.places.append(Place(-1, 'C', '02', 'Large'))
-            self.places.append(Place(-1, 'C', '03', 'Large'))
-            self.places.append(Place(-1, 'C', '04', 'Large'))
-            self.places.append(Place(0, 'A', '01', 'Large'))
-            self.places.append(Place(0, 'A', '02', 'Large'))
-            self.places.append(Place(0, 'A', '03', 'Large'))
-            self.places.append(Place(0, 'A', '04', 'Large'))
-            self.places.append(Place(0, 'A', '05', 'PMR'))
-            self.places.append(Place(0, 'A', '06', 'PMR'))
-            self.places.append(Place(0, 'B', '01', 'Électrique'))
-            self.places.append(Place(0, 'B', '02', 'Électrique'))
-            self.places.append(Place(0, 'B', '03', 'Compacte'))
-            self.places.append(Place(0, 'B', '04', 'Compacte'))
-            self.places.append(Place(0, 'C', '01', 'Large'))
-            self.places.append(Place(0, 'C', '02', 'Large'))
-            self.places.append(Place(0, 'C', '03', 'Large'))
-            self.places.append(Place(0, 'C', '04', 'Large'))
-            self.places.append(Place(1, 'A', '01', 'Compacte'))
-            self.places.append(Place(1, 'A', '02', 'Compacte'))
-            self.places.append(Place(1, 'A', '03', 'Compacte'))
-            self.places.append(Place(1, 'A', '04', 'Compacte'))
-            self.places.append(Place(1, 'A', '05', 'PMR'))
-            self.places.append(Place(1, 'B', '01', 'Compacte'))
-            self.places.append(Place(1, 'B', '02', 'Compacte'))
-            self.places.append(Place(1, 'B', '03', 'Compacte'))
-            self.places.append(Place(1, 'B', '04', 'Compacte'))
-            self.places.append(Place(1, 'B', '12', 'Large'))
-            self.places.append(Place(1, 'C', '01', 'Large'))
-            self.places.append(Place(1, 'C', '02', 'Large'))
-            self.places.append(Place(2, 'A', '01', 'Compacte'))
-            self.places.append(Place(2, 'A', '02', 'Compacte'))
-            self.places.append(Place(2, 'A', '03', 'Compacte'))
-            self.places.append(Place(2, 'A', '04', 'Compacte'))
-            self.places.append(Place(2, 'A', '05', 'Compacte'))
-            self.places.append(Place(2, 'B', '01', 'Compacte'))
-            self.places.append(Place(2, 'B', '02', 'Compacte'))
-            self.places.append(Place(2, 'B', '03', 'Compacte'))
-            self.places.append(Place(2, 'B', '04', 'Compacte'))
-            self.places.append(Place(2, 'C', '01', 'Électrique'))
-            self.places.append(Place(2, 'C', '02', 'Électrique'))
-            self.places.append(Place(2, 'C', '03', 'Large'))
-            self.places.append(Place(2, 'C', '04', 'Large'))
-            self.places.append(Place(3, 'A', '01', 'Compacte'))
-            self.places.append(Place(3, 'A', '02', 'Compacte'))
-            self.places.append(Place(3, 'A', '03', 'Compacte'))
-            self.places.append(Place(3, 'A', '04', 'Compacte'))
-            self.places.append(Place(3, 'B', '01', 'Compacte'))
-            self.places.append(Place(3, 'B', '02', 'Compacte'))
-            self.places.append(Place(3, 'B', '03', 'Large'))
-            self.places.append(Place(3, 'B', '04', 'Large'))
-            self.places.append(Place(3, 'C', '01', 'Large'))
-            self.places.append(Place(3, 'C', '02', 'Large'))
-            self.places.append(Place(3, 'C', '03', 'Large'))
-            self.places.append(Place(3, 'C', '04', 'Large'))
+            self.__places.append(Place(-1, 'A', '01', 'Compacte'))
+            self.__places.append(Place(-1, 'A', '02', 'Compacte'))
+            self.__places.append(Place(-1, 'A', '03', 'Compacte'))
+            self.__places.append(Place(-1, 'A', '04', 'Compacte'))
+            self.__places.append(Place(-1, 'B', '01', 'Compacte'))
+            self.__places.append(Place(-1, 'B', '02', 'Compacte'))
+            self.__places.append(Place(-1, 'B', '03', 'Compacte'))
+            self.__places.append(Place(-1, 'B', '04', 'Compacte'))
+            self.__places.append(Place(-1, 'C', '01', 'Large'))
+            self.__places.append(Place(-1, 'C', '02', 'Large'))
+            self.__places.append(Place(-1, 'C', '03', 'Large'))
+            self.__places.append(Place(-1, 'C', '04', 'Large'))
+            self.__places.append(Place(0, 'A', '01', 'Large'))
+            self.__places.append(Place(0, 'A', '02', 'Large'))
+            self.__places.append(Place(0, 'A', '03', 'Large'))
+            self.__places.append(Place(0, 'A', '04', 'Large'))
+            self.__places.append(Place(0, 'A', '05', 'PMR'))
+            self.__places.append(Place(0, 'A', '06', 'PMR'))
+            self.__places.append(Place(0, 'B', '01', 'Électrique'))
+            self.__places.append(Place(0, 'B', '02', 'Électrique'))
+            self.__places.append(Place(0, 'B', '03', 'Compacte'))
+            self.__places.append(Place(0, 'B', '04', 'Compacte'))
+            self.__places.append(Place(0, 'C', '01', 'Large'))
+            self.__places.append(Place(0, 'C', '02', 'Large'))
+            self.__places.append(Place(0, 'C', '03', 'Large'))
+            self.__places.append(Place(0, 'C', '04', 'Large'))
+            self.__places.append(Place(1, 'A', '01', 'Compacte'))
+            self.__places.append(Place(1, 'A', '02', 'Compacte'))
+            self.__places.append(Place(1, 'A', '03', 'Compacte'))
+            self.__places.append(Place(1, 'A', '04', 'Compacte'))
+            self.__places.append(Place(1, 'A', '05', 'PMR'))
+            self.__places.append(Place(1, 'B', '01', 'Compacte'))
+            self.__places.append(Place(1, 'B', '02', 'Compacte'))
+            self.__places.append(Place(1, 'B', '03', 'Compacte'))
+            self.__places.append(Place(1, 'B', '04', 'Compacte'))
+            self.__places.append(Place(1, 'B', '12', 'Large'))
+            self.__places.append(Place(1, 'C', '01', 'Large'))
+            self.__places.append(Place(1, 'C', '02', 'Large'))
+            self.__places.append(Place(2, 'A', '01', 'Compacte'))
+            self.__places.append(Place(2, 'A', '02', 'Compacte'))
+            self.__places.append(Place(2, 'A', '03', 'Compacte'))
+            self.__places.append(Place(2, 'A', '04', 'Compacte'))
+            self.__places.append(Place(2, 'A', '05', 'Compacte'))
+            self.__places.append(Place(2, 'B', '01', 'Compacte'))
+            self.__places.append(Place(2, 'B', '02', 'Compacte'))
+            self.__places.append(Place(2, 'B', '03', 'Compacte'))
+            self.__places.append(Place(2, 'B', '04', 'Compacte'))
+            self.__places.append(Place(2, 'C', '01', 'Électrique'))
+            self.__places.append(Place(2, 'C', '02', 'Électrique'))
+            self.__places.append(Place(2, 'C', '03', 'Large'))
+            self.__places.append(Place(2, 'C', '04', 'Large'))
+            self.__places.append(Place(3, 'A', '01', 'Compacte'))
+            self.__places.append(Place(3, 'A', '02', 'Compacte'))
+            self.__places.append(Place(3, 'A', '03', 'Compacte'))
+            self.__places.append(Place(3, 'A', '04', 'Compacte'))
+            self.__places.append(Place(3, 'B', '01', 'Compacte'))
+            self.__places.append(Place(3, 'B', '02', 'Compacte'))
+            self.__places.append(Place(3, 'B', '03', 'Large'))
+            self.__places.append(Place(3, 'B', '04', 'Large'))
+            self.__places.append(Place(3, 'C', '01', 'Large'))
+            self.__places.append(Place(3, 'C', '02', 'Large'))
+            self.__places.append(Place(3, 'C', '03', 'Large'))
+            self.__places.append(Place(3, 'C', '04', 'Large'))
 
-            self.abbonnes.append(Abonne("Dupuis", "Marie", "AA-452-KM", 12, datetime(2025, 1, 1).date(), "2A05"))
-            self.abbonnes.append(Abonne("Bernard", "Luc", "DB-793-QF", 6, datetime(2025, 3, 15).date(), "1B02"))
-            self.abbonnes.append(Abonne("Leclerc", "Antoine", "FG-219-LR", 12, datetime(2025, 2, 1).date(), "0A02"))
-            self.abbonnes.append(Abonne("Martin", "Céline", "JH-887-PN", 3, datetime(2025, 4, 1).date(), None))
-            self.abbonnes.append(Abonne("Roche", "Damien", "KL-045-TZ", 12, datetime(2025, 1, 10).date(), None))
-            self.abbonnes.append(Abonne("Morel", "Sophie", "BC-338-JC", 6, datetime(2025, 2, 20).date(), None))
-            self.abbonnes.append(Abonne("Gonzalez", "Thierry", "EV-612-NV", 3, datetime(2025, 4, 5).date(), None))
-            self.abbonnes.append(Abonne("Petit", "Hélène", "QW-901-HS", 12, datetime(2025, 3, 1).date(), None))
+            self.__abbonnes.append(Abonne("Dupuis", "Marie", "AA-452-KM", 12, datetime(2025, 1, 1).date(), "2A05"))
+            self.__abbonnes.append(Abonne("Bernard", "Luc", "DB-793-QF", 6, datetime(2025, 3, 15).date(), "1B02"))
+            self.__abbonnes.append(Abonne("Leclerc", "Antoine", "FG-219-LR", 12, datetime(2025, 2, 1).date(), "0A02"))
+            self.__abbonnes.append(Abonne("Martin", "Céline", "JH-887-PN", 3, datetime(2025, 4, 1).date(), None))
+            self.__abbonnes.append(Abonne("Roche", "Damien", "KL-045-TZ", 12, datetime(2025, 1, 10).date(), None))
+            self.__abbonnes.append(Abonne("Morel", "Sophie", "BC-338-JC", 6, datetime(2025, 2, 20).date(), None))
+            self.__abbonnes.append(Abonne("Gonzalez", "Thierry", "EV-612-NV", 3, datetime(2025, 4, 5).date(), None))
+            self.__abbonnes.append(Abonne("Petit", "Hélène", "QW-901-HS", 12, datetime(2025, 3, 1).date(), None))
+        
 
     # pour faire en sorte que les liste dde données fournie sont bien mise a jour en fonction des abbonnées
     # Il faudra néanmoins crée une méthode dans abbonée qui ajoute les abbonnées dynamiquement !! 
     def ajouter_abonne(self):
         """Ajoute un abonné et réserve automatiquement sa place si elle existe"""
         
-        for ab in self.abbonnes:
+        for ab in self.__abbonnes:
             if not ab.place_reservee:
                 continue
-            for place in self.places:
+            for place in self.__places:
                 code = f"{place.etage}{place.zone}{place.numero}"
                 if code == ab.place_reservee:
                     place.reserver(ab.plaque_voiture)
+                    
                     break
 
     def lancerTerminal(self):
+        """
+        Cette fonction me sert de console ou d'affichage temporaire l'interface grapique la remplacera une fois le MVP fini
+        elle pourra être utiliser pour débug
+
+        on voit une serie de print, ça convient a ce que le MVP pourra faire, une fois bien abouti il y aura bcp plus de fonctions
+        """
+
         print(">>> Lancement du menu interactif... <<<")
         choix = input("\nAppuyez sur [Entrée] pour accèder a la liste D'options du terminal")
         while True:
@@ -124,31 +140,45 @@ class Terminal:
                 print("3.   Afficher l'état des Places.")
                 print("4.   Verifier le status d'une palce spécifque.")
                 print("5.   Consulter la liste d'abonnées.")
-                print("6.   Quitter le Menu interactif.")
+                print("6.   Informations sur une voiture donnée gâce a la plaque.")
+                print("7.   Quitter le Menu interactif.")
 
             try:
                 choix = input("Sélectionnez une option : ").strip()
+
             except EOFError:
                 print("\nEntrée interrompu. Extinction.")
                 break
 
             if  choix == "1":
                 os.system('cls')
-                self.ArrivéeCleint()
+                nom = input("Veuillez entrer ne nom du client : ")
+                prenom = input("veuillez enetrer le prenom du client : ")
+                plaque = input("veuillez entrer la plaque d'immatriculation du client : ")
+
+                self.ArrivéeCleint(nom, prenom, plaque)
+
             elif choix == "2":
                 os.system('cls')
                 print("Vous avez choisi l'option numéro 2")
-                break
+
             elif choix == "3":
                 os.system('cls')
                 print("Vous avez choisi l'option numéro 3")
+
             elif choix == "4":
                 os.system('cls')
                 print("Vous avez choisi l'option numéro 4")
+
             elif choix == "5":
                 os.system('cls')
                 print("Vous avez choisi l'option numéro 5")
+            
             elif choix == "6":
+                os.system('cls')
+                print("vous avez choisi l'option numéro 6")
+
+            elif choix == "7":
                 os.system('cls')
                 print("Extinction du terminal, AU revoir !!")
                 break
@@ -157,22 +187,56 @@ class Terminal:
                 print(f"Option {choix} non implémentée dans cette version de test.")
                 self.attendre_imput()
 
-
-    def ArrivéeCleint(self):
+    def ArrivéeCleint(self, nom, prenom, plaqueImma, abbo = False):
+        """
+        cette fonction sera une grosse fonction qui va gérer les nouveau clients, ils pouront choisir si ils s'abbonne ou pas
+        :param nom : corréspnd au nom du client 
+        :parma prénom : corréspond au prénom du client
+        :parma plaqueImma : corréspond a la plaque d'immatriculation du client 
+        :abbo corrésond a voir si le client est abbonnée, par défaut false
+        """
         print("\n" + "="*50)
         print("Bienvenue dans l'interface d'ajout de client !")
         print("="*50)
-    
+        os.system('cls')
+        print("\n")
+        rep = input(f"Le client {nom} {prenom} immatriculé {plaqueImma} souhaite-t-il un abonnement ? (oui/non) : ").strip().lower()
 
+        if rep == "oui":
+            duree = int(input("Durée de l'abonnement en mois : "))
+            abonne = Abonne(nom, prenom, plaqueImma, duree)
+            # Ajouter l'abonné à la liste __abbonnes
+            self.__abbonnes.append(abonne)
+            self.ajouter_abonne()
+        else:
+            abonne = None
 
+        # Chercher une place libre et non réservée
+        place_trouvee = None
+        for place in self.__places:
+            if not place.est_occupe and not place.plaque_reservee:
+                # On utilise directement ta méthode occuper()
+                success = place.occuper(plaqueImma)
+                if success:
+                    place_trouvee = place
+                    break
 
+        if place_trouvee:
+            print(f"Place attribuée : {place_trouvee.etage}{place_trouvee.zone}{place_trouvee.numero}")
 
-
-
-
+            # Si c'est un abonné, on réserve sa place
+            if abonne:
+                abonne.place_reservee = f"{place_trouvee.etage}{place_trouvee.zone}{place_trouvee.numero}"
+                # On utilise ta méthode reserver()
+                place_trouvee.reserver(plaqueImma)
+        else:
+            print("Désolé, aucune place libre et disponible n'a été trouvée !")
 
 
     def attendre_imput(self):
+        """
+        Une fonction utilitaire pour que l'utilisateur press enter pour revnir au menu de base.
+        """
         try:
             input("\nAppuyez sur [Entrée] Pour voir le Menu...")
         except EOFError:
@@ -281,25 +345,41 @@ class Place:
 # ---------- class pour les abbonnées  --------------
 class Abonne:
     """
-    initalise un abbonnée qui créera et ajoutera un abbonée a une liste d'abbonées
-
-    cette classe servira de reférence et des methode, pour ajouter des abbonées (es nouveau abbonées)
+    Initialise un abonné qui créera et ajoutera un abonné à une liste d'abonnés
     """
-    def __init__(self, nom, prenom, plaque_voiture,duree, date_debut = None , place_reservee=None):
-        """
-        :parma nom : correspond au nom de l'abbonnée
-        :parma pernom : correspond au prenom de l'abbonnée
-        :parma plaque_voiture : correspond a la plaque de la voiture de l'abbonée
-        :parma duree : correspond a la durnée de l'abbonement, 
-        :parma date_debut : correspond a la dat ede début de l'abbonement,
-        :parma place_reservee : correspond a la place ue l'abbonnée a resserver si il en a une de reservée
-        """
-        self.nom = nom
-        self.prenom = prenom
+    def __init__(self, nom, prenom, plaque_voiture, duree, date_debut=None, place_reservee=None):
+        self.__nom = nom
+        self.__prenom = prenom
         self.plaque_voiture = plaque_voiture
-        self.duree = duree
-        self.date_debut = datetime.today()
-        self.place_reservee = place_reservee
+        self.__duree = duree
+        self.__date_debut = date_debut or datetime.today()
+        self.__place_reservee = place_reservee
+
+    # --- Propriétés pour accéder aux attributs privés ---
+    @property
+    def nom(self):
+        return self.__nom
+
+    @property
+    def prenom(self):
+        return self.__prenom
+
+    @property
+    def duree(self):
+        return self.__duree
+
+    @property
+    def date_debut(self):
+        return self.__date_debut
+
+    @property
+    def place_reservee(self):
+        return self.__place_reservee
+
+    # Optionnel : permettre de modifier la place réservée
+    @place_reservee.setter
+    def place_reservee(self, nouvelle_place):
+        self.__place_reservee = nouvelle_place
 
 
 # --- Section de Tests --- 
@@ -313,3 +393,4 @@ for ab in terminal.abbonnes:
 print("\n--- Liste des places ---")
 for pl in terminal.places:
     print(f"{pl.etage}{pl.zone}{pl.numero} | Type: {pl.type} | Réservée pour: {pl.plaque_reservee} | Occupée: {pl.est_occupe}")
+
