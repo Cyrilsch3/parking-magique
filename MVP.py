@@ -215,7 +215,7 @@ class Terminal:
         place_trouvee = None
         for place in self.__places:
             if not place.est_occupe and not place.plaque_reservee:
-                # On utilise directement ta méthode occuper()
+                # On utilise directement la méthode occuper()
                 success = place.occuper(plaqueImma)
                 if success:
                     place_trouvee = place
@@ -227,7 +227,7 @@ class Terminal:
             # Si c'est un abonné, on réserve sa place
             if abonne:
                 abonne.place_reservee = f"{place_trouvee.etage}{place_trouvee.zone}{place_trouvee.numero}"
-                # On utilise ta méthode reserver()
+                # On utilise la méthode reserver()
                 place_trouvee.reserver(plaqueImma)
         else:
             print("Désolé, aucune place libre et disponible n'a été trouvée !")
