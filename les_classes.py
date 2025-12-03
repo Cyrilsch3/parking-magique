@@ -1,5 +1,5 @@
 from datetime import datetime 
-from dateutil.relativedelta import relativedelta #Module de nbr de jour par mois
+import random #Pour définir un id d'abonnement client
 
 
 # -------------------- Fonctions utilitaires --------------------
@@ -10,7 +10,17 @@ def confirmation(question):
 
 class Parking:
     places = []
-    abonnements = []
+    abonnements = [
+
+        ["Dupuis", "Marie", "AA-452-KM", 12, datetime(2025, 1, 1).date(), "2A05"],    
+        ["Bernard", "Luc", "DB-793-QF", 6, datetime(2025, 3, 15).date(), "1B12"],   
+        ["Leclerc", "Antoine", "FG-219-LR", 12, datetime(2025, 2, 1).date(), "0A02"],
+        ["Martin", "Céline", "JH-887-PN", 3, datetime(2025, 4, 1).date(), None],
+        ["Roche", "Damien", "KL-045-TZ", 12, datetime(2025, 1, 10).date(), None],
+        ["Morel", "Sophie", "BC-338-JC", 6, datetime(2025, 2, 20).date(), None],
+        ["Gonzalez", "Thierry", "EV-612-NV", 3, datetime(2025, 4, 5).date(), None],
+        ["Petit", "Hélène", "QW-901-HS", 12, datetime(2025, 3, 1).date(), None]
+    ]
     
     @classmethod
     def places_occupees(cls):
@@ -64,34 +74,132 @@ class Parking:
         place.temp = None
         return f"Place {place.id} libérée — prix : {prix}€"
 
-@classmethod
-def creer_abonnement(cls, nom, prenom, plaque, duree, date_debut=None, place_attribuee=None):
+    @classmethod
+    def creer_abonnement(cls):
+        print("Abonnement existant ? \n[0] Non \n[1] Oui \n[2] Annuler")
+        choix_creation_abo = input("Votre choix : ").strip()
+        if choix_creation_abo == "2":
+            print("Opération annulée.")
+            return
 
-    abonnement_existant = next((ab for ab in cls.abonnements if ab.plaque == plaque), None)
+        if choix_creation_abo == "0":
+            print("--------------Créer abonnement--------------\n")
 
-    if abonnement_existant:  # si Renouvellement abo
-        ancienne_date_fin = abonnement_existant.date_fin()
-        nouvelle_date_fin = ancienne_date_fin + relativedelta(months=duree) #renouvellemnt abo
+            nom_client = input("Quel est le nom du client ? : ").strip()
+            if not nom_client.isalpha():
+                print("Erreur : le nom ne peut contenir que des lettres.")
+                return
 
-        abonnement_existant.date_debut = ancienne_date_fin
-        abonnement_existant.duree = duree  # la durée ajoutée
+            prenom_client = input("Quel est le prénom du client ? : ").strip()
+            if not prenom_client.isalpha():
+                print("Erreur : le prénom ne peut contenir que des lettres.")
+                return
 
-        # mise à jour propre de date_fin
-        abonnement_existant.date_fin = lambda d=nouvelle_date_fin: d
+            plaque_client = input("Quel est la plaque d'immatriculation du client ? : ").strip().upper()
+            if len(plaque_client) < 7:
+                print("Plaque invalide.")
+                return
 
-        return f"Renouvellement effectué. Nouvelle date de fin : {nouvelle_date_fin}"
+            try:
+                duree_abo_client = int(input("Quelles est la durée de l'abonnement souhaitée ? (en mois)"))
+            except ValueError:
+                print("Durée invalide.")
+                return
+            print("Le client souahite t-il une date de début pous son abonnement ?\n[0] Non\n[1] Oui")
+            date_debut_shouaitee = input("Choix : ").strip()
+            if date_debut_shouaitee == "0":
+                date_debut = None
+            elif date_debut_shouaitee == "1":
+                date_str = input("Entrer une date sous le format suivant : 01-02-2025 (jour-mois-année) : ").strip()
+                try:
+                    date_debut = datetime.strptime(date_str, "%d-%m-%Y").date()
+                except:
+                    print("Format de date invalide.")
+                    return
+            else:
+                date_debut = None
+            print("Le client souhaite t-il une place réservée à son nom ?\n[0] Non\n[1] Oui")
+            place_reserve_choix = input("Choix : ").strip()
+            if place_reserve_choix == "0":
+                place_client = None
+            elif place_reserve_choix == "1":
+                print("Votre place est la [XXXX]")
+                place_client = "XXXX"
+            else:
+                place_client = None
 
-    else:  # Nouvel abonnement
-        abonnement = Abonnement(
-            nom, prenom, plaque, duree,
-            date_debut=date_debut,
-            place_attribuée=place_attribuee
-        )
+            id_client = str(random.randint(100000, 999999))
 
-        if place_attribuee is not None:
-            return Tarif.prix_abonnement_reserver
-        else:
-            return Tarif.prix_abonnement_simple
+            Abonnement(
+                nom_client,
+                prenom_client,
+                plaque_client,
+                duree_abo_client,
+                date_debut,
+                place_client,
+                id_client
+            )
+
+            print(f"Nouvel abonnement créé. ID : {id_client}")
+            return
+
+        elif choix_creation_abo == "1":
+            print("--------------Renouvellement abonnement----------------")
+            print("Comment souahitez vous identifier votre abonnement ?\n[0] Plaque d'immatriculation\n[1] Identifiant abonnement\n[3] Retour")
+            choix_identification = input("Votre choix : ")
+
+            if choix_identification == "3":
+                return cls.creer_abonnement()
+
+            if choix_identification == "0":
+                plaque = input("Entrer la plaque d'immatriculation. (Format : XX-AAA-XX) : ").strip().upper()
+                abo = next((a for a in Parking.abonnements if a[2] == plaque), None)
+                if abo is None:
+                    print("Aucun abonnement trouvé.")
+                    return
+
+                try:
+                    ajout = int(input("Durée supplémentaire (en mois) : "))
+                except ValueError:
+                    print("Durée invalide.")
+                    return
+
+                abo[3] += ajout
+                print("Abonnement prolongé.")
+                return
+
+            elif choix_identification == "1":
+                identifiant = input("Entrez l'identifiant client : ").strip()
+                abo = next((a for a in Parking.abonnements if a[6] == identifiant), None)
+                if abo is None:
+                    print("Aucun abonnement trouvé.")
+                    return
+
+                try:
+                    ajout = int(input("Durée supplémentaire (en mois) : "))
+                except ValueError:
+                    print("Durée invalide.")
+                    return
+
+                abo[3] += ajout
+                print("Abonnement prolongé.")
+                return
+
+            else:
+                print("Choix invalide.")
+                return
+
+
+
+           
+
+
+
+
+
+
+
+
 
 
 
@@ -277,7 +385,7 @@ class Place():
 # -------------------- les classes pour les abonnés --------------------
 
 class Abonnement:
-    def __init__(self, nom, prenom, plaque, duree, date_debut = None, place_attribuée = None):
+    def __init__(self, nom, prenom, plaque, duree, date_debut = None, place_attribuée = None, id_abo = None):
         self.id = str(len(Parking.abonnements)).zfill(5) # ID sur 5 chiffre avec 0 non sigificatifs 
         
         self.nom = nom
@@ -286,6 +394,7 @@ class Abonnement:
         self.duree = duree  # durée en mois
         self.date_debut = date_debut or datetime.today().date()  # date actuelle par défaut
         self.place = place_attribuée
+        self.id
         
         # Ajouter l'instance à la liste de classe
         Parking.abonnements.append(self)
@@ -388,8 +497,8 @@ def ajout_des_donnees_du_client():
         
     #----- liste des abonné actuels----
     tb_abonnés = [
-        ["Dupuis", "Marie", "AA-452-KM", 12, datetime(2025, 1, 1).date(), "2A05"],
-        ["Bernard", "Luc", "DB-793-QF", 6, datetime(2025, 3, 15).date(), "1B12"],
+        ["Dupuis", "Marie", "AA-452-KM", 12, datetime(2025, 1, 1).date(), "2A05"],   
+        ["Bernard", "Luc", "DB-793-QF", 6, datetime(2025, 3, 15).date(), "1B12"],  
         ["Leclerc", "Antoine", "FG-219-LR", 12, datetime(2025, 2, 1).date(), "0A02"],
         ["Martin", "Céline", "JH-887-PN", 3, datetime(2025, 4, 1).date(), None],
         ["Roche", "Damien", "KL-045-TZ", 12, datetime(2025, 1, 10).date(), None],
@@ -410,14 +519,15 @@ def ajout_des_donnees_du_client():
         )
         
           
-ajout_des_donnees_du_client()
+#ajout_des_donnees_du_client()
        
 #---- test----
 
 #sofiane
     
-for i in Parking.places_libres() :
-    print(i.id)
+#for i in Parking.places_libres() :
+#    print(i.id)
 
 # for place, plaque in Parking.places_abonnes():
 #     print(f"Place : {place.id} — Réservée pour la plaque : {plaque}")
+Parking.creer_abonnement()
