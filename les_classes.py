@@ -7,9 +7,8 @@ def confirmation(question):
     reponse = input(f"{question}  (o/n) : ").strip().lower()
     return reponse in ['o', 'oui', 'y', 'yes']
 
-
 class Parking:
-    places = []
+    _places = []
     abonnements = [
 
         ["Dupuis", "Marie", "AA-452-KM", 12, datetime(2025, 1, 1).date(), "2A05"],    
@@ -22,6 +21,21 @@ class Parking:
         ["Petit", "Hélène", "QW-901-HS", 12, datetime(2025, 3, 1).date(), None]
     ]
     
+    @property
+    def places(cls):
+        return cls._places[:]
+
+    @places.setter
+    def places(cls, value):
+        if not isinstance(value, list):
+            raise TypeError("Parking.places doit être une liste.")
+
+        for elem in value:
+            if not isinstance(elem, Place):
+                raise TypeError("Parking.places ne peut contenir que des objets de type Place.")
+            
+        cls._places = value
+
     @classmethod
     def places_occupees(cls):
         return [p for p in cls.places if p.plaque is not None]
