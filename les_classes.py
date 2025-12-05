@@ -189,20 +189,6 @@ class Parking:
                 print("Choix invalide.")
                 return
 
-
-
-           
-
-
-
-
-
-
-
-
-
-
-
 # ---- Classe Tarif ----
 class Tarif:
     _gratuit_minutes = 15
@@ -338,18 +324,24 @@ class Place():
             print("Rien n'a changé")
 
     # ---------- TYPE ----------
+class Place:
+    TYPES_VALIDES = ["Compacte", "Large", "PMR", "Électrique"]
+
     @property
     def type(self):
         return self.__type
 
     @type.setter
     def type(self, value):
+        if value not in Place.TYPES_VALIDES:
+            raise ValueError(f"Type '{value}' invalide. Types autorisés : {Place.TYPES_VALIDES}")
+        
         if confirmation(f"Voulez-vous vraiment changer le type de {self.__type} à {value} ?"):
-            self.__type = value
+            self.__type = value  
             print(f"Type changé en {value}")
         else:
             print("Rien n'a changé")
-            
+
     # ---------- PLAQUE ----------
     @property
     def plaque(self):
