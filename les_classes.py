@@ -385,7 +385,7 @@ class Place():
 # -------------------- les classes pour les abonnés --------------------
 
 class Abonnement:
-    def __init__(self, nom, prenom, plaque, duree, date_debut = None, place_attribuée = None, id_abo = None):
+    def __init__(self, nom, prenom, plaque, duree, date_debut = None, place_attribuée = None):
         self.id = str(len(Parking.abonnements)).zfill(5) # ID sur 5 chiffre avec 0 non sigificatifs 
         
         self.nom = nom
@@ -394,26 +394,88 @@ class Abonnement:
         self.duree = duree  # durée en mois
         self.date_debut = date_debut or datetime.today().date()  # date actuelle par défaut
         self.place = place_attribuée
-        self.id
         
         # Ajouter l'instance à la liste de classe
         Parking.abonnements.append(self)
-        
+            # --- propriétés en lecture (id immuable) ---
+    @property
+    def id(self):
+        return self._id
+    
+    @property
+    def nom(self):
+        return self._nom
+    
+    @nom.setter
+    def nom(self, value):
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("nom invalide")
+        self._nom = value.strip().title()
 
+    @property
+    def prenom(self):
+        return self._prenom
+
+
+    @prenom.setter
+    def prenom(self, value):
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("prenom invalide")
+        self._prenom = value.strip().title()
+
+    @property
+    def plaque(self):
+        return self._plaque
+
+    @plaque.setter
+    def plaque(self, value):
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("plaque invalide")
+        self._plaque = value.strip().upper()
+
+    @property
+    def duree(self):
+        return self._duree
+
+    @duree.setter
+    def duree(self, value):
+        if not isinstance(value, int) or value <= 0:
+            raise ValueError("duree doit être un entier positif (mois)")
+        self._duree = value
+
+
+    @property
+    def date_debut(self):
+        return self._date_debut
+
+
+    @date_debut.setter
+    def date_debut(self, value):
+        if isinstance(value, datetime):
+            value = value.date()
+        if not isinstance(value, date):
+            raise TypeError("date_debut doit être une date")
+        self._date_debut = value
+
+    @property
+    def place(self):
+        return self._place
+
+    @place.setter
+    def place(self, value):
+        self._place = value
+        
     def date_fin(self):
-        # calcul de la date de fin en ajoutant les mois
-        month = self.date_debut.month - 1 + self.duree
-        year = self.date_debut.year + month // 12
+        month = self._date_debut.month - 1 + self._duree
+        year = self._date_debut.year + month // 12
         month = month % 12 + 1
-        day = min(self.date_debut.day, [31,
+        day = min(self._date_debut.day, [31,
                                         29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28,
                                         31,30,31,30,31,31,30,31,30,31][month-1])
         return datetime(year, month, day).date()
-    
-    
-    
+
     def __str__(self):
-        return f"L'abonnement de {self.nom} {self.prenom} se termine le {self.date_fin()}"
+        return f"L'abonnement de {self._nom} {self._prenom} se termine le {self.date_fin()}"
 
 
 def ajout_des_donnees_du_client():
