@@ -114,8 +114,9 @@ def arrivee_vehicule():
                     print(i.id)
                 choix_place = input("\nVotre choix de place: ")
                 print(Parking.occuper_place(choix_place,plaque))
+                menu_demarrage()
             elif choix == 2:
-                print("Menu abonnement")
+                menu_abonnement()
             else:
                 print("Choix invalide.")
         except ValueError:
