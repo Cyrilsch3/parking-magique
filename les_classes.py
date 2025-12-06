@@ -286,7 +286,7 @@ class Place:
 
     @plaque.setter
     def plaque(self, value):
-        if self._plaque is not None:
+        if value is not None and self._plaque is not None:
             raise ValueError("Place déjà occupée")
         self._plaque = value
 
@@ -491,7 +491,7 @@ def ajout_des_donnees_du_client():
         temp = Place(etage= i[0],
                      zone = i[1],
                      numero = i[2],
-                     type = i[3],
+                     type_place = i[3],
                      plaque = None)
         
     #----- liste des abonné actuels----
@@ -514,7 +514,7 @@ def ajout_des_donnees_du_client():
             plaque = i[2],
             duree = i[3],
             date_debut = i[4],
-            place_attribuée = i[5]
+            place_attribuee = i[5]
         )
         
           
