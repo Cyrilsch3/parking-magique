@@ -5,7 +5,7 @@ from les_classes import Abonnement
 from les_classes import ajout_des_donnees_du_client
 from datetime import datetime, date
 
-
+ajout_des_donnees_du_client()
 def confirmation(question):
     reponse = input(f"{question}  (o/n) : ").strip().lower()
     return reponse in ['o', 'oui', 'y', 'yes']
