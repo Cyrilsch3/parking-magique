@@ -82,11 +82,22 @@ class Parking:
         abo = next((a for a in cls.abonnements() if a.id == id), None)
         if abo is None:
             return [False, f"Aucun abonnement trouvé avec l'ID {id}"]
+
         if not isinstance(nb_mois, int) or nb_mois <= 0:
             return [False, "La durée à ajouter doit être un entier positif"]
-        abo.duree += nb_mois
-        return [True, f"Abonnement {id} prolongé de {nb_mois} mois. Nouvelle durée : {abo.duree} mois."]
 
+        abo.duree += nb_mois
+        date_fin = abo.date_fin()  # date de fin après prolongation
+
+        # Calcul du prix selon si place attribuée ou non
+        if abo.place:
+            prix = Tarif.prix_abonnement_reserver()
+        else:
+            prix = Tarif.prix_abonnement_simple()
+
+        message = f"Abonnement {id} prolongé de {nb_mois} mois.  Date de fin : {date_fin}"
+        return [True, message]
+    
     @classmethod
     def calcul_prix(cls, place, mtn=None):
         if mtn is None:
