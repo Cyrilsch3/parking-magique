@@ -161,26 +161,64 @@ def menu_abonnement():
             choix_creation_abo = int(input("Votre choix : ").strip())
             if choix_creation_abo == 0:
                 print("\n--- Création abonnement ---\n")
-                nom_client = input("Entrez le nom du client")
-                prenom_client = input("Entrez le prénom du client")
-                plaque_client = input("Entrez la plaque d'immatriculation du client")
-                duree_abonnement = input("Entrez la durée de l'abonnement (en mois).")
+                nom_client = input("Entrez le nom du client : ")
+                prenom_client = input("Entrez le prénom du client : ")
+                plaque_client = input("Entrez la plaque d'immatriculation du client : ")
+                duree_abonnement = input("Entrez la durée de l'abonnement (en mois). : ")
                 date_debut_abonnement = ""
                 while True:
-                    choix_date_debut = ("Voulez vous une date de début pour votre abonnement ?\[0] Non\[1] Oui")
+                    choix_date_debut = int(input("Voulez vous une date de début pour votre abonnement ?\n[0] Non\n[1] Oui : "))
                     if choix_date_debut == 0:
-                        date_debut_abonnement = date()
+                        date_debut_abonnement = date.today()
                         print(f"Votre abonnement commence le {date_debut_abonnement}")
+                        break
                     elif choix_date_debut == 1:
                         future_date_debut = input("Entrer une date sous un format valide (dd-mm-yy) : ")
                         date_debut_abonnement = future_date_debut
+                        break
                     else:
                         print("Mauvaise entrée")
+                
+                while True:
+                    choix_place_reserve = int(input("Shouaitez-vous une place réservée avec votre abonnements ?\n[0] Oui\n[1] Non\n[2] Retour\nVotre choix : "))
+                    if choix_place_reserve == 0:
+                        place_reserve = input("Quelle place souhaitez vous réserver ?")
+                        print(f"Votre place est la {place_reserve}")
+                        break
+                    elif choix_place_reserve == 1:
+                        place_reserve = None
+                        break
+                    elif choix_place_reserve == 2:
+                        menu_demarrage()
+                    else:
+                        print("Choix non valide.")
+                Abonnement.__init__(nom = nom_client, prenom= prenom_client, plaque= plaque_client, duree = duree_abonnement, date_debut=date_debut_abonnement, place_attribuee=place_reserve)
+                print("Abonnement enregistré avec succès !")
 
-
-
+                    
             elif choix_creation_abo == 1:
-                print("prolongation abo")
+                print("--- Abonnement existant ---")
+                while True:
+                    choix_abo_existant = int(input("Que voulez-vous faire avec votre abonnement ?\n[0] Le prolonger\n[1] Le modifier\n[2] Retour"))
+                    if choix_abo_existant == 0:
+                        id_abo = input("Quel est l'id de votre abonnement ? : ")
+                        nbr_mois_en_plus = input("De combien de mois voulez vous allonger votre abonnement ?")
+                        Parking.allonger_abonnement(id=id_abo, nb_mois=nbr_mois_en_plus)
+                        print("Abonnement prolongé avec succès")
+                        menu_demarrage()
+                    elif choix_abo_existant == 1:
+                        id_abonnement = input("Quel est l'ID de votre abonnement ? : ")
+                        choix_modif_abo = int(input("Que voulez vous modifier dans votre abonnement ? \n[0] La plaque\n[1] La place\n[2] Retour"))
+                        if choix_modif_abo == 0:
+                            nouvelle_plaque = input("Entrer une nouvelle plaque : ")
+                            Parking.modifier_abonnement(id=id_abonnement, plaque=nouvelle_plaque)
+                            break
+                        elif choix_modif_abo == 1:
+                            nouvelle_place = input("Entrer une nouvelle place : ")
+                            Parking.modifier_abonnement(id=id_abonnement, place_id=nouvelle_place)
+                            break
+                        elif choix_modif_abo == 2:
+                            menu_demarrage()
             elif choix_creation_abo == 2:
                 menu_demarrage()
                 return 
