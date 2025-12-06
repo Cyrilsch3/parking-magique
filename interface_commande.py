@@ -57,14 +57,31 @@ def menu_demarrage():
 
 
 def stat_parking():
+    liste_place = Parking.liste_place()
+    nbr_places = len(liste_place)
+    #print(nbr_places)
+    
     liste_place_libre = Parking.places_libres()
     nbr_place_libre = len(liste_place_libre)
+    #print(nbr_place_libre)
+    
     liste_place_occupe = Parking.places_occupees()
     nbr_place_occupe = len(liste_place_occupe)
-    pourcentage_occupation = round(nbr_place_occupe/63,1)
+    #print(nbr_place_occupe)
+    
+    liste_place_reservee = Parking.places_abonnes()
+    nbr_place_reservee = len(liste_place_reservee)
+    
+    pourcentage_places_libres = round((nbr_place_libre / nbr_places) * 100, 2) if nbr_places else 0
+    taux_occupation = round(100 - pourcentage_places_libres,1)
     print("\n--- Statistiques du Parking ---")
-    print(f"Il y'a actuellement {nbr_place_libre} places libres et {nbr_place_occupe} places occupées.\n")
-    print(f"Le taux d'occupation du parking est de {pourcentage_occupation} %\n")
+    print(
+    "Il y'a actuellement :\n"
+    f"- {nbr_place_libre} places libres\n"
+    f"- {nbr_place_occupe} places occupées\n"
+    f"- {nbr_place_reservee} places réservées\n"
+)
+    print(f"Le taux d'occupation du parking est de {taux_occupation } %\n")
    
     while True:
         try:
@@ -115,6 +132,8 @@ def sortie_vehicule():
 
 
 def menu_abonnement():
+    #cyril va faire 
+    
     print("\nMenu abonnement")
     while True:
         try:
