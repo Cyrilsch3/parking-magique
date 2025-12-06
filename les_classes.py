@@ -54,11 +54,18 @@ class Parking:
                     result.append((place_obj, ab.plaque))
         return result
 
+
+    
     @classmethod
     def places_libres(cls):
         places_occupees_ids = [p.id for p in cls.places_occupees()]
         places_abonnes_ids = [p.id for p, _ in cls.places_abonnes()]
         return [p for p in cls.places() if p.id not in places_occupees_ids and p.id not in places_abonnes_ids]
+    
+    @classmethod
+    def liste_place(cls):
+        #Retourne la liste complète des places du parking sous forme lisible.
+        return [str(place) for place in cls.places()]
 
     @classmethod
     def lister_plaques_abo(cls):
