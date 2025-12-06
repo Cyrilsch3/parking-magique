@@ -202,8 +202,11 @@ class Tarif:
     @classmethod
     def set_gratuit_minutes(cls, value):
         if not isinstance(value, int) or value < 0:
-            raise ValueError("gratuit_minutes doit être un entier >= 0")
+            return [False, "gratuit_minutes doit être un entier >= 0"]
+
         cls._gratuit_minutes = value
+        return [True, f"Valeur mise à jour : gratuit_minutes = {value}"]
+        
 
     @classmethod
     def prix_premiere_heure(cls):
@@ -212,8 +215,9 @@ class Tarif:
     @classmethod
     def set_prix_premiere_heure(cls, value):
         if not isinstance(value, (int, float)) or value < 0:
-            raise ValueError("prix_premiere_heure doit être un nombre positif")
+            return [False, "prix_premiere_heure doit être un nombre positif"]
         cls._prix_premiere_heure = value
+        return [True, f"Valeur mise à jour : prix_premiere_heure = {value}"]
 
     @classmethod
     def prix_deuxieme_heure(cls):
@@ -222,8 +226,9 @@ class Tarif:
     @classmethod
     def set_prix_deuxieme_heure(cls, value):
         if not isinstance(value, (int, float)) or value < 0:
-            raise ValueError("prix_deuxieme_heure doit être un nombre positif")
+            return [False, "prix_deuxieme_heure doit être un nombre positif"]
         cls._prix_deuxieme_heure = value
+        return [True, f"Valeur mise à jour : prix_deuxieme_heure = {value}"]
 
     @classmethod
     def prix_heures_suivantes(cls):
@@ -232,8 +237,9 @@ class Tarif:
     @classmethod
     def set_prix_heures_suivantes(cls, value):
         if not isinstance(value, (int, float)) or value < 0:
-            raise ValueError("prix_heures_suivantes doit être un nombre positif")
+            return [False, "prix_heures_suivantes doit être un nombre positif"]
         cls._prix_heures_suivantes = value
+        return [True, f"Valeur mise à jour : prix_heures_suivantes = {value}"]
 
     @classmethod
     def prix_max_10h(cls):
@@ -242,8 +248,9 @@ class Tarif:
     @classmethod
     def set_prix_max_10h(cls, value):
         if not isinstance(value, (int, float)) or value < 0:
-            raise ValueError("prix_max_10h doit être un nombre positif")
+            return [False, "prix_max_10h doit être un nombre positif"]
         cls._prix_max_10h = value
+        return [True, f"Valeur mise à jour : prix_max_10h = {value}"]
 
     @classmethod
     def prix_abonnement_simple(cls):
@@ -252,8 +259,9 @@ class Tarif:
     @classmethod
     def set_prix_abonnement_simple(cls, value):
         if not isinstance(value, (int, float)) or value < 0:
-            raise ValueError("prix_abonnement_simple doit être un nombre positif")
+            return [False, "prix_abonnement_simple doit être un nombre positif"]
         cls._prix_abonnement_simple = value
+        return [True, f"Valeur mise à jour : prix_abonnement_simple = {value}"]
 
     @classmethod
     def prix_abonnement_reserver(cls):
@@ -262,8 +270,9 @@ class Tarif:
     @classmethod
     def set_prix_abonnement_reserver(cls, value):
         if not isinstance(value, (int, float)) or value < 0:
-            raise ValueError("prix_abonnement_reserver doit être un nombre positif")
+            return [False, "prix_abonnement_reserver doit être un nombre positif"]
         cls._prix_abonnement_reserver = value
+        return [True, f"Valeur mise à jour : prix_abonnement_reserver = {value}"]
 
     # ----- CALCUL DU PRIX -----
     @classmethod
