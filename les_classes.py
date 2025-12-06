@@ -97,8 +97,8 @@ class Parking:
 
     @classmethod
     def occuper_place(cls, place, plaque):
-        place_obj = next((p for p in Parking.places() if p.id == choix_id), None)
-        if place_obj.plaque is not None:
+        place = next((p for p in Parking.places() if p.id == choix_id), None)
+        if place.plaque is not None:
             return f"Place déjà occupée par {place.plaque}"
         place.plaque = plaque
         place.temp = datetime.now()
