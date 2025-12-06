@@ -2,8 +2,14 @@ from les_classes import Parking
 from les_classes import Tarif
 from les_classes import Place
 from les_classes import Abonnement
-from les_classes import Abonnement, ajout_des_donnees_du_client
+from les_classes import ajout_des_donnees_du_client
 from datetime import datetime, date
+
+
+def confirmation(question):
+    reponse = input(f"{question}  (o/n) : ").strip().lower()
+    return reponse in ['o', 'oui', 'y', 'yes']
+
 
 
 # mdp = "Bonjour"
@@ -52,6 +58,13 @@ def menu_demarrage():
 def stat_parking():
     liste_place_libre = Parking.places_libres()
     nbr_place_libre = len(Parking.places_libres())
+    liste_place_occupe = Parking.places_occupees()
+    nbr_place_occupe = len(Parking.places_occupees())
+    pourcentage_occupation = round(nbr_place_occupe/63,1)
+    print("\n--- Statistiques du Parking ---")
+    print(f"Il y'a actuellement {nbr_place_libre} places libres et {nbr_place_occupe} places occupées.\n")
+    print(f"Le taux d'occupation du parking est de {pourcentage_occupation} %\n")
+   
     while True:
         try:
             retour = int(input("[0] Retour\n"))
