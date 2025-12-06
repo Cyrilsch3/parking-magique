@@ -96,7 +96,7 @@ class Parking:
         return Tarif.calcul(minutes)
 
     @classmethod
-    def occuper_place(cls, place_id, plaque)
+    def occuper_place(cls, place_id, plaque):
     
         try: 
             place = next((p for p in Parking.places() if p.id ==  place_id.upper()), None)
