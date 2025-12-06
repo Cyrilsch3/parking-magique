@@ -279,12 +279,10 @@ def menu_abonnement():
 
 
 def menu_parametres():
-    global mdp
 
     print("\n------------------ Paramètres -------------------\n")
     print("[0] Retour")
-    print("[1] Changer le mot de passe")
-    print("[2] Changer les tarifs")
+    print("[1] Changer les tarifs")
 
     while True:
         try:
@@ -294,17 +292,97 @@ def menu_parametres():
                 return
 
             elif choix == 1:
-                ancien = input("Ancien mot de passe : ")
-                if ancien == mdp:
-                    mdp = input("Nouveau mot de passe : ")
-                    print("Mot de passe changé.")
-                else:
-                    print("Mot de passe incorrect.")
-                menu_demarrage()
-                return
-
-            elif choix == 2:
-                print("Liste des tarifs…")
+                print(f"Que voulez vous modifier ? ")
+                print(f"[0] Rien, retour au menu")
+                print(f"[1] Période gratuite, actuellement : {Tarif.gratuit_minutes()} minutes")
+                print(f"[2] Prix première heure, actuellement : {Tarif.prix_premiere_heure()}€")
+                print(f"[3] Prix deuxième heure, actuellement : {Tarif.prix_deuxieme_heure()}€")
+                print(f"[4] Prix heures suivantes, actuellement : {Tarif.prix_heures_suivantes()}€")
+                print(f"[5] Prix pour +10h, actuellement : {Tarif.prix_max_10h()}€")
+                print(f"[6] Prix abonnement simple, actuellement : {Tarif.prix_abonnement_simple()}€")
+                print(f"[7] Prix abonnement place réservée, actuellement : {Tarif.prix_abonnement_reserver()}€")
+                while True:
+                    try:
+                        choix = int(input(f"Votre choix : "))
+                        if choix == 0 :
+                            menu_demarrage()
+                        elif choix == 1 :
+                            try:
+                                new_value = int(input("Nouvelle période gratuite en minute : "))
+                            except ValueError:
+                                print("Veuillez entrer un nombre entier.")
+                                continue
+                            success, message = Tarif.set_gratuit_minutes(new_value)
+                            print(message)
+                            if not success:
+                                continue
+                        elif choix == 2 :
+                            try:
+                                new_value = float(input("Nouveau tarif première heure : "))
+                            except ValueError:
+                                print("Veuillez entrer un nombre.")
+                                continue
+                            success, message = Tarif.set_prix_premiere_heure(new_value)
+                            print(message)
+                            if not success:
+                                continue
+                        elif choix == 3 :
+                            try:
+                                new_value = float(input("Nouveau tarif deuxième heure : "))
+                            except ValueError:
+                                print("Veuillez entrer un nombre.")
+                                continue
+                            success, message = Tarif.set_prix_deuxieme_heure(new_value)
+                            print(message)
+                            if not success:
+                                continue
+                        elif choix == 4 :
+                            try:
+                                new_value = float(input("Nouveau tarif heures suivantes : "))
+                            except ValueError:
+                                print("Veuillez entrer un nombre.")
+                                continue
+                            success, message = Tarif.set_prix_heures_suivantes(new_value)
+                            print(message)
+                            if not success:
+                                continue
+                        elif choix == 5 :
+                            try:
+                                new_value = float(input("Nouveau prix pour +10h : "))
+                            except ValueError:
+                                print("Veuillez entrer un nombre.")
+                                continue
+                            success, message = Tarif.set_prix_max_10h(new_value)
+                            print(message)
+                            if not success:
+                                continue
+                        elif choix == 6 :
+                            try:
+                                new_value = float(input("Nouveau tarif abonnement simple : "))
+                            except ValueError:
+                                print("Veuillez entrer un nombre.")
+                                continue
+                            success, message = Tarif.set_prix_abonnement_simple(new_value)
+                            print(message)
+                            if not success:
+                                continue
+                        elif choix == 7 :
+                            try:
+                                new_value = float(input("Nouveau tarif abonnement place réservée : "))
+                            except ValueError:
+                                print("Veuillez entrer un nombre.")
+                                continue
+                            success, message = Tarif.set_prix_abonnement_reserver(new_value)
+                            print(message)
+                            if not success:
+                                continue
+                        else:
+                            print("Choix invalide")
+                    except ValueError:
+                        print("Veuillez entrer un nombre entier.")
+                
+                
+                
             else:
                 print("Choix invalide.")
 
