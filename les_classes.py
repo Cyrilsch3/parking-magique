@@ -104,6 +104,7 @@ class Parking:
         place.temp = datetime.now()
         return f"Place {place.id} occupée par {plaque}"
 
+
     @classmethod
     def liberer_place(cls, place):
         if place.temp is None:
