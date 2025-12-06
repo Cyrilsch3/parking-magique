@@ -284,6 +284,7 @@ class Tarif:
 
     
 class Place():
+    
     def __init__(self, etage, zone, numero, type, plaque = None):
         self.__etage = etage
         self.__zone = zone
@@ -338,7 +339,6 @@ class Place():
             print("Rien n'a changé")
 
     # ---------- TYPE ----------
-class Place:
     TYPES_VALIDES = ["Compacte", "Large", "PMR", "Électrique"]
 
     @property
