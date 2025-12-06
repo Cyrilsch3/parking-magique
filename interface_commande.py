@@ -1,3 +1,9 @@
+from les_classes import Parking
+from les_classes import Tarif
+from les_classes import Place
+from les_classes import Abonnement
+
+
 mdp = "Bonjour"
 
 def ecran_locked():
