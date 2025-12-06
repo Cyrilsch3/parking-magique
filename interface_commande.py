@@ -145,7 +145,7 @@ def sortie_vehicule():
             choix = int(input("\n[0] Retour\n"))
             if choix == 0:
                 menu_demarrage()
-                return
+                
             else:
                 print("Choix invalide.")
         except ValueError:
@@ -153,77 +153,125 @@ def sortie_vehicule():
 
 
 def menu_abonnement():
-    #cyril va faire 
-    
+
     print("Abonnement existant ? \n[0] Non \n[1] Oui \n[2] Annuler")
+    
     while True:
         try: 
             choix_creation_abo = int(input("Votre choix : ").strip())
+
+            # ------------ CREATION ABONNEMENT ------------
             if choix_creation_abo == 0:
                 print("\n--- Création abonnement ---\n")
                 nom_client = input("Entrez le nom du client : ")
                 prenom_client = input("Entrez le prénom du client : ")
                 plaque_client = input("Entrez la plaque d'immatriculation du client : ")
-                duree_abonnement = input("Entrez la durée de l'abonnement (en mois). : ")
-                date_debut_abonnement = ""
+                duree_abonnement = int(input("Entrez la durée de l'abonnement (en mois) : "))
+
+                # ---- DATE DEBUT ----
                 while True:
-                    choix_date_debut = int(input("Voulez vous une date de début pour votre abonnement ?\n[0] Non\n[1] Oui : "))
+                    choix_date_debut = int(input("Voulez vous une date de début ?\n[0] Non\n[1] Oui : "))
+
                     if choix_date_debut == 0:
                         date_debut_abonnement = date.today()
                         print(f"Votre abonnement commence le {date_debut_abonnement}")
                         break
+
                     elif choix_date_debut == 1:
-                        future_date_debut = input("Entrer une date sous un format valide (dd-mm-yy) : ")
-                        date_debut_abonnement = future_date_debut
+                        while True:
+                            date_str = input("Entrer une date (dd-mm-yy) : ")
+                            try:
+                                date_debut_abonnement = datetime.strptime(date_str, "%d-%m-%y").date()
+                                break
+                            except ValueError:
+                                print("Format invalide, réessayez.")
                         break
+
                     else:
-                        print("Mauvaise entrée")
-                
+                        print("Mauvaise entrée.")
+
+                # ---- PLACE RÉSERVÉE ----
                 while True:
-                    choix_place_reserve = int(input("Shouaitez-vous une place réservée avec votre abonnements ?\n[0] Oui\n[1] Non\n[2] Retour\nVotre choix : "))
+                    choix_place_reserve = int(input("Souhaitez-vous une place réservée ?\n[0] Oui\n[1] Non\n[2] Retour\nVotre choix : "))
+
                     if choix_place_reserve == 0:
-                        place_reserve = input("Quelle place souhaitez vous réserver ?")
-                        print(f"Votre place est la {place_reserve}")
+                        place_reserve = input("Quelle place souhaitez-vous réserver ? : ")
                         break
                     elif choix_place_reserve == 1:
                         place_reserve = None
                         break
                     elif choix_place_reserve == 2:
-                        menu_demarrage()
+                        return menu_demarrage()
                     else:
                         print("Choix non valide.")
-                Abonnement.__init__(nom = nom_client, prenom= prenom_client, plaque= plaque_client, duree = duree_abonnement, date_debut=date_debut_abonnement, place_attribuee=place_reserve)
-                print("Abonnement enregistré avec succès !")
 
-                    
+                nouvel_abo = Abonnement(
+                    nom=nom_client,
+                    prenom=prenom_client,
+                    plaque=plaque_client,
+                    duree=duree_abonnement,
+                    date_debut=date_debut_abonnement,
+                    place_attribuee=place_reserve
+                )
+                #Parking.ajouter(nouvel_abo)
+
+                print("\nAbonnement enregistré avec succès !")
+                return menu_demarrage()
+
+
+            # ------------ ABONNEMENT EXISTANT ------------
             elif choix_creation_abo == 1:
                 print("--- Abonnement existant ---")
+
                 while True:
-                    choix_abo_existant = int(input("Que voulez-vous faire avec votre abonnement ?\n[0] Le prolonger\n[1] Le modifier\n[2] Retour"))
+                    choix_abo_existant = int(input(
+                        "Que voulez-vous faire ?\n[0] Prolonger\n[1] Modifier\n[2] Retour\nVotre choix : "
+                    ))
+
+                    # --- PROLONGER ---
                     if choix_abo_existant == 0:
-                        id_abo = input("Quel est l'id de votre abonnement ? : ")
-                        nbr_mois_en_plus = input("De combien de mois voulez vous allonger votre abonnement ?")
-                        Parking.allonger_abonnement(id=id_abo, nb_mois=nbr_mois_en_plus)
-                        print("Abonnement prolongé avec succès")
-                        menu_demarrage()
+                        id_abo = input("ID de l'abonnement : ")
+                        nb_mois = int(input("Nombre de mois à ajouter : "))
+
+                        success, message = Parking.allonger_abonnement(id=id_abo, nb_mois=nb_mois)
+                        print(message)
+
+                        if not success:
+                            continue
+
+                        return menu_demarrage()
+
+                    # --- MODIFIER ---
                     elif choix_abo_existant == 1:
-                        id_abonnement = input("Quel est l'ID de votre abonnement ? : ")
-                        choix_modif_abo = int(input("Que voulez vous modifier dans votre abonnement ? \n[0] La plaque\n[1] La place\n[2] Retour"))
-                        if choix_modif_abo == 0:
-                            nouvelle_plaque = input("Entrer une nouvelle plaque : ")
-                            Parking.modifier_abonnement(id=id_abonnement, plaque=nouvelle_plaque)
-                            break
-                        elif choix_modif_abo == 1:
-                            nouvelle_place = input("Entrer une nouvelle place : ")
-                            Parking.modifier_abonnement(id=id_abonnement, place_id=nouvelle_place)
-                            break
-                        elif choix_modif_abo == 2:
-                            menu_demarrage()
+                        id_abo = input("ID de l'abonnement : ")
+                        modif = int(input("Modifier :\n[0] Plaque\n[1] Place\n[2] Retour : "))
+
+                        if modif == 0:
+                            nouvelle_plaque = input("Nouvelle plaque : ")
+
+                            result = Parking.modifier_abonnement(id=id_abo, plaque=nouvelle_plaque)
+                            print(result)
+
+                        elif modif == 1:
+                            nouvelle_place = input("Nouvelle place : ")
+
+                            result = Parking.modifier_abonnement(id=id_abo, place_id=nouvelle_place)
+                            print(result)
+
+                        elif modif == 2:
+                            return menu_demarrage()
+                        else:
+                            print("Choix invalide")
+
+                    # --- RETOUR ---
+                    elif choix_abo_existant == 2:
+                        return menu_demarrage()
+                    else:
+                        print("Choix invalide")
             elif choix_creation_abo == 2:
-                menu_demarrage()
-                return 
+                return menu_demarrage
             else:
-                print("Choix invalide.")
+                print("Choix invalide")
         except ValueError:
             print("Veuillez entrer un nombre entier.")
 
