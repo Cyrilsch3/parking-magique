@@ -9,72 +9,77 @@ def confirmation(question):
 
 class Parking:
     _places = []
-    abonnements = []
-    
-    @property
+    _abonnements = []
+
+    # ----- PLACES -----
+    @classmethod
     def places(cls):
         return cls._places[:]
 
-    @places.setter
-    def places(cls, value):
+    @classmethod
+    def set_places(cls, value):
         if not isinstance(value, list):
             raise TypeError("Parking.places doit être une liste.")
-
         for elem in value:
             if not isinstance(elem, Place):
                 raise TypeError("Parking.places ne peut contenir que des objets de type Place.")
-            
         cls._places = value
 
+    # ----- ABONNEMENTS -----
+    @classmethod
+    def abonnements(cls):
+        return cls._abonnements[:]
+
+    @classmethod
+    def set_abonnements(cls, value):
+        if not isinstance(value, list):
+            raise TypeError("Parking.abonnements doit être une liste.")
+        for elem in value:
+            if not isinstance(elem, Abonnement):
+                raise TypeError("Parking.abonnements ne peut contenir que des objets de type Abonnement.")
+        cls._abonnements = value
+
+    # ----- MÉTHODES EXISTANTES -----
     @classmethod
     def places_occupees(cls):
-        return [p for p in cls.places if p.plaque is not None]
+        return [p for p in cls.places() if p.plaque is not None]
 
     @classmethod
     def places_abonnes(cls):
         result = []
-        for ab in cls.abonnements:
+        for ab in cls.abonnements():
             if ab.place is not None:
-                # Trouver l'objet Place correspondant à l'ID de l'abonnement
-                place_obj = next((p for p in cls.places if p.id == ab.place), None)
+                place_obj = next((p for p in cls.places() if p.id == ab.place), None)
                 if place_obj:
                     result.append((place_obj, ab.plaque))
         return result
-    
+
     @classmethod
     def places_libres(cls):
-        # Récupérer les places occupées et celles réservées aux abonnés
         places_occupees_ids = [p.id for p in cls.places_occupees()]
         places_abonnes_ids = [p.id for p, _ in cls.places_abonnes()]
-    
-        # Retourner toutes les autres places
-        return [p for p in cls.places if p.id not in places_occupees_ids and p.id not in places_abonnes_ids]
-    
+        return [p for p in cls.places() if p.id not in places_occupees_ids and p.id not in places_abonnes_ids]
+
     @classmethod
     def lister_plaques_abo(cls):
-        return [ab.plaque for ab in cls.abonnements]
-    
+        return [ab.plaque for ab in cls.abonnements()]
+
     @classmethod
     def retrouver_id(cls, plaque):  
         plaque = plaque.strip().upper()
-        abo = next((a for a in cls.abonnements if a.plaque == plaque), None)
+        abo = next((a for a in cls.abonnements() if a.plaque == plaque), None)
         return abo.id if abo else None
-    
+
     @classmethod
     def allonger_abonnement(cls, id, nb_mois):
-        # Chercher l'abonnement correspondant à l'ID
-        abo = next((a for a in cls.abonnements if a.id == id), None)
+        abo = next((a for a in cls.abonnements() if a.id == id), None)
         if abo is None:
             return [False, f"Aucun abonnement trouvé avec l'ID {id}"]
-
-        # Vérifier que nb_mois est un entier positif
         if not isinstance(nb_mois, int) or nb_mois <= 0:
             return [False, "La durée à ajouter doit être un entier positif"]
-
-        # Allonger la durée
         abo.duree += nb_mois
         return [True, f"Abonnement {id} prolongé de {nb_mois} mois. Nouvelle durée : {abo.duree} mois."]
-    
+
     @classmethod
     def calcul_prix(cls, place, mtn=None):
         if mtn is None:
@@ -95,23 +100,16 @@ class Parking:
     def liberer_place(cls, place):
         if place.temp is None:
             return "La place était déjà libre"
-
-        # Vérifier si la plaque appartient à un abonné via lister_plaques_abo()
         if place.plaque in cls.lister_plaques_abo():
-            # Remettre la place à zéro
             place.plaque = None
             place.temp = None
             return f"Place {place.id} libérée — Abonné : 0€"
-
-        # Sinon, calcul du prix normal
         duree = datetime.now() - place.temp
         minutes = int(duree.total_seconds() / 60)
         prix = Tarif.calcul(minutes)
-
         place.plaque = None
         place.temp = None
         return f"Place {place.id} libérée — prix : {prix}€"
-
     
 # ---- Classe Tarif ----
 
@@ -124,92 +122,113 @@ class Tarif:
     _prix_abonnement_simple = 70
     _prix_abonnement_reserver = 90
 
-    @property   
+    # ----- GETTERS ET SETTERS DE CLASSE -----
+    @classmethod
     def gratuit_minutes(cls):
         return cls._gratuit_minutes
-    
-    @gratuit_minutes.setter
-    def gratuit_minutes(cls, value):
-        cls._gratuit_minutes = cls._verif(value)
-    @property
+
+    @classmethod
+    def set_gratuit_minutes(cls, value):
+        if not isinstance(value, int) or value < 0:
+            raise ValueError("gratuit_minutes doit être un entier >= 0")
+        cls._gratuit_minutes = value
+
+    @classmethod
     def prix_premiere_heure(cls):
         return cls._prix_premiere_heure
-    @property
+
+    @classmethod
+    def set_prix_premiere_heure(cls, value):
+        if not isinstance(value, (int, float)) or value < 0:
+            raise ValueError("prix_premiere_heure doit être un nombre positif")
+        cls._prix_premiere_heure = value
+
+    @classmethod
     def prix_deuxieme_heure(cls):
         return cls._prix_deuxieme_heure
 
-    @prix_deuxieme_heure.setter
-    def prix_deuxieme_heure(cls, value):
-        cls._prix_deuxieme_heure = cls._verif(value)
+    @classmethod
+    def set_prix_deuxieme_heure(cls, value):
+        if not isinstance(value, (int, float)) or value < 0:
+            raise ValueError("prix_deuxieme_heure doit être un nombre positif")
+        cls._prix_deuxieme_heure = value
 
-    @property
+    @classmethod
     def prix_heures_suivantes(cls):
         return cls._prix_heures_suivantes
 
-    @prix_heures_suivantes.setter
-    def prix_heures_suivantes(cls, value):
-        cls._prix_heures_suivantes = cls._verif(value)
+    @classmethod
+    def set_prix_heures_suivantes(cls, value):
+        if not isinstance(value, (int, float)) or value < 0:
+            raise ValueError("prix_heures_suivantes doit être un nombre positif")
+        cls._prix_heures_suivantes = value
 
-    @property
+    @classmethod
     def prix_max_10h(cls):
         return cls._prix_max_10h
 
-    @prix_max_10h.setter
-    def prix_max_10h(cls, value):
-        cls._prix_max_10h = cls._verif(value)
+    @classmethod
+    def set_prix_max_10h(cls, value):
+        if not isinstance(value, (int, float)) or value < 0:
+            raise ValueError("prix_max_10h doit être un nombre positif")
+        cls._prix_max_10h = value
 
-    @property
+    @classmethod
     def prix_abonnement_simple(cls):
         return cls._prix_abonnement_simple
-    @prix_abonnement_simple.setter
-    def prix_abonnement_simple(cls, value):
-        cls._prix_abonnement_simple = cls._verif(value)
 
-    @property
+    @classmethod
+    def set_prix_abonnement_simple(cls, value):
+        if not isinstance(value, (int, float)) or value < 0:
+            raise ValueError("prix_abonnement_simple doit être un nombre positif")
+        cls._prix_abonnement_simple = value
+
+    @classmethod
     def prix_abonnement_reserver(cls):
         return cls._prix_abonnement_reserver
 
-    @prix_abonnement_reserver.setter
-    def prix_abonnement_reserver(cls, value):
-        cls._prix_abonnement_reserver = cls._verif(value)
-    
+    @classmethod
+    def set_prix_abonnement_reserver(cls, value):
+        if not isinstance(value, (int, float)) or value < 0:
+            raise ValueError("prix_abonnement_reserver doit être un nombre positif")
+        cls._prix_abonnement_reserver = value
 
+    # ----- CALCUL DU PRIX -----
     @classmethod
     def calcul(cls, minutes):
-        if minutes < cls.gratuit_minutes:
+        if minutes < cls.gratuit_minutes():
             return 0
         elif minutes <= 60:
-            return cls.prix_premiere_heure
+            return cls.prix_premiere_heure()
         elif minutes <= 120:
-            return cls.prix_premiere_heure + cls.prix_deuxieme_heure
-        elif minutes <= 600:
+            return cls.prix_premiere_heure() + cls.prix_deuxieme_heure()
+        elif minutes <= 600:  # jusqu'à 10h
             extra = minutes - 120
             heures = extra // 60
             if extra % 60 > 0:
                 heures += 1
-            return cls.prix_premiere_heure + cls.prix_deuxieme_heure + heures * cls.prix_heures_suivantes
+            return cls.prix_premiere_heure() + cls.prix_deuxieme_heure() + heures * cls.prix_heures_suivantes()
         else:
-            return cls.prix_max_10h
-
+            return cls.prix_max_10h()
 # -------------------- Class place --------------------
+class Place:
+    TYPES_VALIDES = ["Compacte", "Large", "PMR", "Électrique"]
 
-    
-class Place():
-    
-    def __init__(self, etage, zone, numero, type, plaque = None):
+    def __init__(self, etage, zone, numero, type_place, plaque=None):
         self.__etage = etage
         self.__zone = zone
-        self.__numero = numero 
-        self.__type = type 
-        self._plaque = plaque 
+        self.__numero = numero
+        self.__type_place = type_place
+        self._plaque = plaque
         self._temp = None
-        Parking.places.append(self)
+        # Ajouter la place au parking via la liste directe ou via un setter si utilisé
+        Parking._places.append(self)
+
     # ---------- ID ----------
     @property
     def id(self):
-        #ID calculé dynamiquement à partir de l'étage, la zone et le numéro
         return f"{self.__etage}{self.__zone}{self.__numero}"
-        
+
     # ---------- ETAGE ----------
     @property
     def etage(self):
@@ -219,10 +238,7 @@ class Place():
     def etage(self, value):
         if confirmation(f"Voulez-vous vraiment changer l'étage de {self.__etage} à {value} ?"):
             self.__etage = value
-            #print(f"Étage changé en {value}")
-            return value
         else:
-            #print("Rien n'a changé")
             return False
 
     # ---------- ZONE ----------
@@ -234,10 +250,7 @@ class Place():
     def zone(self, value):
         if confirmation(f"Voulez-vous vraiment changer la zone de {self.__zone} à {value} ?"):
             self.__zone = value
-            #print(f"Zone changée en {value}")
-            return value #Renvoie la nouvelle zone 
         else:
-            #print("Rien n'a changé")
             return False
 
     # ---------- NUMERO ----------
@@ -249,30 +262,96 @@ class Place():
     def numero(self, value):
         if confirmation(f"Voulez-vous vraiment changer le numéro de {self.__numero} à {value} ?"):
             self.__numero = value
-            #print(f"Numéro changé en {value}")
-            return value #renvoiela nouvelle value
         else:
-            False
+            return False
 
-    # ---------- TYPE ----------
-    TYPES_VALIDES = ["Compacte", "Large", "PMR", "Électrique"]
-
+    # ---------- TYPE PLACE ----------
     @property
-    def type(self):
-        return self.__type
+    def type_place(self):
+        return self.__type_place
 
-    @type.setter
-    def type(self, value):
+    @type_place.setter
+    def type_place(self, value):
         if value not in Place.TYPES_VALIDES:
             raise ValueError(f"Type '{value}' invalide. Types autorisés : {Place.TYPES_VALIDES}")
-        
-        if confirmation(f"Voulez-vous vraiment changer le type de {self.__type} à {value} ?"):
-            self.__type = value  
-            #print(f"Type changé en {value}")
-            return value #type changer en value
+        if confirmation(f"Voulez-vous vraiment changer le type de {self.__type_place} à {value} ?"):
+            self.__type_place = value
         else:
-            #print("Rien n'a changé")
             return False
+
+    # ---------- PLAQUE ----------
+    @property
+    def plaque(self):
+        return self._plaque
+
+    @plaque.setter
+    def plaque(self, value):
+        if self._plaque is not None:
+            raise ValueError("Place déjà occupée")
+        self._plaque = value
+
+    # ---------- TEMP ----------
+    @property
+    def temp(self):
+        return self._temp
+
+    @temp.setter
+    def temp(self, value):
+        self._temp = value
+
+    # ---------- STR ----------
+    def __str__(self):
+        if self._plaque is None:
+            return f"{self.__etage}{self.__zone}:{self.__numero} - {self.__type_place}"
+        else:
+            return f"{self.__etage}{self.__zone}:{self.__numero} - {self.__type_place} - {self._plaque}"
+    
+         
+# -------------------- les classes pour les abonnés --------------------
+from datetime import datetime, date
+
+class Abonnement:
+    def __init__(self, nom, prenom, plaque, duree, date_debut=None, place_attribuee=None):
+        # ID unique basé sur le nombre d'abonnements existants
+        self._id = str(len(Parking.abonnements)).zfill(5)
+        
+        # Attribution des autres propriétés
+        self.nom = nom
+        self.prenom = prenom
+        self.plaque = plaque
+        self.duree = duree  # durée en mois
+        self.date_debut = date_debut or datetime.today().date()
+        self.place = place_attribuee
+        
+        # Ajouter l'abonnement à la liste du parking
+        Parking._abonnements.append(self)
+    
+    # ---------- ID ----------
+    @property
+    def id(self):
+        return self._id
+
+    # ---------- NOM ----------
+    @property
+    def nom(self):
+        return self._nom
+    
+    @nom.setter
+    def nom(self, value):
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("Nom invalide")
+        self._nom = value.strip().title()
+
+    # ---------- PRENOM ----------
+    @property
+    def prenom(self):
+        return self._prenom
+    
+    @prenom.setter
+    def prenom(self, value):
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("Prénom invalide")
+        self._prenom = value.strip().title()
 
     # ---------- PLAQUE ----------
     @property
@@ -281,125 +360,59 @@ class Place():
     
     @plaque.setter
     def plaque(self, value):
-        if self._plaque is None:
-            self._plaque = value
-        else :
-            False #Place non libre
-        
-    # ---------- TEMP ----------
-    @property
-    def temp(self):
-        return self._temp
-    
-    @temp.setter
-    def temp(self,value):
-        self._temp = value
-        
-        
-
-    def __str__(self):
-        if self.plaque == None:
-            return f"{self.etage}{self.zone}:{self.numero} - {self.type}" #Ne return pas de plaque si libre
-        else:
-            return f"{self.etage}{self.zone}:{self.numero} - {self.type} - {self.plaque}"#Return une plaque si pas libre
-  
-  
-        
-         
-# -------------------- les classes pour les abonnés --------------------
-
-class Abonnement:
-    def __init__(self, nom, prenom, plaque, duree, date_debut = None, place_attribuée = None):
-        self.id = str(len(Parking.abonnements)).zfill(5) # ID sur 5 chiffre avec 0 non sigificatifs 
-        
-        self.nom = nom
-        self.prenom = prenom 
-        self.plaque = plaque 
-        self.duree = duree  # durée en mois
-        self.date_debut = date_debut or datetime.today().date()  # date actuelle par défaut
-        self.place = place_attribuée
-        
-        # Ajouter l'instance à la liste de classe
-        Parking.abonnements.append(self)
-            # --- propriétés en lecture (id immuable) ---
-    @property
-    def id(self):
-        return self._id
-    
-    @property
-    def nom(self):
-        return self._nom
-    
-    @nom.setter
-    def nom(self, value):
         if not isinstance(value, str) or not value.strip():
-            raise ValueError("nom invalide")
-        self._nom = value.strip().title()
-
-    @property
-    def prenom(self):
-        return self._prenom
-
-
-    @prenom.setter
-    def prenom(self, value):
-        if not isinstance(value, str) or not value.strip():
-            raise ValueError("prenom invalide")
-        self._prenom = value.strip().title()
-
-    @property
-    def plaque(self):
-        return self._plaque
-
-    @plaque.setter
-    def plaque(self, value):
-        if not isinstance(value, str) or not value.strip():
-            raise ValueError("plaque invalide")
+            raise ValueError("Plaque invalide")
         self._plaque = value.strip().upper()
 
+    # ---------- DUREE ----------
     @property
     def duree(self):
         return self._duree
-
+    
     @duree.setter
     def duree(self, value):
         if not isinstance(value, int) or value <= 0:
-            raise ValueError("duree doit être un entier positif (mois)")
+            raise ValueError("Durée doit être un entier positif (mois)")
         self._duree = value
 
-
+    # ---------- DATE DEBUT ----------
     @property
     def date_debut(self):
         return self._date_debut
-
-
+    
     @date_debut.setter
     def date_debut(self, value):
         if isinstance(value, datetime):
             value = value.date()
-        if not isinstance(value, datetime):
+        if not isinstance(value, date):
             raise TypeError("date_debut doit être une date")
         self._date_debut = value
 
+    # ---------- PLACE ATTRIBUEE ----------
     @property
     def place(self):
         return self._place
-
+    
     @place.setter
     def place(self, value):
-        self._place = value
-        
+        self._place = value  # peut être None ou un ID de place
+
+    # ---------- CALCUL DATE FIN ----------
     def date_fin(self):
         month = self._date_debut.month - 1 + self._duree
         year = self._date_debut.year + month // 12
         month = month % 12 + 1
-        day = min(self._date_debut.day, [31,
-                                        29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28,
-                                        31,30,31,30,31,31,30,31,30,31][month-1])
+        day = min(self._date_debut.day, [
+            31,
+            29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28,
+            31,30,31,30,31,31,30,31,30,31
+        ][month-1])
         return datetime(year, month, day).date()
 
+    # ---------- STR ----------
     def __str__(self):
-        return self.date_fin()
+        return str(self.date_fin())
+    
 
 
 def ajout_des_donnees_du_client():
