@@ -97,7 +97,7 @@ class Parking:
 
     @classmethod
     def occuper_place(cls, place, plaque):
-        place = next((p for p in Parking.places() if p.id == place), None)
+        place = next((p for p in Parking.places() if p.id == choix_id), None)
         if place.plaque is not None:
             return f"Place déjà occupée par {place.plaque}"
         place.plaque = plaque
