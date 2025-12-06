@@ -106,17 +106,18 @@ class Parking:
     @classmethod
     def liberer_place(cls, place):
         if place.temp is None:
-            return "La place était déjà libre"
+            return [False,"La place était déjà libre"]
+        
         if place.plaque in cls.lister_plaques_abo():
             place.plaque = None
             place.temp = None
-            return f"Place {place.id} libérée — Abonné : 0€"
+            return [True, f"Place {place.id} libérée — Abonné : 0€"]
         duree = datetime.now() - place.temp
         minutes = int(duree.total_seconds() / 60)
         prix = Tarif.calcul(minutes)
         place.plaque = None
         place.temp = None
-        return f"Place {place.id} libérée — prix : {prix}€"
+        return [True,f"Place {place.id} libérée — prix : {prix}€"]
     
 # ---- Classe Tarif ----
 

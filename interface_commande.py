@@ -118,7 +118,21 @@ def arrivee_vehicule():
 
 
 def sortie_vehicule():
-    print("\nLe prix à payer est de ....")
+    liste_place_occupe = Parking.places_occupees()
+    tab =[]
+    for i in liste_place_occupe:
+        tab.append(i.id)
+    print(tab if len(tab) > 0 else "Parking actuellement vide" )
+        
+    prix = 0
+    place = input("Entrez l'id de la place a liberer")
+    retour = Parking.liberer_place(place)
+    if retour[0] == True: 
+        print(retour[1])
+    else:
+        print(retour[1])
+    
+    print("\nLe prix à payer est de {prix}")
     while True:
         try:
             choix = int(input("\n[0] Retour\n"))
