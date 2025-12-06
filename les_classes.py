@@ -97,7 +97,10 @@ class Parking:
 
     @classmethod
     def occuper_place(cls, place_id, plaque):
-        place = next((p for p in Parking.places() if p.id == place_id), None)
+        try: 
+            place = next((p for p in Parking.places() if p.id == place_id), None)
+        except ValueError: 
+            return "place non valide "
         if place.plaque is not None:
             return f"Place déjà occupée par {place.plaque}"
         place.plaque = plaque
