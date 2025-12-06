@@ -516,17 +516,3 @@ def ajout_des_donnees_du_client():
             date_debut = i[4],
             place_attribuee = i[5]
         )
-        
-          
-#ajout_des_donnees_du_client()
-       
-#---- test----
-
-#sofiane
-    
-#for i in Parking.places_libres() :
-#    print(i.id)
-
-# for place, plaque in Parking.places_abonnes():
-#     print(f"Place : {place.id} — Réservée pour la plaque : {plaque}")
-
