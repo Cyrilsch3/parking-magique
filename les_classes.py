@@ -9,17 +9,7 @@ def confirmation(question):
 
 class Parking:
     _places = []
-    abonnements = [
-
-        ["Dupuis", "Marie", "AA-452-KM", 12, datetime(2025, 1, 1).date(), "2A05"],    
-        ["Bernard", "Luc", "DB-793-QF", 6, datetime(2025, 3, 15).date(), "1B12"],   
-        ["Leclerc", "Antoine", "FG-219-LR", 12, datetime(2025, 2, 1).date(), "0A02"],
-        ["Martin", "Céline", "JH-887-PN", 3, datetime(2025, 4, 1).date(), None],
-        ["Roche", "Damien", "KL-045-TZ", 12, datetime(2025, 1, 10).date(), None],
-        ["Morel", "Sophie", "BC-338-JC", 6, datetime(2025, 2, 20).date(), None],
-        ["Gonzalez", "Thierry", "EV-612-NV", 3, datetime(2025, 4, 5).date(), None],
-        ["Petit", "Hélène", "QW-901-HS", 12, datetime(2025, 3, 1).date(), None]
-    ]
+    abonnements = []
     
     @property
     def places(cls):
@@ -87,7 +77,17 @@ class Parking:
         place.plaque = None
         place.temp = None
         return f"Place {place.id} libérée — prix : {prix}€"
-
+    
+    @classmethod
+    def lister_plaques_abo(cls):
+        return [ab.plaque for ab in cls.abonnements]
+    
+    @classmethod
+    def retrouver_id(cls, plaque):
+        plaque = plaque.strip().upper()
+        abo = next((a for a in cls.abonnements if a.plaque == plaque), None)
+        return abo.id if abo else None
+    
     @classmethod
     def creer_abonnement(cls):
         print("Abonnement existant ? \n[0] Non \n[1] Oui \n[2] Annuler")
@@ -340,7 +340,6 @@ class Place():
 
     # ---------- TYPE ----------
     TYPES_VALIDES = ["Compacte", "Large", "PMR", "Électrique"]
-
     @property
     def type(self):
         return self.__type
