@@ -58,10 +58,9 @@ def menu_demarrage():
 
 def stat_parking():
     liste_place_libre = Parking.places_libres()
-    print(liste_place_libre)
-    nbr_place_libre = len(Parking.places_libres())
+    nbr_place_libre = len(liste_place_libre)
     liste_place_occupe = Parking.places_occupees()
-    nbr_place_occupe = len(Parking.places_occupees())
+    nbr_place_occupe = len(liste_place_occupe)
     pourcentage_occupation = round(nbr_place_occupe/63,1)
     print("\n--- Statistiques du Parking ---")
     print(f"Il y'a actuellement {nbr_place_libre} places libres et {nbr_place_occupe} places occupées.\n")
