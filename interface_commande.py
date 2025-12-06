@@ -99,7 +99,7 @@ def arrivee_vehicule():
     print("\nArrivée véhicule : faites votre choix\n")
     print("[0] Retour")
     print("[1] Attribuer place")
-    print("[2] Abonnement")
+    print("[2] prendre un Abonnement")
 
     while True:
         try:
