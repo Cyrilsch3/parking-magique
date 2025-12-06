@@ -110,6 +110,7 @@ def arrivee_vehicule():
             elif choix == 1:
                 print("Entrer la plaque de votre véhicule")
                 plaque = input("\nVotre plaque : ")
+                print(f"Voici les places Libres :")
                 for i in Parking.places_libres():
                     print(i.id)
                 choix_place = input("\nVotre choix de place: ")
@@ -126,19 +127,18 @@ def arrivee_vehicule():
 def sortie_vehicule():
     liste_place_occupe = Parking.places_occupees()
     tab =[]
+    print(f"Voici les places occupées :")
     for i in liste_place_occupe:
-        tab.append(i.id)
-    print(tab if len(tab) > 0 else "Parking actuellement vide" )
+        print(i.id)
         
     prix = 0
-    place = input("Entrez l'id de la place a liberer")
+    place = input("Entrez l'id de la place a liberer ")
     retour = Parking.liberer_place(place)
     if retour[0] == True: 
         print(retour[1])
     else:
         print(retour[1])
     
-    print("\nLe prix à payer est de {prix}")
     menu_demarrage()
     while True:
         try:

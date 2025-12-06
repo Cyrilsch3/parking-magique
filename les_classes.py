@@ -96,9 +96,10 @@ class Parking:
         return Tarif.calcul(minutes)
 
     @classmethod
-    def occuper_place(cls, place_id, plaque):
+    def occuper_place(cls, place_id, plaque)
+    
         try: 
-            place = next((p for p in Parking.places() if p.id == place_id), None)
+            place = next((p for p in Parking.places() if p.id ==  place_id.upper()), None)
         except ValueError: 
             return "place non valide "
         if place.plaque is not None:
@@ -109,7 +110,11 @@ class Parking:
 
 
     @classmethod
-    def liberer_place(cls, place):
+    def liberer_place(cls, place_id):
+        try: 
+            place = next((p for p in Parking.places() if p.id == place_id.upper()), None)
+        except ValueError: 
+            return "place non valide "
         if place.temp is None:
             return [False,"La place était déjà libre"]
         
