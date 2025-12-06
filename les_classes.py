@@ -313,7 +313,7 @@ from datetime import datetime, date
 class Abonnement:
     def __init__(self, nom, prenom, plaque, duree, date_debut=None, place_attribuee=None):
         # ID unique basé sur le nombre d'abonnements existants
-        self._id = str(len(Parking.abonnements)).zfill(5)
+        self._id = str(len(Parking.abonnements())).zfill(5)
         
         # Attribution des autres propriétés
         self.nom = nom
