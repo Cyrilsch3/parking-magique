@@ -108,7 +108,12 @@ def arrivee_vehicule():
                 menu_demarrage()
                 return
             elif choix == 1:
-                print("\nVotre place se trouve ...")
+                print("Entrer la plaque de votre véhicule")
+                plaque = input("\nVotre plaque : ")
+                for i in Parking.places_libres():
+                    print(i.id)
+                choix_place = input("\nVotre choix de place: ")
+                print(Parking.occuper_place(choix_place,plaque))
             elif choix == 2:
                 print("Menu abonnement")
             else:
