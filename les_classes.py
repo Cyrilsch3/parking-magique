@@ -9,17 +9,7 @@ def confirmation(question):
 
 class Parking:
     _places = []
-    abonnements = [
-
-        ["Dupuis", "Marie", "AA-452-KM", 12, datetime(2025, 1, 1).date(), "2A05"],    
-        ["Bernard", "Luc", "DB-793-QF", 6, datetime(2025, 3, 15).date(), "1B12"],   
-        ["Leclerc", "Antoine", "FG-219-LR", 12, datetime(2025, 2, 1).date(), "0A02"],
-        ["Martin", "Céline", "JH-887-PN", 3, datetime(2025, 4, 1).date(), None],
-        ["Roche", "Damien", "KL-045-TZ", 12, datetime(2025, 1, 10).date(), None],
-        ["Morel", "Sophie", "BC-338-JC", 6, datetime(2025, 2, 20).date(), None],
-        ["Gonzalez", "Thierry", "EV-612-NV", 3, datetime(2025, 4, 5).date(), None],
-        ["Petit", "Hélène", "QW-901-HS", 12, datetime(2025, 3, 1).date(), None]
-    ]
+    abonnements = []
     
     @property
     def places(cls):
@@ -88,122 +78,9 @@ class Parking:
         place.temp = None
         return f"Place {place.id} libérée — prix : {prix}€"
 
-    @classmethod
-    def creer_abonnement(cls):
-        print("Abonnement existant ? \n[0] Non \n[1] Oui \n[2] Annuler")
-        choix_creation_abo = input("Votre choix : ").strip()
-        if choix_creation_abo == "2":
-            print("Opération annulée.")
-            return
-
-        if choix_creation_abo == "0":
-            print("--------------Créer abonnement--------------\n")
-
-            nom_client = input("Quel est le nom du client ? : ").strip()
-            if not nom_client.isalpha():
-                print("Erreur : le nom ne peut contenir que des lettres.")
-                return
-
-            prenom_client = input("Quel est le prénom du client ? : ").strip()
-            if not prenom_client.isalpha():
-                print("Erreur : le prénom ne peut contenir que des lettres.")
-                return
-
-            plaque_client = input("Quel est la plaque d'immatriculation du client ? : ").strip().upper()
-            if len(plaque_client) < 7:
-                print("Plaque invalide.")
-                return
-
-            try:
-                duree_abo_client = int(input("Quelles est la durée de l'abonnement souhaitée ? (en mois)"))
-            except ValueError:
-                print("Durée invalide.")
-                return
-            print("Le client souahite t-il une date de début pous son abonnement ?\n[0] Non\n[1] Oui")
-            date_debut_shouaitee = input("Choix : ").strip()
-            if date_debut_shouaitee == "0":
-                date_debut = None
-            elif date_debut_shouaitee == "1":
-                date_str = input("Entrer une date sous le format suivant : 01-02-2025 (jour-mois-année) : ").strip()
-                try:
-                    date_debut = datetime.strptime(date_str, "%d-%m-%Y").date()
-                except:
-                    print("Format de date invalide.")
-                    return
-            else:
-                date_debut = None
-            print("Le client souhaite t-il une place réservée à son nom ?\n[0] Non\n[1] Oui")
-            place_reserve_choix = input("Choix : ").strip()
-            if place_reserve_choix == "0":
-                place_client = None
-            elif place_reserve_choix == "1":
-                print("Votre place est la [XXXX]")
-                place_client = "XXXX"
-            else:
-                place_client = None
-
-            id_client = str(random.randint(100000, 999999))
-
-            Abonnement(
-                nom_client,
-                prenom_client,
-                plaque_client,
-                duree_abo_client,
-                date_debut,
-                place_client,
-                id_client
-            )
-
-            print(f"Nouvel abonnement créé. ID : {id_client}")
-            return
-
-        elif choix_creation_abo == "1":
-            print("--------------Renouvellement abonnement----------------")
-            print("Comment souahitez vous identifier votre abonnement ?\n[0] Plaque d'immatriculation\n[1] Identifiant abonnement\n[3] Retour")
-            choix_identification = input("Votre choix : ")
-
-            if choix_identification == "3":
-                return cls.creer_abonnement()
-
-            if choix_identification == "0":
-                plaque = input("Entrer la plaque d'immatriculation. (Format : XX-AAA-XX) : ").strip().upper()
-                abo = next((a for a in Parking.abonnements if a[2] == plaque), None)
-                if abo is None:
-                    print("Aucun abonnement trouvé.")
-                    return
-
-                try:
-                    ajout = int(input("Durée supplémentaire (en mois) : "))
-                except ValueError:
-                    print("Durée invalide.")
-                    return
-
-                abo[3] += ajout
-                print("Abonnement prolongé.")
-                return
-
-            elif choix_identification == "1":
-                identifiant = input("Entrez l'identifiant client : ").strip()
-                abo = next((a for a in Parking.abonnements if a[6] == identifiant), None)
-                if abo is None:
-                    print("Aucun abonnement trouvé.")
-                    return
-
-                try:
-                    ajout = int(input("Durée supplémentaire (en mois) : "))
-                except ValueError:
-                    print("Durée invalide.")
-                    return
-
-                abo[3] += ajout
-                print("Abonnement prolongé.")
-                return
-
-            else:
-                print("Choix invalide.")
-                return
-
+    
 # ---- Classe Tarif ----
+
 class Tarif:
     _gratuit_minutes = 15
     _prix_premiere_heure = 2
@@ -308,9 +185,11 @@ class Place():
     def etage(self, value):
         if confirmation(f"Voulez-vous vraiment changer l'étage de {self.__etage} à {value} ?"):
             self.__etage = value
-            print(f"Étage changé en {value}")
+            #print(f"Étage changé en {value}")
+            return value
         else:
-            print("Rien n'a changé")
+            #print("Rien n'a changé")
+            return False
 
     # ---------- ZONE ----------
     @property
@@ -321,9 +200,11 @@ class Place():
     def zone(self, value):
         if confirmation(f"Voulez-vous vraiment changer la zone de {self.__zone} à {value} ?"):
             self.__zone = value
-            print(f"Zone changée en {value}")
+            #print(f"Zone changée en {value}")
+            return value #Renvoie la nouvelle zone 
         else:
-            print("Rien n'a changé")
+            #print("Rien n'a changé")
+            return False
 
     # ---------- NUMERO ----------
     @property
@@ -334,9 +215,10 @@ class Place():
     def numero(self, value):
         if confirmation(f"Voulez-vous vraiment changer le numéro de {self.__numero} à {value} ?"):
             self.__numero = value
-            print(f"Numéro changé en {value}")
+            #print(f"Numéro changé en {value}")
+            return value #renvoiela nouvelle value
         else:
-            print("Rien n'a changé")
+            False
 
     # ---------- TYPE ----------
     TYPES_VALIDES = ["Compacte", "Large", "PMR", "Électrique"]
@@ -352,9 +234,11 @@ class Place():
         
         if confirmation(f"Voulez-vous vraiment changer le type de {self.__type} à {value} ?"):
             self.__type = value  
-            print(f"Type changé en {value}")
+            #print(f"Type changé en {value}")
+            return value #type changer en value
         else:
-            print("Rien n'a changé")
+            #print("Rien n'a changé")
+            return False
 
     # ---------- PLAQUE ----------
     @property
@@ -366,7 +250,7 @@ class Place():
         if self._plaque is None:
             self._plaque = value
         else :
-            print("Place non libre")
+            False #Place non libre
         
     # ---------- TEMP ----------
     @property
@@ -381,9 +265,9 @@ class Place():
 
     def __str__(self):
         if self.plaque == None:
-            return f"Dans le parking la place  {self.etage}{self.zone}:{self.numero} de type {self.type} est libre"
+            return f"{self.etage}{self.zone}:{self.numero} - {self.type}" #Ne return pas de plaque si libre
         else:
-            return f"Dans le parking la place  {self.etage}{self.zone}:{self.numero} de type {self.type} est occupée par la voiture {self.plaque}"
+            return f"{self.etage}{self.zone}:{self.numero} - {self.type} - {self.plaque}"#Return une plaque si pas libre
   
   
         
@@ -459,7 +343,7 @@ class Abonnement:
     def date_debut(self, value):
         if isinstance(value, datetime):
             value = value.date()
-        if not isinstance(value, date):
+        if not isinstance(value, datetime):
             raise TypeError("date_debut doit être une date")
         self._date_debut = value
 
@@ -481,7 +365,7 @@ class Abonnement:
         return datetime(year, month, day).date()
 
     def __str__(self):
-        return f"L'abonnement de {self._nom} {self._prenom} se termine le {self.date_fin()}"
+        return self.date_fin()
 
 
 def ajout_des_donnees_du_client():
