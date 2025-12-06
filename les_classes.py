@@ -334,12 +334,12 @@ class Abonnement:
         self._id = str(len(Parking.abonnements())).zfill(5)
         
         # Attribution des autres propriétés
-        self.nom = nom
-        self.prenom = prenom
-        self.plaque = plaque
-        self.duree = duree  # durée en mois
-        self.date_debut = date_debut or datetime.today().date()
-        self.place = place_attribuee
+        self._nom = nom
+        self._prenom = prenom
+        self._plaque = plaque
+        self._duree = duree  # durée en mois
+        self._date_debut = date_debut or datetime.today().date()
+        self._place = place_attribuee
         
         # Ajouter l'abonnement à la liste du parking
         Parking._abonnements.append(self)
