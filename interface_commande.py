@@ -138,6 +138,7 @@ def sortie_vehicule():
         print(retour[1])
     
     print("\nLe prix à payer est de {prix}")
+    menu_demarrage()
     while True:
         try:
             choix = int(input("\n[0] Retour\n"))
