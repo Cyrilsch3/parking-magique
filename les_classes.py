@@ -482,4 +482,4 @@ def ajout_des_donnees_du_client():
 
 # for place, plaque in Parking.places_abonnes():
 #     print(f"Place : {place.id} — Réservée pour la plaque : {plaque}")
-Parking.creer_abonnement()
+

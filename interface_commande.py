@@ -2,24 +2,26 @@ from les_classes import Parking
 from les_classes import Tarif
 from les_classes import Place
 from les_classes import Abonnement
+from les_classes import Abonnement, ajout_des_donnees_du_client
+from datetime import datetime, date
 
 
-mdp = "Bonjour"
+# mdp = "Bonjour"
 
-def ecran_locked():
-    global mdp
-    entree_mdp = ""
-    while entree_mdp != mdp:
-        entree_mdp = input("Veuillez entrer votre mot de passe : ")
-        if entree_mdp != mdp:
-            print("Mauvais mot de passe, recommencez")
-    menu_demarrage()
+# def ecran_locked():
+#     global mdp
+#     entree_mdp = ""
+#     while entree_mdp != mdp:
+#        entree_mdp = input("Veuillez entrer votre mot de passe : ")
+#        if entree_mdp != mdp:
+#            print("Mauvais mot de passe, recommencez")
+#    menu_demarrage()
 
 
 def menu_demarrage():
     print("\n--------------------- Bienvenue au parking magique ! ------------------------\n")
-    print("[0] Eteindre")
-    print("[1] Stat parking")
+    #print("[0] Eteindre")
+    print("[1] Statistique parking")
     print("[2] Arrivée véhicule")
     print("[3] Sortie véhicule")
     print("[4] Abonnement")
@@ -29,9 +31,9 @@ def menu_demarrage():
         try:
             choix = int(input("\nVotre choix : "))
 
-            if choix == 0:
-                ecran_locked()
-            elif choix == 1:
+            # if choix == 0:
+            #     ecran_locked()
+            if choix == 1:
                 stat_parking()
             elif choix == 2:
                 arrivee_vehicule()
@@ -48,7 +50,8 @@ def menu_demarrage():
 
 
 def stat_parking():
-    print("\nLes stats du parking sont .....\n")
+    liste_place_libre = Parking.places_libres()
+    nbr_place_libre = len(Parking.places_libres())
     while True:
         try:
             retour = int(input("[0] Retour\n"))
@@ -146,4 +149,4 @@ def menu_parametres():
 
 
 # Lancement du programme
-ecran_locked()
+menu_demarrage()
