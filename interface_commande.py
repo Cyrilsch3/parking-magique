@@ -6,6 +6,7 @@ from les_classes import ajout_des_donnees_du_client
 from datetime import datetime, date
 
 
+
 def confirmation(question):
     reponse = input(f"{question}  (o/n) : ").strip().lower()
     return reponse in ['o', 'oui', 'y', 'yes']
@@ -57,6 +58,7 @@ def menu_demarrage():
 
 def stat_parking():
     liste_place_libre = Parking.places_libres()
+    print(liste_place_libre)
     nbr_place_libre = len(Parking.places_libres())
     liste_place_occupe = Parking.places_occupees()
     nbr_place_occupe = len(Parking.places_occupees())
