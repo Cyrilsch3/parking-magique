@@ -129,6 +129,49 @@ class Parking:
         place.temp = None
         return [True,f"Place {place.id} libérée — prix : {prix}€"]
     
+    @classmethod
+    def modifier_abonnement(cls, id, plaque=None, place_id=None):
+        abo = next((a for a in cls.abonnements() if a.id == id), None)
+        if abo is None:
+            return f"Aucun abonnement trouvé avec l'ID {id}"
+
+        # On mémorise la place avant modification
+        place_avant = abo.place
+
+        # Met à jour la plaque si fournie
+        if plaque:
+            abo.plaque = plaque.upper()
+            if abo.place:
+                place_obj = next((p for p in cls.places() if p.id == abo.place), None)
+                if place_obj:
+                    place_obj.plaque = abo.plaque
+
+        # Met à jour la place si fournie
+        if place_id:
+            nouvelle_place = next((p for p in cls.places() if p.id == place_id.upper()), None)
+            if nouvelle_place is None:
+                return f"Place {place_id} inexistante"
+            if nouvelle_place.plaque is not None:
+                return f"Place {place_id} déjà occupée par {nouvelle_place.plaque}"
+            # Libère l'ancienne place
+            if abo.place:
+                ancienne_place = next((p for p in cls.places() if p.id == abo.place), None)
+                if ancienne_place:
+                    ancienne_place.plaque = None
+            # Attribue la nouvelle place
+            abo.place = place_id.upper()
+            nouvelle_place.plaque = abo.plaque
+
+        # Vérifie si la place est passée de None → non None
+        prix_diff = None
+        if place_avant is None and abo.place is not None:
+            prix_diff = Tarif.prix_abonnement_reserver() - Tarif.prix_abonnement_simple()
+
+        result = f"Abonnement {id} mis à jour : plaque = {abo.plaque}, place = {abo.place}"
+        if prix_diff is not None:
+            result += f" — Différence de prix pour place réservée : {prix_diff}€"
+
+        return result
 # ---- Classe Tarif ----
 
 class Tarif:
