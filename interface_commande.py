@@ -155,17 +155,41 @@ def sortie_vehicule():
 def menu_abonnement():
     #cyril va faire 
     
-    print("\nMenu abonnement")
+    print("Abonnement existant ? \n[0] Non \n[1] Oui \n[2] Annuler")
     while True:
-        try:
-            choix = int(input("\n[0] Retour\n"))
-            if choix == 0:
+        try: 
+            choix_creation_abo = int(input("Votre choix : ").strip())
+            if choix_creation_abo == 0:
+                print("\n--- Création abonnement ---\n")
+                nom_client = input("Entrez le nom du client")
+                prenom_client = input("Entrez le prénom du client")
+                plaque_client = input("Entrez la plaque d'immatriculation du client")
+                duree_abonnement = input("Entrez la durée de l'abonnement (en mois).")
+                date_debut_abonnement = ""
+                while True:
+                    choix_date_debut = ("Voulez vous une date de début pour votre abonnement ?\[0] Non\[1] Oui")
+                    if choix_date_debut == 0:
+                        date_debut_abonnement = date()
+                        print(f"Votre abonnement commence le {date_debut_abonnement}")
+                    elif choix_date_debut == 1:
+                        future_date_debut = input("Entrer une date sous un format valide (dd-mm-yy) : ")
+                        date_debut_abonnement = future_date_debut
+                    else:
+                        print("Mauvaise entrée")
+
+
+
+            elif choix_creation_abo == 1:
+                print("prolongation abo")
+            elif choix_creation_abo == 2:
                 menu_demarrage()
-                return
+                return 
             else:
                 print("Choix invalide.")
         except ValueError:
             print("Veuillez entrer un nombre entier.")
+
+
 
 
 def menu_parametres():
