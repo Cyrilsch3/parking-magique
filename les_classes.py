@@ -49,7 +49,31 @@ class Parking:
     
         # Retourner toutes les autres places
         return [p for p in cls.places if p.id not in places_occupees_ids and p.id not in places_abonnes_ids]
+    
+    @classmethod
+    def lister_plaques_abo(cls):
+        return [ab.plaque for ab in cls.abonnements]
+    
+    @classmethod
+    def retrouver_id(cls, plaque):  
+        plaque = plaque.strip().upper()
+        abo = next((a for a in cls.abonnements if a.plaque == plaque), None)
+        return abo.id if abo else None
+    
+    @classmethod
+    def allonger_abonnement(cls, id, nb_mois):
+        # Chercher l'abonnement correspondant à l'ID
+        abo = next((a for a in cls.abonnements if a.id == id), None)
+        if abo is None:
+            return [False, f"Aucun abonnement trouvé avec l'ID {id}"]
 
+        # Vérifier que nb_mois est un entier positif
+        if not isinstance(nb_mois, int) or nb_mois <= 0:
+            return [False, "La durée à ajouter doit être un entier positif"]
+
+        # Allonger la durée
+        abo.duree += nb_mois
+        return [True, f"Abonnement {id} prolongé de {nb_mois} mois. Nouvelle durée : {abo.duree} mois."]
     
     @classmethod
     def calcul_prix(cls, place, mtn=None):
@@ -71,9 +95,19 @@ class Parking:
     def liberer_place(cls, place):
         if place.temp is None:
             return "La place était déjà libre"
+
+        # Vérifier si la plaque appartient à un abonné via lister_plaques_abo()
+        if place.plaque in cls.lister_plaques_abo():
+            # Remettre la place à zéro
+            place.plaque = None
+            place.temp = None
+            return f"Place {place.id} libérée — Abonné : 0€"
+
+        # Sinon, calcul du prix normal
         duree = datetime.now() - place.temp
         minutes = int(duree.total_seconds() / 60)
         prix = Tarif.calcul(minutes)
+
         place.plaque = None
         place.temp = None
         return f"Place {place.id} libérée — prix : {prix}€"
