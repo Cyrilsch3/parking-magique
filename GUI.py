@@ -228,9 +228,6 @@ Taux          : {tx} %
 
         self.update_all()
 
-
-
-
     # ==================== Gestion abonnements ==================== #
     def menu_abonnement(self):
         dlg = QDialog(self); form = QFormLayout(dlg)

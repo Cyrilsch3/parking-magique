@@ -87,7 +87,7 @@ class Parking:
 
         if not isinstance(nb_mois, int) or nb_mois <= 0:
             return [False, "La durée à ajouter doit être un entier positif"]
-
+        
         abo.duree += nb_mois
         date_fin = abo.date_fin()  # date de fin après prolongation
 
@@ -119,6 +119,9 @@ class Parking:
             return "place non valide "
         if place.plaque is not None:
             return f"Place déjà occupée par {place.plaque}"
+        if place.plaque in [plaque for _, plaque in Parking.places_abonnes()]:
+            return f"La plaque {plaque} a un abonnement pour la place {place.id}"
+
         place.plaque = plaque
         place.temp = datetime.now()
         return f"Place {place.id} occupée par {plaque}"
