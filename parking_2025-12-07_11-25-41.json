@@ -1,0 +1,13 @@
+{
+    "places": [],
+    "abonnements": [],
+    "tarifs": {
+        "gratuit_minutes": 15,
+        "prix_premiere_heure": 2,
+        "prix_deuxieme_heure": 2,
+        "prix_heures_suivantes": 1.5,
+        "prix_max_10h": 15,
+        "prix_abonnement_simple": 70,
+        "prix_abonnement_reserver": 90
+    }
+}
