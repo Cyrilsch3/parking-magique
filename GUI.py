@@ -77,7 +77,7 @@ class MainWindow(QMainWindow):
         for i in reversed(range(self.grid.count())):
             w = self.grid.itemAt(i).widget(); w.deleteLater()
 
-        places = Parking.liste_place()
+        places = Parking.places()
         cols = 10
         for idx, p in enumerate(places):
             row = idx // cols
@@ -92,9 +92,9 @@ class MainWindow(QMainWindow):
     def color_for_place(self, p):
         if p.plaque:
             return "red"
-        # check reserved
-        for a in Parking.places_abonnes():
-            if hasattr(a, 'place_attribuee') and a.place_attribuee == p.id:
+        # places_abonnes returns tuples: (place_obj, plaque)
+        for place_obj, plaque in Parking.places_abonnes():
+            if place_obj.id == p.id:
                 return "blue"
         return "green"
 
