@@ -153,9 +153,9 @@ Taux          : {tx} %
         # Collecte des places réservées par abonnement (ids)
         places_reservees = set()
         abonnements_actifs = []
-        # Correction : inclure tous les abonnements, peu importe la date de fin
+        # Correction : inclure uniquement les abonnements actifs (date_fin > aujourd'hui)
         for ab in Parking.abonnements():
-            if ab.place is not None:
+            if ab.place is not None and ab.date_fin() > date.today():
                 places_reservees.add(ab.place)
             abonnements_actifs.append(ab)
 
@@ -268,9 +268,14 @@ Taux          : {tx} %
 
         def create():
             # Création de l'abonnement, capture message si besoin
-            abo = Abonnement(nom.text(),prenom.text(),plaque.text(),
-                       duree.value(),date.today(),
-                       place.currentText() or None)
+            abo = Abonnement(
+                nom.text(),
+                prenom.text(),
+                plaque.text().strip().upper(),
+                duree.value(),
+                date.today(),
+                place.currentText().strip().upper() if place.currentText() else None
+            )
             # Affichage d'un message personnalisé
             msg = f"Abonnement ajouté pour {abo.nom} {abo.prenom} ({abo.plaque}), durée : {abo.duree} mois, place : {abo.place or 'Aucune'}"
             QMessageBox.information(self,"OK",msg)

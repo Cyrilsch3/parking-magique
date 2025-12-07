@@ -47,11 +47,13 @@ class Parking:
         return [p for p in cls.places() if p.plaque is not None]
 
     @classmethod
+
     def places_abonnes(cls):
+        #Retourne la liste des places réservées avec plaque, uniquement pour les abonnements encore valides
         result = []
         for ab in cls.abonnements():
-            if ab.place is not None:
-                place_obj = next((p for p in cls.places() if p.id == ab.place and isinstance(ab, Abonnement) and ab.date_fin() > date.today()), None)
+            if ab.place is not None and ab.date_fin() > date.today():
+                place_obj = next((p for p in cls.places() if p.id.upper() == ab.place.upper()), None)
                 if place_obj:
                     result.append((place_obj, ab.plaque))
         return result
@@ -113,17 +115,28 @@ class Parking:
     @classmethod
     def occuper_place(cls, place_id, plaque):
         try: 
-            place = next((p for p in Parking.places() if p.id == place_id.upper()), None)
+            place = next((p for p in cls.places() if p.id == place_id.upper()), None)
         except ValueError: 
-            return "place non valide "
+            return "Place non valide"
+        if place is None:
+            return "Place inexistante"
+        plaque = plaque.strip().upper()
+
+        # Vérifier si cette plaque a déjà une place réservée
+        abo_reserve = next((ab for ab in cls.abonnements() if ab.plaque == plaque and ab.place is not None), None)
+        if abo_reserve and abo_reserve.place != place.id:
+            return f"Vous avez une place réservée : {abo_reserve.place}. Merci d'utiliser votre place."
+
+        # Vérification si la place est déjà occupée physiquement
         if place.plaque is not None:
             return f"Place déjà occupée par {place.plaque}"
-        if place.plaque in [plaque for _, plaque in Parking.places_abonnes()]:
-            return f"La plaque {plaque} a un abonnement pour la place {place.id}"
 
-        if place.plaque in [plaque for _, plaque in Parking.places_abonnes()]:
-            return f"La plaque {plaque} a un abonnement pour la place {place.id}"
+        # Vérification des places réservées par un autre abonné
+        abo_autre = next((ab for ab in cls.abonnements() if ab.place == place.id), None)
+        if abo_autre and abo_autre.plaque != plaque:
+            return f"La place {place.id} est réservée pour l'abonné {abo_autre.plaque}"
 
+        # Attribution
         place.plaque = plaque
         place.temp = datetime.now()
         return f"Place {place.id} occupée par {plaque}"

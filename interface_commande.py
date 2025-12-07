@@ -286,10 +286,10 @@ def menu_abonnement():
                 nouvel_abo = Abonnement(
                     nom=nom_client,
                     prenom=prenom_client,
-                    plaque=plaque_client,
+                    plaque=plaque_client.strip().upper(),
                     duree=duree_abonnement,
                     date_debut=date_debut_abonnement,
-                    place_attribuee=place_reserve
+                    place_attribuee=place_reserve.strip().upper() if place_reserve else None
                 )
                 # Calcul et affichage du prix de l'abonnement
                 prix_mensuel = Tarif.prix_abonnement_reserver() if nouvel_abo.place else Tarif.prix_abonnement_simple()
