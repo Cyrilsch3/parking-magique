@@ -51,7 +51,7 @@ class Parking:
         result = []
         for ab in cls.abonnements():
             if ab.place is not None:
-                place_obj = next((p for p in cls.places() if p.id == ab.place and p.date_fin > date.today()), None)
+                place_obj = next((p for p in cls.places() if p.id == ab.place and isinstance(ab, Abonnement) and ab.date_fin() > date.today()), None)
                 if place_obj:
                     result.append((place_obj, ab.plaque))
         return result
@@ -547,7 +547,7 @@ class Abonnement:
 
     # ---------- CALCUL DATE FIN ----------
     def date_fin(self):
-        return (self._date_debut + relativedelta(months=self._duree)).date()
+        return self._date_debut + relativedelta(months=self._duree)
 
     # ---------- STR ----------
     def __str__(self):
