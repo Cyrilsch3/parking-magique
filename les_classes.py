@@ -156,9 +156,11 @@ class Parking:
         # Met à jour la plaque si fournie
         if plaque:
             abo.plaque = plaque.upper()
+            # Ancien comportement : si la place est physiquement attribuée à l'abonné, on met à jour la plaque sur la place
             if abo.place:
                 place_obj = next((p for p in cls.places() if p.id == abo.place), None)
-                if place_obj:
+                if place_obj and place_obj.plaque == abo.plaque:
+                    # Si la place était physiquement occupée par l'ancien abonné, on la met à jour
                     place_obj.plaque = abo.plaque
 
         # Met à jour la place si fournie
@@ -166,16 +168,19 @@ class Parking:
             nouvelle_place = next((p for p in cls.places() if p.id == place_id.upper()), None)
             if nouvelle_place is None:
                 return f"Place {place_id} inexistante"
+            # On ne doit pas occuper physiquement la place pour un abonnement (pas de plaque sur la place)
             if nouvelle_place.plaque is not None:
+                # Si la place est occupée physiquement, on ne peut pas la réserver
                 return f"Place {place_id} déjà occupée par {nouvelle_place.plaque}"
-            # Libère l'ancienne place
+            # Libère l'ancienne place (uniquement si elle n'est pas physiquement occupée)
             if abo.place:
                 ancienne_place = next((p for p in cls.places() if p.id == abo.place), None)
-                if ancienne_place:
+                # On ne libère la plaque que si la place était réservée pour l'abo mais pas physiquement occupée
+                if ancienne_place and ancienne_place.plaque is None:
                     ancienne_place.plaque = None
-            # Attribue la nouvelle place
+            # Attribue la nouvelle place (en tant que réservée, SANS mettre la plaque sur la place)
             abo.place = place_id.upper()
-            nouvelle_place.plaque = abo.plaque
+            # Ne pas occuper physiquement la place : on ne met PAS nouvelle_place.plaque = abo.plaque
 
         # Vérifie si la place est passée de None → non None
         prix_diff = None
