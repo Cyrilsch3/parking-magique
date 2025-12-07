@@ -112,19 +112,18 @@ class Parking:
 
     @classmethod
     def occuper_place(cls, place_id, plaque):
-    
         try: 
-            place = next((p for p in Parking.places() if p.id ==  place_id.upper()), None)
+            place = next((p for p in Parking.places() if p.id == place_id.upper()), None)
         except ValueError: 
             return "place non valide "
         if place.plaque is not None:
             return f"Place déjà occupée par {place.plaque}"
         if place.plaque in [plaque for _, plaque in Parking.places_abonnes()]:
             return f"La plaque {plaque} a un abonnement pour la place {place.id}"
-<<<<<<< HEAD
 
-=======
->>>>>>> 1e71e28df54d58cac691142d6fd34131ca607370
+        if place.plaque in [plaque for _, plaque in Parking.places_abonnes()]:
+            return f"La plaque {plaque} a un abonnement pour la place {place.id}"
+
         place.plaque = plaque
         place.temp = datetime.now()
         return f"Place {place.id} occupée par {plaque}"
