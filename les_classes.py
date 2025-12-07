@@ -2,7 +2,7 @@ from datetime import datetime
 import random #Pour définir un id d'abonnement client
 import json
 import os
-
+from dateutil.relativedelta import relativedelta
 
 # -------------------- Fonctions utilitaires --------------------
 def confirmation(question):
@@ -51,7 +51,7 @@ class Parking:
         result = []
         for ab in cls.abonnements():
             if ab.place is not None:
-                place_obj = next((p for p in cls.places() if p.id == ab.place), None)
+                place_obj = next((p for p in cls.places() if p.id == ab.place and p.date_fin > date.today()), None)
                 if place_obj:
                     result.append((place_obj, ab.plaque))
         return result
@@ -71,7 +71,7 @@ class Parking:
 
     @classmethod
     def lister_plaques_abo(cls):
-        return [ab.plaque for ab in cls.abonnements()]
+        return [ab.plaque for ab in cls.abonnements() if ab.date_fin > date.today()]
 
     @classmethod
     def retrouver_id(cls, plaque):  
@@ -547,15 +547,7 @@ class Abonnement:
 
     # ---------- CALCUL DATE FIN ----------
     def date_fin(self):
-        month = self._date_debut.month - 1 + self._duree
-        year = self._date_debut.year + month // 12
-        month = month % 12 + 1
-        day = min(self._date_debut.day, [
-            31,
-            29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28,
-            31,30,31,30,31,31,30,31,30,31
-        ][month-1])
-        return datetime(year, month, day).date()
+        return (self._date_debut + relativedelta(months=self._duree)).date()
 
     # ---------- STR ----------
     def __str__(self):

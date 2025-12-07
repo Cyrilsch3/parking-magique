@@ -159,8 +159,8 @@
             "zone": "A",
             "numero": "06",
             "type_place": "PMR",
-            "plaque": null,
-            "temp": null
+            "plaque": "salut",
+            "temp": "2025-12-07T12:13:30.260926"
         },
         {
             "id": "0B01",
@@ -564,8 +564,8 @@
             "zone": "C",
             "numero": "04",
             "type_place": "Large",
-            "plaque": "ouioui",
-            "temp": "2025-12-07T11:49:45.461752"
+            "plaque": null,
+            "temp": null
         }
     ],
     "abonnements": [

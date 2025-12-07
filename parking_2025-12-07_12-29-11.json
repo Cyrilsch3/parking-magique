@@ -249,8 +249,8 @@
             "zone": "A",
             "numero": "02",
             "type_place": "Compacte",
-            "plaque": null,
-            "temp": null
+            "plaque": "rebjnekl",
+            "temp": "2025-12-07T11:28:35.922737"
         },
         {
             "id": "1A03",
@@ -564,8 +564,8 @@
             "zone": "C",
             "numero": "04",
             "type_place": "Large",
-            "plaque": "ouioui",
-            "temp": "2025-12-07T11:49:45.461752"
+            "plaque": null,
+            "temp": null
         }
     ],
     "abonnements": [

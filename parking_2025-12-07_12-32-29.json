@@ -150,8 +150,8 @@
             "zone": "A",
             "numero": "05",
             "type_place": "PMR",
-            "plaque": null,
-            "temp": null
+            "plaque": "vatefairefoutre",
+            "temp": "2025-12-06T12:32:18.655996"
         },
         {
             "id": "0A06",
@@ -564,8 +564,8 @@
             "zone": "C",
             "numero": "04",
             "type_place": "Large",
-            "plaque": "ouioui",
-            "temp": "2025-12-07T11:49:45.461752"
+            "plaque": null,
+            "temp": null
         }
     ],
     "abonnements": [
