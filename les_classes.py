@@ -71,7 +71,7 @@ class Parking:
 
     @classmethod
     def lister_plaques_abo(cls):
-        return [ab.plaque for ab in cls.abonnements() if ab.date_fin > date.today()]
+        return [ab.plaque for ab in cls.abonnements() if ab.date_fin() > date.today()]
 
     @classmethod
     def retrouver_id(cls, plaque):  
