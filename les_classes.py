@@ -119,6 +119,8 @@ class Parking:
             return "place non valide "
         if place.plaque is not None:
             return f"Place déjà occupée par {place.plaque}"
+        if place.plaque in [plaque for _, plaque in Parking.places_abonnes()]:
+            return f"La plaque {plaque} a un abonnement pour la place {place.id}"
         place.plaque = plaque
         place.temp = datetime.now()
         return f"Place {place.id} occupée par {plaque}"
