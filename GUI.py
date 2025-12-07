@@ -1,12 +1,13 @@
 # ---------- gui.py ----------
 from les_classes import Parking, Tarif, Place, Abonnement, ajout_des_donnees_du_client
+import uuid
 from datetime import datetime, date
 import json, glob, os, sys
 
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QGridLayout, QDialog, QFormLayout, QLineEdit,
-    QMessageBox, QSpinBox, QComboBox
+    QMessageBox, QSpinBox, QComboBox, QInputDialog
 )
 from PyQt6.QtCore import QTimer, Qt, QDateTime
 
@@ -92,15 +93,21 @@ class MainWindow(QMainWindow):
         right.addWidget(self.lbl_stats)
 
         # Boutons
-        btnAbo = QPushButton("📋 Gérer Abonnements")
+        btnAboCreer = QPushButton("Créer Abonnement")
+        btnAboModifier = QPushButton("Modifier Abonnement")
+        btnAboProlonger = QPushButton("Prolonger Abonnement")
         btnParam = QPushButton("⚙ Paramètres Tarifs")
         btnSave = QPushButton("💾 Sauvegarder maintenant")
 
-        btnAbo.clicked.connect(self.menu_abonnement)
+        btnAboCreer.clicked.connect(self.menu_abonnement)
+        btnAboModifier.clicked.connect(self.modifier_abonnement_gui)
+        btnAboProlonger.clicked.connect(self.prolonger_gui)
         btnParam.clicked.connect(self.menu_tarifs)
         btnSave.clicked.connect(lambda: QMessageBox.information(self,"Sauvegarde",Parking.save_all()))
 
-        right.addWidget(btnAbo)
+        right.addWidget(btnAboCreer)
+        right.addWidget(btnAboModifier)
+        right.addWidget(btnAboProlonger)
         right.addWidget(btnParam)
         right.addWidget(btnSave)
         right.addStretch()
@@ -137,22 +144,39 @@ Taux          : {tx} %
 
     # ========================= AFFICHAGE GRILLE ========================= #
     def update_grid(self):
+        # Nettoyage de la grille existante
         for i in reversed(range(self.grid.count())):
-            w = self.grid.itemAt(i).widget(); w.deleteLater()
+            w = self.grid.itemAt(i).widget()
+            if w is not None:
+                w.deleteLater()
 
-        for idx,p in enumerate(Parking.places()):
+        # Collecte des places réservées par abonnement (ids)
+        places_reservees = set()
+        abonnements_actifs = []
+        # Correction : inclure tous les abonnements, peu importe la date de fin
+        for ab in Parking.abonnements():
+            if ab.place is not None:
+                places_reservees.add(ab.place)
+            abonnements_actifs.append(ab)
+
+        for idx, p in enumerate(Parking.places()):
             btn = QPushButton(p.id)
-            btn.setFixedSize(70,70)
+            btn.setFixedSize(70, 70)
 
-            # Design place
-            if p.plaque: color = "red"     # occupée
-            elif any(p.id==pl.id for pl,_ in Parking.places_abonnes()): color="blue" # réservée abo
-            else: color="green"            # libre
+            # Déterminer la couleur selon l'état de la place
+            color = "green"
+            if p.plaque:
+                # Place occupée physiquement (véhicule présent)
+                color = "red"
+            elif p.id in places_reservees:
+                # Place réservée à un abonné (mais pas occupée physiquement)
+                color = "blue"
+            else:
+                color = "green"
 
             btn.setStyleSheet(f"border-radius:8px;background:{color};color:white;font-weight:bold")
-
-            btn.clicked.connect(lambda _,place=p:self.clicked_place(place))
-            self.grid.addWidget(btn, idx//10, idx%10)
+            btn.clicked.connect(lambda _, place=p: self.clicked_place(place))
+            self.grid.addWidget(btn, idx // 10, idx % 10)
 
 
     # ==================== Action clic sur place ===================== #
@@ -255,6 +279,207 @@ Taux          : {tx} %
         ok.clicked.connect(create)
         dlg.exec()
 
+    # ==================== Prolonger abonnement ==================== #
+    def prolonger_gui(self):
+        dlg = QDialog(self); form = QFormLayout(dlg)
+
+        abos = Parking.abonnements()
+        if not abos:
+            QMessageBox.information(self, "Aucun abonnement", "Aucun abonnement n'existe.")
+            return
+
+        combo = QComboBox()
+        for a in abos:
+            combo.addItem(f"{a.id} - {a.nom} {a.prenom} - {a.plaque}", userData=a.id)
+        form.addRow("Sélectionnez l'abonnement :", combo)
+
+        nb_mois_spin = QSpinBox(); nb_mois_spin.setRange(1,60); nb_mois_spin.setValue(1)
+        form.addRow("Nombre de mois à ajouter :", nb_mois_spin)
+
+        btn_ok = QPushButton("Prolonger"); form.addRow(btn_ok)
+
+        def valider():
+            id_abo = combo.currentData()
+            nb_mois = nb_mois_spin.value()
+            try:
+                result = Parking.allonger_abonnement(id=id_abo, nb_mois=nb_mois)
+                success = False
+                message = ""
+                if isinstance(result, (list, tuple)) and len(result) > 1:
+                    success = result[0]
+                    message = result[1]
+                else:
+                    message = str(result)
+                msg_box = QMessageBox(self)
+                if success:
+                    msg_box.setIcon(QMessageBox.Icon.Information)
+                    msg_box.setWindowTitle("Succès")
+                else:
+                    msg_box.setIcon(QMessageBox.Icon.Warning)
+                    msg_box.setWindowTitle("Erreur")
+                msg_box.setText(message)
+                msg_box.exec()
+                self.update_all()
+                dlg.accept()
+            except Exception as e:
+                msg_box = QMessageBox(self)
+                msg_box.setIcon(QMessageBox.Icon.Critical)
+                msg_box.setWindowTitle("Exception")
+                msg_box.setText(str(e))
+                msg_box.exec()
+
+        btn_ok.clicked.connect(valider)
+        dlg.exec()
+
+    # ==================== Modifier abonnement ==================== #
+    def modifier_abonnement_gui(self):
+        from PyQt6.QtWidgets import QInputDialog, QMessageBox
+        # Correction : proposer la liste de tous les abonnements (sans filtre date_fin)
+        abos = Parking.abonnements()
+        if not abos:
+            QMessageBox.information(self, "Aucun abonnement", "Aucun abonnement n'existe.")
+            return
+        # Affiche la liste sous forme "ID - Nom Prénom - Plaque"
+        items = [f"{a.id} - {a.nom} {a.prenom} - {a.plaque}" for a in abos]
+        idx, ok = QInputDialog.getItem(
+            self,
+            "Modifier abonnement",
+            "Sélectionnez l'abonnement à modifier :",
+            items,
+            0,
+            False
+        )
+        if not ok or idx is None or idx == "":
+            return
+        # Récupération de l'id sélectionné
+        id_abo = abos[items.index(idx)].id
+
+        # Choix de modification
+        choix, ok = QInputDialog.getItem(
+            self,
+            "Modifier abonnement",
+            "Que voulez-vous modifier ?",
+            ["Plaque", "Place réservée"],
+            0,
+            False
+        )
+        if not ok:
+            return
+
+        try:
+            if choix == "Plaque":
+                nouvelle_plaque, ok2 = QInputDialog.getText(self, "Nouvelle plaque", "Nouvelle plaque :")
+                if not ok2 or not nouvelle_plaque:
+                    return
+                result = Parking.modifier_abonnement(id=id_abo, plaque=nouvelle_plaque)
+            elif choix == "Place réservée":
+                # On demande la nouvelle place parmi les places libres et la place déjà attribuée à cet abonnement
+                abo = next((a for a in Parking.abonnements() if a.id == id_abo), None)
+                if not abo:
+                    QMessageBox.warning(self, "Erreur", f"Abonnement {id_abo} introuvable")
+                    return
+                # Liste des places libres + la place déjà attribuée à cet abo (pour garder le choix)
+                places_libres_ids = [p.id for p in Parking.places_libres()]
+                if abo.place and abo.place not in places_libres_ids:
+                    places_libres_ids.append(abo.place)
+                nouvelle_place, ok2 = QInputDialog.getItem(
+                    self, "Nouvelle place", "Nouvelle place :", places_libres_ids, 0, False
+                )
+                if not ok2 or not nouvelle_place:
+                    return
+                result = Parking.modifier_abonnement(id=id_abo, place_id=nouvelle_place)
+            else:
+                return
+
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Résultat")
+            msg_box.setText(str(result))
+            msg_box.exec()
+            self.update_all()
+
+        except Exception as e:
+            msg_box = QMessageBox(self)
+            msg_box.setIcon(QMessageBox.Icon.Critical)
+            msg_box.setWindowTitle("Exception")
+            msg_box.setText(str(e))
+            msg_box.exec()
+
+
+    # ==================== Gestion des abonnements existants ==================== #
+    def dialog_gestion_abonnement(self):
+        # Ici, on affiche une boîte de dialogue pour gérer les abonnements existants
+        dlg = QDialog(self)
+        form = QFormLayout(dlg)
+
+        # Liste des abonnements existants
+        abos = Parking.abonnements() if hasattr(Parking, "abonnements") else []
+        if hasattr(Parking, "liste_abonnements"):
+            abos = Parking.liste_abonnements()
+        # Si abos est une dict, transformer en liste
+        if isinstance(abos, dict):
+            abos = list(abos.values())
+
+        cb = QComboBox()
+        for a in abos:
+            display_text = f"{a.nom} {a.prenom}" if hasattr(a, "nom") else str(a)
+            cb.addItem(display_text, userData=a.id)
+        if not abos:
+            cb.addItem("Aucun abonnement")
+        form.addRow("Abonnement :", cb)
+
+        btnProlong = QPushButton("Prolonger")
+        btnModifier = QPushButton("Modifier")
+        btnFermer = QPushButton("Fermer")
+        btns = QHBoxLayout()
+        btns.addWidget(btnProlong)
+        btns.addWidget(btnModifier)
+        btns.addWidget(btnFermer)
+        form.addRow(btns)
+
+        # Prolonger abonnement
+        def prolonger():
+            idx = cb.currentIndex()
+            if idx < 0 or not abos:
+                QMessageBox.warning(self,"Erreur","Aucun abonnement sélectionné.")
+                return
+            id_abo = cb.currentData()
+            nb, ok = QInputDialog.getInt(self, "Prolonger", "Nombre de mois à ajouter :", 1, 1, 60)
+            if ok:
+                # Appel Parking.allonger_abonnement si disponible
+                if hasattr(Parking, "allonger_abonnement"):
+                    success, message = Parking.allonger_abonnement(id=id_abo, nb_mois=nb)
+                    QMessageBox.information(self, "Résultat", message)
+                    self.update_all()
+            dlg.accept()
+
+        # Modifier abonnement
+        def modifier():
+            idx = cb.currentIndex()
+            if idx < 0 or not abos:
+                QMessageBox.warning(self,"Erreur","Aucun abonnement sélectionné.")
+                return
+            id_abo = cb.currentData()
+            # On propose modification plaque ou place
+            modif, ok = QInputDialog.getItem(self, "Modifier", "Modifier :", ["Plaque", "Place"], 0, False)
+            if ok:
+                if modif == "Plaque":
+                    nouvelle_plaque, ok2 = QInputDialog.getText(self, "Nouvelle plaque", "Nouvelle plaque :")
+                    if ok2 and hasattr(Parking, "modifier_abonnement"):
+                        result = Parking.modifier_abonnement(id=id_abo, plaque=nouvelle_plaque)
+                        QMessageBox.information(self, "Résultat", str(result))
+                        self.update_all()
+                elif modif == "Place":
+                    nouvelle_place, ok2 = QInputDialog.getText(self, "Nouvelle place", "Nouvelle place :")
+                    if ok2 and hasattr(Parking, "modifier_abonnement"):
+                        result = Parking.modifier_abonnement(id=id_abo, place_id=nouvelle_place)
+                        QMessageBox.information(self, "Résultat", str(result))
+                        self.update_all()
+            dlg.accept()
+
+        btnProlong.clicked.connect(prolonger)
+        btnModifier.clicked.connect(modifier)
+        btnFermer.clicked.connect(dlg.accept)
+        dlg.exec()
 
     # ==================== Menu tarifs ==================== #
     def menu_tarifs(self):

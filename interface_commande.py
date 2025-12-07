@@ -231,12 +231,12 @@ def sortie_vehicule():
             print("Veuillez entrer un nombre entier.")
 
 
-def menu_abonnement():
 
+def menu_abonnement():
     print("Abonnement existant ? \n[0] Non \n[1] Oui \n[2] Annuler")
-    
+
     while True:
-        try: 
+        try:
             choix_creation_abo = int(input("Votre choix : ").strip())
 
             # ------------ CREATION ABONNEMENT ------------
@@ -265,7 +265,6 @@ def menu_abonnement():
                             except ValueError:
                                 print("Format invalide, réessayez.")
                         break
-
                     else:
                         print("Mauvaise entrée.")
 
@@ -300,10 +299,21 @@ def menu_abonnement():
                 print("\nAbonnement enregistré avec succès !")
                 return menu_demarrage()
 
-
             # ------------ ABONNEMENT EXISTANT ------------
             elif choix_creation_abo == 1:
-                print("--- Abonnement existant ---")
+                print("--- Liste de tous les abonnements ---")
+                print("{:<7} {:<15} {:<15} {:<15} {:<12} {:<12}".format("ID", "Nom", "Prénom", "Plaque", "Place", "Fin"))
+                print("-" * 80)
+                for abo in Parking.abonnements():
+                    print("{:<7} {:<15} {:<15} {:<15} {:<12} {:<12}".format(
+                        abo.id,
+                        abo.nom,
+                        abo.prenom,
+                        abo.plaque,
+                        abo.place if abo.place else "-",
+                        abo.date_fin().strftime("%Y-%m-%d")
+                    ))
+                print("-" * 80)
 
                 while True:
                     choix_abo_existant = int(input(
@@ -312,7 +322,7 @@ def menu_abonnement():
 
                     # --- PROLONGER ---
                     if choix_abo_existant == 0:
-                        id_abo = input("ID de l'abonnement : ")
+                        id_abo = input("ID de l'abonnement à prolonger : ")
                         nb_mois = int(input("Nombre de mois à ajouter : "))
 
                         success, message = Parking.allonger_abonnement(id=id_abo, nb_mois=nb_mois)
@@ -325,18 +335,16 @@ def menu_abonnement():
 
                     # --- MODIFIER ---
                     elif choix_abo_existant == 1:
-                        id_abo = input("ID de l'abonnement : ")
+                        id_abo = input("ID de l'abonnement à modifier : ")
                         modif = int(input("Modifier :\n[0] Plaque\n[1] Place\n[2] Retour : "))
 
                         if modif == 0:
                             nouvelle_plaque = input("Nouvelle plaque : ")
-
                             result = Parking.modifier_abonnement(id=id_abo, plaque=nouvelle_plaque)
                             print(result)
 
                         elif modif == 1:
                             nouvelle_place = input("Nouvelle place : ")
-
                             result = Parking.modifier_abonnement(id=id_abo, place_id=nouvelle_place)
                             print(result)
 
@@ -351,7 +359,7 @@ def menu_abonnement():
                     else:
                         print("Choix invalide")
             elif choix_creation_abo == 2:
-                return menu_demarrage
+                return menu_demarrage()
             else:
                 print("Choix invalide")
         except ValueError:
