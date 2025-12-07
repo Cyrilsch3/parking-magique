@@ -91,13 +91,15 @@ class Parking:
         abo.duree += nb_mois
         date_fin = abo.date_fin()  # date de fin après prolongation
 
-        # Calcul du prix selon si place attribuée ou non
+        # Calcul du prix mensuel selon si place attribuée ou non
         if abo.place:
-            prix = Tarif.prix_abonnement_reserver()
+            prix_mensuel = Tarif.prix_abonnement_reserver()
         else:
-            prix = Tarif.prix_abonnement_simple()
+            prix_mensuel = Tarif.prix_abonnement_simple()
 
-        message = f"Abonnement {id} prolongé de {nb_mois} mois.  Date de fin : {date_fin}"
+        prix = prix_mensuel * nb_mois
+
+        message = f"Abonnement {id} prolongé de {nb_mois} mois. Date de fin : {date_fin}, Prix à payer : {prix:.2f}€"
         return [True, message]
     
     @classmethod
@@ -535,7 +537,6 @@ class Abonnement:
         if not isinstance(value, date):
             raise TypeError("date_debut doit être une date")
         self._date_debut = value
-
     # ---------- PLACE ATTRIBUEE ----------
     @property
     def place(self):

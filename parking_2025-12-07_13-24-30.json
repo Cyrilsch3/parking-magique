@@ -646,7 +646,7 @@
             "nom": "Thomas ",
             "prenom": "LE GROS ?NULLOS",
             "plaque": "groscaca",
-            "duree": 26,
+            "duree": 51,
             "date_debut": "2024-12-07",
             "place": "-1A01"
         },
@@ -658,6 +658,15 @@
             "duree": 2,
             "date_debut": "2025-12-07",
             "place": "-1A01"
+        },
+        {
+            "id": "00010",
+            "nom": "th",
+            "prenom": "th",
+            "plaque": "th",
+            "duree": 2,
+            "date_debut": "2025-12-07",
+            "place": null
         }
     ],
     "tarifs": {

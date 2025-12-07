@@ -292,7 +292,10 @@ def menu_abonnement():
                     date_debut=date_debut_abonnement,
                     place_attribuee=place_reserve
                 )
-                #Parking.ajouter(nouvel_abo)
+                # Calcul et affichage du prix de l'abonnement
+                prix_mensuel = Tarif.prix_abonnement_reserver() if nouvel_abo.place else Tarif.prix_abonnement_simple()
+                prix_total = nouvel_abo.duree * prix_mensuel
+                print(f"Prix à payer pour cet abonnement : {prix_total}€")
 
                 print("\nAbonnement enregistré avec succès !")
                 return menu_demarrage()

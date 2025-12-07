@@ -169,8 +169,9 @@ Taux          : {tx} %
         ok = QPushButton("Valider entrée"); form.addRow(ok)
 
         ok.clicked.connect(lambda:(
-            Parking.occuper_place(p.id,txt.text()),
-            dlg.accept(),self.update_all()
+            QMessageBox.information(self,"Info", Parking.occuper_place(p.id,txt.text())),
+            dlg.accept(),
+            self.update_all()
         ))
         dlg.exec()
 
@@ -182,31 +183,43 @@ Taux          : {tx} %
             QMessageBox.warning(self,"Erreur","La place n'a pas d'heure d'entrée enregistrée.")
             return
 
-        entree = p.temp  
+        entree = p.temp
         duree = (datetime.now() - entree).total_seconds() / 3600   # en heures
-
-        # ----------------- calcul prix ----------------- #
-        # Récupération des tarifs
-        g = Tarif.gratuit_minutes() / 60
-        h1 = Tarif.prix_premiere_heure()
-        h2 = Tarif.prix_deuxieme_heure()
-        hsuiv = Tarif.prix_heures_suivantes()
-        hmax = Tarif.prix_max_10h()
-
-        if duree <= g:
-            prix = 0
-        elif duree <= 1:
-            prix = h1
-        elif duree <= 2:
-            prix = h1 + h2
-        elif duree <= 10:
-            prix = h1 + h2 + (duree-2)*hsuiv
-        else:
-            prix = hmax
 
         # ----------------- libération réelle ----------------- #
         result = Parking.liberer_place(p.id)
-        msg = result[1] if isinstance(result,tuple) and len(result)>1 else "Véhicule sorti."
+        # result peut être [True, msg] ou autre
+        msg = ""
+        prix = None
+        if isinstance(result, (list, tuple)) and len(result) > 1:
+            msg = result[1]
+            # On tente d'extraire le prix du message si présent
+            import re
+            m = re.search(r'prix\s*:\s*([\d\.]+)', msg)
+            if m:
+                prix = float(m.group(1))
+        else:
+            msg = str(result)
+
+        # Calcul du prix si pas trouvé dans le message
+        if prix is None:
+            # Récupération des tarifs
+            g = Tarif.gratuit_minutes() / 60
+            h1 = Tarif.prix_premiere_heure()
+            h2 = Tarif.prix_deuxieme_heure()
+            hsuiv = Tarif.prix_heures_suivantes()
+            hmax = Tarif.prix_max_10h()
+
+            if duree <= g:
+                prix = 0
+            elif duree <= 1:
+                prix = h1
+            elif duree <= 2:
+                prix = h1 + h2
+            elif duree <= 10:
+                prix = h1 + h2 + (duree-2)*hsuiv
+            else:
+                prix = hmax
 
         QMessageBox.information(
             self,"Sortie véhicule",
@@ -233,10 +246,13 @@ Taux          : {tx} %
         ok=QPushButton("Créer abonnement"); form.addRow(ok)
 
         def create():
-            Abonnement(nom.text(),prenom.text(),plaque.text(),
+            # Création de l'abonnement, capture message si besoin
+            abo = Abonnement(nom.text(),prenom.text(),plaque.text(),
                        duree.value(),date.today(),
                        place.currentText() or None)
-            QMessageBox.information(self,"OK","Abonnement ajouté")
+            # Affichage d'un message personnalisé
+            msg = f"Abonnement ajouté pour {abo.nom} {abo.prenom} ({abo.plaque}), durée : {abo.duree} mois, place : {abo.place or 'Aucune'}"
+            QMessageBox.information(self,"OK",msg)
             dlg.accept();self.update_all()
 
         ok.clicked.connect(create)
