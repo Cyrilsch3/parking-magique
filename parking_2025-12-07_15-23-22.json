@@ -592,7 +592,7 @@
             "nom": "Leclerc",
             "prenom": "Antoine",
             "plaque": "FG-219-LR",
-            "duree": 12,
+            "duree": 1,
             "date_debut": "2025-02-01",
             "place": "0A02"
         },
@@ -637,7 +637,7 @@
             "nom": "Petit",
             "prenom": "Hélène",
             "plaque": "QW-901-HS",
-            "duree": 12,
+            "duree": 1,
             "date_debut": "2025-03-01",
             "place": null
         },
