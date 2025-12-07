@@ -4,9 +4,83 @@ from les_classes import Place
 from les_classes import Abonnement
 from les_classes import ajout_des_donnees_du_client
 from datetime import datetime, date
+import os
+import json
 
 
-ajout_des_donnees_du_client()
+def charger_parking_depuis_fichier(fichier):
+    with open(fichier, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # Chargement des places
+    Parking.set_places([])  # réinitialiser
+    for p in data.get("places", []):
+        place = Place(
+            etage=p["etage"],
+            zone=p["zone"],
+            numero=p["numero"],
+            type_place=p["type_place"],
+            plaque=p.get("plaque")
+        )
+        # Restaurer la date de temp si présente
+        temp_str = p.get("temp")
+        if temp_str:
+            place.temp = datetime.fromisoformat(temp_str)
+        else:
+            place.temp = None
+
+    # Chargement des abonnements
+    Parking.set_abonnements([])  # réinitialiser
+    for a in data.get("abonnements", []):
+        date_debut = datetime.fromisoformat(a["date_debut"]).date()
+        abonnement = Abonnement(
+            nom=a["nom"],
+            prenom=a["prenom"],
+            plaque=a["plaque"],
+            duree=a["duree"],
+            date_debut=date_debut,
+            place_attribuee=a.get("place")
+        )
+
+    # Restaurer les tarifs
+    tarifs = data.get("tarifs", {})
+    Tarif._gratuit_minutes = tarifs.get("gratuit_minutes", Tarif._gratuit_minutes)
+    Tarif._prix_premiere_heure = tarifs.get("prix_premiere_heure", Tarif._prix_premiere_heure)
+    Tarif._prix_deuxieme_heure = tarifs.get("prix_deuxieme_heure", Tarif._prix_deuxieme_heure)
+    Tarif._prix_heures_suivantes = tarifs.get("prix_heures_suivantes", Tarif._prix_heures_suivantes)
+    Tarif._prix_max_10h = tarifs.get("prix_max_10h", Tarif._prix_max_10h)
+    Tarif._prix_abonnement_simple = tarifs.get("prix_abonnement_simple", Tarif._prix_abonnement_simple)
+    Tarif._prix_abonnement_reserver = tarifs.get("prix_abonnement_reserver", Tarif._prix_abonnement_reserver)
+
+# --- Initialisation du parking ---
+
+# --- Nouvelle logique de chargement du backup le plus récent ---
+import glob
+
+def charger_dernier_backup():
+    # Cherche tous les fichiers de sauvegarde de type parking_*.json (pas parking.json)
+    fichiers = glob.glob("parking_*.json")
+    # Si aucun fichier, on initialise avec les données du client
+    if not fichiers:
+        ajout_des_donnees_du_client()
+        return
+    # Trie les fichiers par date extraite du nom (format parking_YYYY-MM-DD_HH-MM-SS.json)
+    from datetime import datetime
+    def extract_date(fn):
+        try:
+            # Format attendu : parking_YYYY-MM-DD_HH-MM-SS.json
+            base = fn.replace('parking_', '').replace('.json', '')
+            return datetime.strptime(base, '%Y-%m-%d_%H-%M-%S')
+        except Exception:
+            return datetime.min
+    fichiers.sort(key=extract_date)
+    dernier = fichiers[-1]
+    charger_parking_depuis_fichier(dernier)
+
+charger_dernier_backup()
+
+    
+    
 def confirmation(question):
     reponse = input(f"{question}  (o/n) : ").strip().lower()
     return reponse in ['o', 'oui', 'y', 'yes']
@@ -26,8 +100,11 @@ def confirmation(question):
 
 
 def menu_demarrage():
+    print(f"Sauvegarde auto")
+    print(Parking.save_all())
+    
     print("\n--------------------- Bienvenue au parking magique ! ------------------------\n")
-    #print("[0] Eteindre")
+    print("[0] Sauvegarder")
     print("[1] Statistique parking")
     print("[2] Arrivée véhicule")
     print("[3] Sortie véhicule")
@@ -35,11 +112,10 @@ def menu_demarrage():
     print("[5] Paramètres")
 
     while True:
+        
         try:
             choix = int(input("\nVotre choix : "))
-
-            # if choix == 0:
-            #     ecran_locked()
+            
             if choix == 1:
                 stat_parking()
             elif choix == 2:
@@ -50,6 +126,9 @@ def menu_demarrage():
                 menu_abonnement()
             elif choix == 5:
                 menu_parametres()
+            elif choix == 0:
+                print(Parking.save_all())
+                menu_demarrage()
             else:
                 print("Choix invalide.")
         except ValueError:
@@ -316,6 +395,7 @@ def menu_parametres():
                             print(message)
                             if not success:
                                 continue
+                            menu_parametres()
                         elif choix == 2 :
                             try:
                                 new_value = float(input("Nouveau tarif première heure : "))
@@ -326,6 +406,7 @@ def menu_parametres():
                             print(message)
                             if not success:
                                 continue
+                            menu_parametres()
                         elif choix == 3 :
                             try:
                                 new_value = float(input("Nouveau tarif deuxième heure : "))
@@ -336,6 +417,7 @@ def menu_parametres():
                             print(message)
                             if not success:
                                 continue
+                            menu_parametres()
                         elif choix == 4 :
                             try:
                                 new_value = float(input("Nouveau tarif heures suivantes : "))
@@ -346,6 +428,7 @@ def menu_parametres():
                             print(message)
                             if not success:
                                 continue
+                            menu_parametres()
                         elif choix == 5 :
                             try:
                                 new_value = float(input("Nouveau prix pour +10h : "))
@@ -356,6 +439,7 @@ def menu_parametres():
                             print(message)
                             if not success:
                                 continue
+                            menu_parametres()
                         elif choix == 6 :
                             try:
                                 new_value = float(input("Nouveau tarif abonnement simple : "))
@@ -366,6 +450,7 @@ def menu_parametres():
                             print(message)
                             if not success:
                                 continue
+                            menu_parametres()
                         elif choix == 7 :
                             try:
                                 new_value = float(input("Nouveau tarif abonnement place réservée : "))
@@ -376,6 +461,7 @@ def menu_parametres():
                             print(message)
                             if not success:
                                 continue
+                            menu_parametres()
                         else:
                             print("Choix invalide")
                     except ValueError:

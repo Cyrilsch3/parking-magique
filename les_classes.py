@@ -1,5 +1,7 @@
 from datetime import datetime 
 import random #Pour définir un id d'abonnement client
+import json
+import os
 
 
 # -------------------- Fonctions utilitaires --------------------
@@ -183,6 +185,71 @@ class Parking:
             result += f" — Différence de prix pour place réservée : {prix_diff}€"
 
         return result
+    @classmethod
+    def save_all(cls):
+        now = datetime.now()
+        fichier = f"parking_{now.strftime('%Y-%m-%d_%H-%M-%S')}.json"
+
+        # Gestion des sauvegardes : ne conserver que les 5 dernières
+        # 1. Liste tous les fichiers parking_*.json
+        backup_files = [fn for fn in os.listdir('.') if fn.startswith('parking_') and fn.endswith('.json')]
+        # 2. Trie par date extraite du nom de fichier
+        def extract_date(fn):
+            try:
+                # Format attendu : parking_YYYY-MM-DD_HH-MM-SS.json
+                base = fn.replace('parking_', '').replace('.json', '')
+                return datetime.strptime(base, '%Y-%m-%d_%H-%M-%S')
+            except Exception:
+                return datetime.min
+        backup_files.sort(key=extract_date)
+        # 3. Supprime les plus anciens pour ne garder que les 5 derniers
+        while len(backup_files) >= 5:
+            to_remove = backup_files.pop(0)
+            try:
+                os.remove(to_remove)
+            except Exception:
+                pass
+
+        data = {
+            "places": [
+                {
+                    "id": p.id,
+                    "etage": p.etage,
+                    "zone": p.zone,
+                    "numero": p.numero,
+                    "type_place": p.type_place,
+                    "plaque": p.plaque,
+                    "temp": p.temp.isoformat() if p.temp else None
+                }
+                for p in cls.places()
+            ],
+            "abonnements": [
+                {
+                    "id": a.id,
+                    "nom": a.nom,
+                    "prenom": a.prenom,
+                    "plaque": a.plaque,
+                    "duree": a.duree,
+                    "date_debut": a.date_debut.isoformat(),
+                    "place": a.place
+                }
+                for a in cls.abonnements()
+            ],
+            "tarifs": {
+                "gratuit_minutes": Tarif.gratuit_minutes(),
+                "prix_premiere_heure": Tarif.prix_premiere_heure(),
+                "prix_deuxieme_heure": Tarif.prix_deuxieme_heure(),
+                "prix_heures_suivantes": Tarif.prix_heures_suivantes(),
+                "prix_max_10h": Tarif.prix_max_10h(),
+                "prix_abonnement_simple": Tarif.prix_abonnement_simple(),
+                "prix_abonnement_reserver": Tarif.prix_abonnement_reserver()
+            }
+        }
+
+        with open(fichier, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        return f"Parking sauvegardé dans {fichier}"
+        
 # ---- Classe Tarif ----
 
 class Tarif:
