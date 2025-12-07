@@ -249,8 +249,8 @@
             "zone": "A",
             "numero": "02",
             "type_place": "Compacte",
-            "plaque": "rebjnekl",
-            "temp": "2025-12-07T11:28:35.922737"
+            "plaque": null,
+            "temp": null
         },
         {
             "id": "1A03",
@@ -640,13 +640,31 @@
             "duree": 12,
             "date_debut": "2025-03-01",
             "place": null
+        },
+        {
+            "id": "00008",
+            "nom": "Thomas ",
+            "prenom": "LE GROS ?NULLOS",
+            "plaque": "groscaca",
+            "duree": 50,
+            "date_debut": "2024-12-07",
+            "place": "-1A01"
+        },
+        {
+            "id": "00009",
+            "nom": "thomas",
+            "prenom": "thomas",
+            "plaque": "thomas",
+            "duree": 2,
+            "date_debut": "2025-12-07",
+            "place": "-1A01"
         }
     ],
     "tarifs": {
         "gratuit_minutes": 15,
         "prix_premiere_heure": 2,
         "prix_deuxieme_heure": 2,
-        "prix_heures_suivantes": 1.5,
+        "prix_heures_suivantes": 1,
         "prix_max_10h": 15,
         "prix_abonnement_simple": 70,
         "prix_abonnement_reserver": 90
