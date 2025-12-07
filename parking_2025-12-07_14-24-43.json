@@ -321,8 +321,8 @@
             "zone": "B",
             "numero": "12",
             "type_place": "Large",
-            "plaque": null,
-            "temp": null
+            "plaque": "bonjour",
+            "temp": "2025-12-07T14:02:32.924497"
         },
         {
             "id": "1C01",
@@ -592,7 +592,7 @@
             "nom": "Leclerc",
             "prenom": "Antoine",
             "plaque": "FG-219-LR",
-            "duree": 12,
+            "duree": 16,
             "date_debut": "2025-02-01",
             "place": "0A02"
         },
@@ -640,6 +640,7 @@
             "duree": 12,
             "date_debut": "2025-03-01",
             "place": null
+<<<<<<<< HEAD:parking_2025-12-07_14-02-35.json
         },
         {
             "id": "00008",
@@ -667,13 +668,15 @@
             "duree": 2,
             "date_debut": "2025-12-07",
             "place": null
+========
+>>>>>>>> 1e71e28df54d58cac691142d6fd34131ca607370:parking_2025-12-07_14-24-43.json
         }
     ],
     "tarifs": {
         "gratuit_minutes": 15,
         "prix_premiere_heure": 2,
         "prix_deuxieme_heure": 2,
-        "prix_heures_suivantes": 1,
+        "prix_heures_suivantes": 1.5,
         "prix_max_10h": 15,
         "prix_abonnement_simple": 70,
         "prix_abonnement_reserver": 90
