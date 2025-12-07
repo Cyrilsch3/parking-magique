@@ -333,6 +333,7 @@ Taux          : {tx} %
 
         btn_ok.clicked.connect(valider)
         dlg.exec()
+        
 
     # ==================== Modifier abonnement ==================== #
     def modifier_abonnement_gui(self):
