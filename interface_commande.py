@@ -155,10 +155,10 @@ def stat_parking():
     taux_occupation = round(100 - pourcentage_places_libres,1)
     print("\n--- Statistiques du Parking ---")
     print(
-    "Il y'a actuellement :\n"
-    f"- {nbr_place_libre} places libres\n"
-    f"- {nbr_place_occupe} places occupées\n"
-    f"- {nbr_place_reservee} places réservées\n"
+    "Etat acuel du parking :\n"
+    f"- Places libres : {nbr_place_libre}\n"
+    f"- Places occupées : {nbr_place_occupe}\n"
+    f"- Places réservées : {nbr_place_reservee}\n"
 )
     print(f"Le taux d'occupation du parking est de {taux_occupation } %\n")
    
@@ -169,7 +169,7 @@ def stat_parking():
                 menu_demarrage()
                 return
             else:
-                print("Choix invalide.")
+                print("Choix invalide (Tapez [0]).")
         except ValueError:
             print("Veuillez entrer un nombre entier.")
 
@@ -189,9 +189,16 @@ def arrivee_vehicule():
             elif choix == 1:
                 print("Entrer la plaque de votre véhicule")
                 plaque = input("\nVotre plaque : ")
-                print(f"Voici les places Libres :")
-                for i in Parking.places_libres():
-                    print(i.id)
+                places = Parking.places_libres()
+                places = sorted(places, key=lambda p: p.id)   
+                print("Voici les places libres :\n")
+                etage_actuel = None
+                for p in places:
+                    etage = p.id[0]   
+                    if etage != etage_actuel:
+                        etage_actuel = etage
+                        print(f"\nÉtage {etage} :\n")
+                    print("  -", p.id)
                 choix_place = input("\nVotre choix de place: ")
                 print(Parking.occuper_place(choix_place,plaque))
                 menu_demarrage()
