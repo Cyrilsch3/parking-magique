@@ -179,7 +179,7 @@ def arrivee_vehicule():
     print("[0] Retour")
     print("[1] Attribuer place")
     print("[2] prendre un Abonnement")
-
+    
     while True:
         try:
             choix = int(input("\nVotre choix : "))
@@ -190,17 +190,25 @@ def arrivee_vehicule():
                 print("Entrer la plaque de votre véhicule")
                 plaque = input("\nVotre plaque : ")
                 places = Parking.places_libres()
-                places = sorted(places, key=lambda p: p.id)   
+                places = sorted(places, key=lambda p: p.id)
                 print("Voici les places libres :\n")
                 etage_actuel = None
+                buffer = []   
                 for p in places:
                     etage = p.id[0]   
                     if etage != etage_actuel:
+                        if buffer:
+                            for i in range(0, len(buffer), 3):
+                                print("   -   ".join(buffer[i:i+3]))
+                            buffer = []
                         etage_actuel = etage
                         print(f"\nÉtage {etage} :\n")
-                    print("  -", p.id)
+                    buffer.append(p.id)
+                if buffer:
+                    for i in range(0, len(buffer), 3):
+                        print("   -   ".join(buffer[i:i+3]))
                 choix_place = input("\nVotre choix de place: ")
-                print(Parking.occuper_place(choix_place,plaque))
+                print(Parking.occuper_place(choix_place, plaque))
                 menu_demarrage()
             elif choix == 2:
                 menu_abonnement()
@@ -208,6 +216,7 @@ def arrivee_vehicule():
                 print("Choix invalide.")
         except ValueError:
             print("Veuillez entrer un nombre entier.")
+
 
 
 def sortie_vehicule():

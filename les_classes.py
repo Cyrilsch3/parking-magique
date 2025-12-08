@@ -1,4 +1,4 @@
-from datetime import datetime 
+from datetime import datetime , date
 import random #Pour définir un id d'abonnement client
 import json
 import os
@@ -59,13 +59,21 @@ class Parking:
         return result
 
 
-    
     @classmethod
     def places_libres(cls):
-        places_occupees_ids = [p.id for p in cls.places_occupees()]
-        places_abonnes_ids = [p.id for p, _ in cls.places_abonnes()]
-        return [p for p in cls.places() if p.id not in places_occupees_ids and p.id not in places_abonnes_ids]
-    
+        # Liste des IDs de places réservées par des abonnés valides
+        today = date.today()
+        places_reservees_ids = [
+            ab.place.upper() for ab in cls.abonnements()
+            if ab.place is not None and ab.date_fin() > today
+        ]
+        
+        # Filtrer les places non occupées physiquement et non réservées
+        return [
+            p for p in cls.places()
+            if p.plaque is None and p.id.upper() not in places_reservees_ids
+        ]
+
     @classmethod
     def liste_place(cls):
         #Retourne la liste complète des places du parking sous forme lisible.
