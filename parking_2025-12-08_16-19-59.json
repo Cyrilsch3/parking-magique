@@ -564,8 +564,8 @@
             "zone": "C",
             "numero": "04",
             "type_place": "Large",
-            "plaque": null,
-            "temp": null
+            "plaque": "DPO-025-MM",
+            "temp": "2025-12-08T14:53:01.805858"
         }
     ],
     "abonnements": [
