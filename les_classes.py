@@ -152,23 +152,30 @@ class Parking:
 
     @classmethod
     def liberer_place(cls, place_id):
-        try: 
-            place = next((p for p in Parking.places() if p.id == place_id.upper()), None)
-        except ValueError: 
-            return "place non valide "
+        place_id = place_id.strip().upper()
+        place = next((p for p in Parking.places() if p.id == place_id), None)
+    
+        if place is None:
+            return [False, "Place inconnue"]
+    
         if place.temp is None:
-            return [False,"La place était déjà libre"]
-        
+            return [False, "La place était déjà libre"]
+    
+        # Cas abonné
         if place.plaque in cls.lister_plaques_abo():
             place.plaque = None
             place.temp = None
             return [True, f"Place {place.id} libérée — Abonné : 0€"]
+    
+        # Cas client classique
         duree = datetime.now() - place.temp
         minutes = int(duree.total_seconds() / 60)
         prix = Tarif.calcul(minutes)
+    
         place.plaque = None
         place.temp = None
-        return [True,f"Place {place.id} libérée — prix : {prix}€"]
+    
+        return [True, f"Place {place.id} libérée — prix : {prix}€"]
     
     @classmethod
     def modifier_abonnement(cls, id, plaque=None, place_id=None):
