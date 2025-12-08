@@ -7,6 +7,29 @@ from datetime import datetime, date
 import os
 import json
 
+def afficher_places_par_etage(places):
+    etage_actuel = None
+    buffer = []
+
+    for place in places:
+        etage = place.id[0]
+
+        if etage != etage_actuel:
+            if buffer:
+                afficher_buffer(buffer)
+                buffer = []
+            etage_actuel = etage
+            print(f"\nÉtage {etage} :")
+
+        buffer.append(place.id)
+
+    if buffer:
+        afficher_buffer(buffer)
+
+
+def afficher_buffer(buffer, par_ligne=3):
+    for i in range(0, len(buffer), par_ligne):
+        print("   -   ".join(buffer[i:i + par_ligne]))
 
 def charger_parking_depuis_fichier(fichier):
     with open(fichier, "r", encoding="utf-8") as f:
@@ -133,6 +156,9 @@ def menu_demarrage():
                 print("Choix invalide.")
         except ValueError:
             print("Veuillez entrer un nombre entier.")
+        except EOFError:
+            print("\nEntrée interrompu. Extinction.")
+            break
 
 
 def stat_parking():
@@ -153,6 +179,7 @@ def stat_parking():
     
     pourcentage_places_libres = round((nbr_place_libre / nbr_places) * 100, 2) if nbr_places else 0
     taux_occupation = round(100 - pourcentage_places_libres,1)
+    os.system('cls')
     print("\n--- Statistiques du Parking ---")
     print(
     "Etat acuel du parking :\n"
@@ -175,53 +202,53 @@ def stat_parking():
 
 
 def arrivee_vehicule():
-    print("\nArrivée véhicule : faites votre choix\n")
-    print("[0] Retour")
-    print("[1] Attribuer place")
-    print("[2] prendre un Abonnement")
-
+    os.system('cls')
     while True:
+        print("\nArrivée véhicule : faites votre choix\n")
+        print("[0] Retour")
+        print("[1] Attribuer une place")
+        print("[2] Prendre un abonnement")
+
         try:
             choix = int(input("\nVotre choix : "))
-            if choix == 0:
-                menu_demarrage()
-                return
-            elif choix == 1:
-                print("Entrer la plaque de votre véhicule")
-                plaque = input("\nVotre plaque : ")
-                places = Parking.places_libres()
-                places = sorted(places, key=lambda p: p.id)
-                print("Voici les places libres :\n")
-                etage_actuel = None
-                buffer = []   
-                for p in places:
-                    etage = p.id[0]   
-                    if etage != etage_actuel:
-                        if buffer:
-                            for i in range(0, len(buffer), 3):
-                                print("   -   ".join(buffer[i:i+3]))
-                            buffer = []
-                        etage_actuel = etage
-                        print(f"\nÉtage {etage} :\n")
-                    buffer.append(p.id)
-                if buffer:
-                    for i in range(0, len(buffer), 3):
-                        print("   -   ".join(buffer[i:i+3]))
-                choix_place = input("\nVotre choix de place: ")
-                print(Parking.occuper_place(choix_place, plaque))
-                while True : 
-                    fin_prise_place = int(input("Retour (Entrez [0]) : "))
-                    if fin_prise_place == 0:
-                        menu_demarrage()
-                    else :
-                        print("Mauvaise entrée.")
-                
-            elif choix == 2:
-                menu_abonnement()
-            else:
-                print("Choix invalide.")
         except ValueError:
             print("Veuillez entrer un nombre entier.")
+            continue
+
+        # ----- RETOUR -----
+        if choix == 0:
+            menu_demarrage()
+            return
+
+        # ----- ATTRIBUTION DE PLACE -----
+        elif choix == 1:
+            os.system('cls')
+            plaque = input("Entrer la plaque du véhicule : ").strip().upper()
+
+            places_libres = sorted(Parking.places_libres(), key=lambda p: p.id)
+            if not places_libres:
+                os.system('cls')
+                print("Aucune place libre disponible.")
+                continue
+            
+            print("\nVoici les places libres :")
+            afficher_places_par_etage(places_libres)
+
+            choix_place = input("\nVotre choix de place : ").strip().upper()
+            print(Parking.occuper_place(choix_place, plaque))
+
+            input("\nAppuyez sur Entrée pour revenir au menu...")
+            menu_demarrage()
+            return
+
+        # ----- ABONNEMENT -----
+        elif choix == 2:
+            menu_abonnement()
+            return
+
+        else:
+            print("Choix invalide.")
+
 
 
 
