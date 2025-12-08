@@ -230,7 +230,7 @@ def arrivee_vehicule():
                 os.system('cls')
                 print("Aucune place libre disponible.")
                 continue
-            
+
             print("\nVoici les places libres :")
             afficher_places_par_etage(places_libres)
 
@@ -250,38 +250,27 @@ def arrivee_vehicule():
             print("Choix invalide.")
 
 
-
-
 def sortie_vehicule():
-    liste_place_occupe = Parking.places_occupees()
-    tab =[]
-    print(f"Voici les places occupées :")
-    for i in liste_place_occupe:
-        print(i.id)
-        
-    prix = 0
-    place = input("Entrez l'id de la place a liberer ; ")
-    retour = Parking.liberer_place(place)
-    if retour[0] == True: 
-        print(retour[1])
-    else:
-        print(retour[1])
-    
-    fin_sortie_place = int(input("Retour (Entrez [0]) : "))
-    if fin_sortie_place == 0:
+    places_occupees = Parking.places_occupees()
+
+    if not places_occupees:
+        os.system('cls')
+        print("Aucune place occupée.")
+        input("Appuyez sur Entrée pour revenir au menu...")
         menu_demarrage()
-    else :
-        print("Mauvaise entrée.")
-    while True:
-        try:
-            choix = int(input("\n[0] Retour\n"))
-            if choix == 0:
-                menu_demarrage()
-                
-            else:
-                print("Choix invalide.")
-        except ValueError:
-            print("Veuillez entrer un nombre entier.")
+        return
+
+    print("\nVoici les places occupées :")
+    for place in places_occupees:
+        print(f" - {place.id}")
+
+    place_id = input("\nEntrez l'ID de la place à libérer : ").strip().upper()
+
+    success, message = Parking.liberer_place(place_id) # optimisation des interaction du code récupère deucx valeurs en 1 appel 
+    print(message)
+
+    input("\nAppuyez sur Entrée pour revenir au menu...")
+    menu_demarrage()
 
 
 
