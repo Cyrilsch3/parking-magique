@@ -260,6 +260,7 @@ def sortie_vehicule():
         menu_demarrage()
         return
 
+    os.system('cls')
     print("\nVoici les places occupées :")
     for place in places_occupees:
         print(f" - {place.id}")
@@ -283,6 +284,7 @@ def menu_abonnement():
 
             # ------------ CREATION ABONNEMENT ------------
             if choix_creation_abo == 0:
+                os.system('cls')
                 print("\n--- Création abonnement ---\n")
                 nom_client = input("Entrez le nom du client : ")
                 prenom_client = input("Entrez le prénom du client : ")
