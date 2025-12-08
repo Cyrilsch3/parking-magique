@@ -179,7 +179,7 @@ def arrivee_vehicule():
     print("[0] Retour")
     print("[1] Attribuer place")
     print("[2] prendre un Abonnement")
-    
+
     while True:
         try:
             choix = int(input("\nVotre choix : "))
@@ -209,7 +209,13 @@ def arrivee_vehicule():
                         print("   -   ".join(buffer[i:i+3]))
                 choix_place = input("\nVotre choix de place: ")
                 print(Parking.occuper_place(choix_place, plaque))
-                menu_demarrage()
+                while True : 
+                    fin_prise_place = int(input("Retour (Entrez [0]) : "))
+                    if fin_prise_place == 0:
+                        menu_demarrage()
+                    else :
+                        print("Mauvaise entrée.")
+                
             elif choix == 2:
                 menu_abonnement()
             else:
@@ -227,14 +233,18 @@ def sortie_vehicule():
         print(i.id)
         
     prix = 0
-    place = input("Entrez l'id de la place a liberer ")
+    place = input("Entrez l'id de la place a liberer ; ")
     retour = Parking.liberer_place(place)
     if retour[0] == True: 
         print(retour[1])
     else:
         print(retour[1])
     
-    menu_demarrage()
+    fin_sortie_place = int(input("Retour (Entrez [0]) : "))
+    if fin_sortie_place == 0:
+        menu_demarrage()
+    else :
+        print("Mauvaise entrée.")
     while True:
         try:
             choix = int(input("\n[0] Retour\n"))
