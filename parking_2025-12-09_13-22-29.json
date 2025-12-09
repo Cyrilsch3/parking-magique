@@ -33,8 +33,8 @@
             "zone": "A",
             "numero": "04",
             "type_place": "Compacte",
-            "plaque": null,
-            "temp": null
+            "plaque": "BONJOUR",
+            "temp": "2025-12-09T13:22:28.343599"
         },
         {
             "id": "-1B01",
@@ -592,7 +592,7 @@
             "nom": "Leclerc",
             "prenom": "Antoine",
             "plaque": "FG-219-LR",
-            "duree": 1,
+            "duree": 12,
             "date_debut": "2025-02-01",
             "place": "0A02"
         },
@@ -637,18 +637,9 @@
             "nom": "Petit",
             "prenom": "Hélène",
             "plaque": "QW-901-HS",
-            "duree": 1,
+            "duree": 12,
             "date_debut": "2025-03-01",
             "place": null
-        },
-        {
-            "id": "00008",
-            "nom": "th",
-            "prenom": "th",
-            "plaque": "TH",
-            "duree": 1,
-            "date_debut": "2025-12-01",
-            "place": "-1A02"
         }
     ],
     "tarifs": {
