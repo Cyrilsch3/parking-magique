@@ -7,7 +7,7 @@ import json, glob, os, sys
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QGridLayout, QDialog, QFormLayout, QLineEdit,
-    QMessageBox, QSpinBox, QComboBox, QInputDialog
+    QMessageBox, QSpinBox, QComboBox, QInputDialog, QScrollArea
 )
 from PyQt6.QtCore import QTimer, Qt, QDateTime
 
@@ -73,10 +73,15 @@ class MainWindow(QMainWindow):
         central = QWidget(); self.setCentralWidget(central)
         global_layout = QHBoxLayout(); central.setLayout(global_layout)
 
-        # ------- Zone gauche = Places parking -------
+        # ------- Zone gauche = Places parking avec scroll -------
         self.grid_widget = QWidget()
-        self.grid = QGridLayout(); self.grid_widget.setLayout(self.grid)
-        global_layout.addWidget(self.grid_widget,3)
+        self.grid = QGridLayout()
+        self.grid_widget.setLayout(self.grid)
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)      # Important pour que le contenu s'adapte
+        scroll.setWidget(self.grid_widget)   # Mettre la grille dans la scroll area
+        global_layout.addWidget(scroll, 3)
 
         # ------- Zone Droite = Stats + Boutons -------
         right = QVBoxLayout()
@@ -152,31 +157,40 @@ Taux          : {tx} %
 
         # Collecte des places réservées par abonnement (ids)
         places_reservees = set()
-        abonnements_actifs = []
-        # Correction : inclure uniquement les abonnements actifs (date_fin > aujourd'hui)
         for ab in Parking.abonnements():
             if ab.place is not None and ab.date_fin() > date.today():
                 places_reservees.add(ab.place)
-            abonnements_actifs.append(ab)
 
-        for idx, p in enumerate(Parking.places()):
-            btn = QPushButton(p.id)
-            btn.setFixedSize(70, 70)
+        # Regrouper les places par étage
+        etages = {}
+        for p in Parking.places():
+            etages.setdefault(p.etage, []).append(p)
 
-            # Déterminer la couleur selon l'état de la place
-            color = "green"
-            if p.plaque:
-                # Place occupée physiquement (véhicule présent)
-                color = "red"
-            elif p.id in places_reservees:
-                # Place réservée à un abonné (mais pas occupée physiquement)
-                color = "blue"
-            else:
+        row = 0
+        for etage in sorted(etages.keys()):
+            # Label étage
+            lbl = QLabel(f"Étage {etage}")
+            lbl.setStyleSheet("font-weight:bold; font-size:16px; margin-top:10px; margin-bottom:5px")
+            self.grid.addWidget(lbl, row, 0, 1, 10, Qt.AlignmentFlag.AlignLeft)
+            row += 1
+
+            # Boutons places de cet étage
+            for idx, p in enumerate(etages[etage]):
+                btn = QPushButton(p.id)
+                btn.setFixedSize(70, 70)
+
+                # Déterminer la couleur selon l'état
                 color = "green"
+                if p.plaque:
+                    color = "red"
+                elif p.id in places_reservees:
+                    color = "blue"
 
-            btn.setStyleSheet(f"border-radius:8px;background:{color};color:white;font-weight:bold")
-            btn.clicked.connect(lambda _, place=p: self.clicked_place(place))
-            self.grid.addWidget(btn, idx // 10, idx % 10)
+                btn.setStyleSheet(f"border-radius:8px;background:{color};color:white;font-weight:bold")
+                btn.clicked.connect(lambda _, place=p: self.clicked_place(place))
+                self.grid.addWidget(btn, row + idx // 10, idx % 10)
+            # Passer à la ligne suivante après cet étage
+            row += (len(etages[etage]) - 1) // 10 + 1
 
 
     # ==================== Action clic sur place ===================== #
@@ -194,6 +208,7 @@ Taux          : {tx} %
 
         ok.clicked.connect(lambda:(
             QMessageBox.information(self,"Info", Parking.occuper_place(p.id,txt.text())),
+            Parking.save_all(),
             dlg.accept(),
             self.update_all()
         ))
@@ -212,6 +227,7 @@ Taux          : {tx} %
 
         # ----------------- libération réelle ----------------- #
         result = Parking.liberer_place(p.id)
+        Parking.save_all()
         # result peut être [True, msg] ou autre
         msg = ""
         prix = None
@@ -276,6 +292,7 @@ Taux          : {tx} %
                 date.today(),
                 place.currentText().strip().upper() if place.currentText() else None
             )
+            Parking.save_all()
             # Affichage d'un message personnalisé
             msg = f"Abonnement ajouté pour {abo.nom} {abo.prenom} ({abo.plaque}), durée : {abo.duree} mois, place : {abo.place or 'Aucune'}"
             QMessageBox.information(self,"OK",msg)
@@ -335,6 +352,7 @@ Taux          : {tx} %
 
         btn_ok.clicked.connect(valider)
         dlg.exec()
+        Parking.save_all()
         
 
     # ==================== Modifier abonnement ==================== #
