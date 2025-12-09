@@ -7,6 +7,29 @@ from datetime import datetime, date
 import os
 import json
 
+def afficher_places_par_etage(places):
+    etage_actuel = None
+    buffer = []
+
+    for place in places:
+        etage = place.id[0]
+
+        if etage != etage_actuel:
+            if buffer:
+                afficher_buffer(buffer)
+                buffer = []
+            etage_actuel = etage
+            print(f"\nÉtage {etage} :")
+
+        buffer.append(place.id)
+
+    if buffer:
+        afficher_buffer(buffer)
+
+
+def afficher_buffer(buffer, par_ligne=3):
+    for i in range(0, len(buffer), par_ligne):
+        print("   -   ".join(buffer[i:i + par_ligne]))
 
 def charger_parking_depuis_fichier(fichier):
     with open(fichier, "r", encoding="utf-8") as f:
@@ -133,6 +156,9 @@ def menu_demarrage():
                 print("Choix invalide.")
         except ValueError:
             print("Veuillez entrer un nombre entier.")
+        except EOFError:
+            print("\nEntrée interrompu. Extinction.")
+            break
 
 
 def stat_parking():
@@ -153,12 +179,13 @@ def stat_parking():
     
     pourcentage_places_libres = round((nbr_place_libre / nbr_places) * 100, 2) if nbr_places else 0
     taux_occupation = round(100 - pourcentage_places_libres,1)
+    os.system('cls')
     print("\n--- Statistiques du Parking ---")
     print(
-    "Il y'a actuellement :\n"
-    f"- {nbr_place_libre} places libres\n"
-    f"- {nbr_place_occupe} places occupées\n"
-    f"- {nbr_place_reservee} places réservées\n"
+    "Etat acuel du parking :\n"
+    f"- Places libres : {nbr_place_libre}\n"
+    f"- Places occupées : {nbr_place_occupe}\n"
+    f"- Places réservées : {nbr_place_reservee}\n"
 )
     print(f"Le taux d'occupation du parking est de {taux_occupation } %\n")
    
@@ -169,66 +196,82 @@ def stat_parking():
                 menu_demarrage()
                 return
             else:
-                print("Choix invalide.")
+                print("Choix invalide (Tapez [0]).")
         except ValueError:
             print("Veuillez entrer un nombre entier.")
 
 
 def arrivee_vehicule():
-    print("\nArrivée véhicule : faites votre choix\n")
-    print("[0] Retour")
-    print("[1] Attribuer place")
-    print("[2] prendre un Abonnement")
-
+    os.system('cls')
     while True:
+        print("\nArrivée véhicule : faites votre choix\n")
+        print("[0] Retour")
+        print("[1] Attribuer une place")
+        print("[2] Prendre un abonnement")
+
         try:
             choix = int(input("\nVotre choix : "))
-            if choix == 0:
-                menu_demarrage()
-                return
-            elif choix == 1:
-                print("Entrer la plaque de votre véhicule")
-                plaque = input("\nVotre plaque : ")
-                print(f"Voici les places Libres :")
-                for i in Parking.places_libres():
-                    print(i.id)
-                choix_place = input("\nVotre choix de place: ")
-                print(Parking.occuper_place(choix_place,plaque))
-                menu_demarrage()
-            elif choix == 2:
-                menu_abonnement()
-            else:
-                print("Choix invalide.")
         except ValueError:
             print("Veuillez entrer un nombre entier.")
+            continue
+
+        # ----- RETOUR -----
+        if choix == 0:
+            menu_demarrage()
+            return
+
+        # ----- ATTRIBUTION DE PLACE -----
+        elif choix == 1:
+            os.system('cls')
+            plaque = input("Entrer la plaque du véhicule : ").strip().upper()
+
+            places_libres = sorted(Parking.places_libres(), key=lambda p: p.id)
+            if not places_libres:
+                os.system('cls')
+                print("Aucune place libre disponible.")
+                continue
+
+            print("\nVoici les places libres :")
+            afficher_places_par_etage(places_libres)
+
+            choix_place = input("\nVotre choix de place : ").strip().upper()
+            print(Parking.occuper_place(choix_place, plaque))
+
+            input("\nAppuyez sur Entrée pour revenir au menu...")
+            menu_demarrage()
+            return
+
+        # ----- ABONNEMENT -----
+        elif choix == 2:
+            menu_abonnement()
+            return
+
+        else:
+            print("Choix invalide.")
 
 
 def sortie_vehicule():
-    liste_place_occupe = Parking.places_occupees()
-    tab =[]
-    print(f"Voici les places occupées :")
-    for i in liste_place_occupe:
-        print(i.id)
-        
-    prix = 0
-    place = input("Entrez l'id de la place a liberer ")
-    retour = Parking.liberer_place(place)
-    if retour[0] == True: 
-        print(retour[1])
-    else:
-        print(retour[1])
-    
+    places_occupees = Parking.places_occupees()
+
+    if not places_occupees:
+        os.system('cls')
+        print("Aucune place occupée.")
+        input("Appuyez sur Entrée pour revenir au menu...")
+        menu_demarrage()
+        return
+
+    os.system('cls')
+    print("\nVoici les places occupées :")
+    for place in places_occupees:
+        print(f" - {place.id}")
+
+    place_id = input("\nEntrez l'ID de la place à libérer : ").strip().upper()
+
+    success, message = Parking.liberer_place(place_id) # optimisation des interaction du code récupère deucx valeurs en 1 appel 
+    print(message)
+
+    input("\nAppuyez sur Entrée pour revenir au menu...")
     menu_demarrage()
-    while True:
-        try:
-            choix = int(input("\n[0] Retour\n"))
-            if choix == 0:
-                menu_demarrage()
-                
-            else:
-                print("Choix invalide.")
-        except ValueError:
-            print("Veuillez entrer un nombre entier.")
 
 
 
@@ -241,6 +284,7 @@ def menu_abonnement():
 
             # ------------ CREATION ABONNEMENT ------------
             if choix_creation_abo == 0:
+                os.system('cls')
                 print("\n--- Création abonnement ---\n")
                 nom_client = input("Entrez le nom du client : ")
                 prenom_client = input("Entrez le prénom du client : ")
