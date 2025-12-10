@@ -293,24 +293,31 @@ def menu_abonnement():
 
                 # ---- DATE DEBUT ----
                 while True:
-                    choix_date_debut = int(input("Voulez vous une date de début ?\n[0] Non\n[1] Oui : "))
+                    try:
+                        choix_date_debut = int(input("Voulez-vous une date de début ?\n[0] Non\n[1] Oui : "))
+                        if choix_date_debut == 0:
+                            date_debut_abonnement = date.today()
+                            print(f"Votre abonnement commence le {date_debut_abonnement}")
+                            break
+                        elif choix_date_debut == 1:
+                            while True:
+                                date_str = input("Entrer une date (dd-mm-yy) : ")
+                                try:
+                                    date_debut_abonnement = datetime.strptime(date_str, "%d-%m-%y").date()
+                                    if date_debut_abonnement < date.today():
+                                        print("Erreur, la date que vous avez entrée est déjà passée.")
+                                    else:
+                                        break
+                                except ValueError:
+                                    print("Format invalide, réessayez.")
+                            break  # Sort de la boucle principale après saisie réussie
+                        else:
+                            print("Veuillez taper 0 ou 1.")
+                    except ValueError:
+                        print("Entrée invalide, veuillez taper un nombre 0 ou 1.")
 
-                    if choix_date_debut == 0:
-                        date_debut_abonnement = date.today()
-                        print(f"Votre abonnement commence le {date_debut_abonnement}")
-                        break
 
-                    elif choix_date_debut == 1:
-                        while True:
-                            date_str = input("Entrer une date (dd-mm-yy) : ")
-                            try:
-                                date_debut_abonnement = datetime.strptime(date_str, "%d-%m-%y").date()
-                                break
-                            except ValueError:
-                                print("Format invalide, réessayez.")
-                        break
-                    else:
-                        print("Mauvaise entrée.")
+
 
                 # ---- PLACE RÉSERVÉE ----
                 while True:
