@@ -11,7 +11,8 @@ from PyQt6.QtWidgets import (
     QPushButton, QLabel, QGridLayout, QDialog, QFormLayout, QLineEdit,
     QMessageBox, QSpinBox, QComboBox, QInputDialog, QScrollArea
 )
-from PyQt6.QtCore import QTimer, Qt, QDateTime
+from PyQt6.QtCore import QTimer, Qt, QDateTime, QDate
+from PyQt6.QtWidgets import QDateEdit
 
 # ------------------ Chargement des données comme la version console ------------------
 def charger_parking_depuis_fichier(fichier):
@@ -276,26 +277,47 @@ Taux          : {tx} %
         nom=QLineEdit(); prenom=QLineEdit(); plaque=QLineEdit()
         duree=QSpinBox(); duree.setRange(1,60)
         place=QComboBox(); place.addItems(["" ]+[p.id for p in Parking.places_libres()])
+        date_debut = QDateEdit()
+        date_debut.setCalendarPopup(True)
+        date_debut.setDate(QDate.currentDate())
+        date_debut.setMinimumDate(QDate.currentDate())
+        erreur = QLabel("")
+        erreur.setStyleSheet("color: red; font-weight: bold")
+        erreur.hide()
 
         form.addRow("Nom",nom); form.addRow("Prénom",prenom)
         form.addRow("Plaque",plaque); form.addRow("Durée (mois)",duree)
-        form.addRow("Place réservée",place)
+        form.addRow("Place réservée",place) ;form.addRow("Date de début", date_debut)
+        form.addRow("", erreur)
+        
 
         ok=QPushButton("Créer abonnement"); form.addRow(ok)
 
         def create():
+            d_debut = date_debut.date().toPyDate()
+            if d_debut < date.today():
+                erreur.setText("La date doit être dans le futur.")
+                erreur.show()
+                return
+            else:
+                erreur.hide()
             # Création de l'abonnement, capture message si besoin
             abo = Abonnement(
                 nom.text(),
                 prenom.text(),
                 plaque.text().strip().upper(),
                 duree.value(),
-                date.today(),
+                d_debut,
                 place.currentText().strip().upper() if place.currentText() else None
             )
             Parking.save_all()
             # Affichage d'un message personnalisé
-            msg = f"Abonnement ajouté pour {abo.nom} {abo.prenom} ({abo.plaque}), durée : {abo.duree} mois, place : {abo.place or 'Aucune'}"
+            if not place.currentText().strip():
+                prix_abonnement = Tarif._prix_abonnement_simple
+            else:
+                prix_abonnement = Tarif._prix_abonnement_reserver
+            prix_a_payer = prix_abonnement * duree.value()
+            msg = f"Abonnement ajouté pour {abo.nom} {abo.prenom} ({abo.plaque}), date début : ({abo.date_debut}), durée : {abo.duree} mois, place : {abo.place or 'Aucune'}\nLe prix à payer est de : {prix_a_payer} €"
             QMessageBox.information(self,"OK",msg)
             dlg.accept();self.update_all()
 
