@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # ---------- gui.py ----------
 from les_classes import Parking, Tarif, Place, Abonnement, ajout_des_donnees_du_client
 import uuid
