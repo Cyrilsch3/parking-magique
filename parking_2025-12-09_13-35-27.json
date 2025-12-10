@@ -177,8 +177,8 @@
             "zone": "B",
             "numero": "02",
             "type_place": "Électrique",
-            "plaque": null,
-            "temp": null
+            "plaque": "GHJ",
+            "temp": "2025-12-09T13:35:26.916458"
         },
         {
             "id": "0B03",
@@ -592,7 +592,7 @@
             "nom": "Leclerc",
             "prenom": "Antoine",
             "plaque": "FG-219-LR",
-            "duree": 1,
+            "duree": 12,
             "date_debut": "2025-02-01",
             "place": "0A02"
         },
@@ -637,18 +637,9 @@
             "nom": "Petit",
             "prenom": "Hélène",
             "plaque": "QW-901-HS",
-            "duree": 1,
+            "duree": 12,
             "date_debut": "2025-03-01",
             "place": null
-        },
-        {
-            "id": "00008",
-            "nom": "th",
-            "prenom": "th",
-            "plaque": "TH",
-            "duree": 1,
-            "date_debut": "2025-12-01",
-            "place": "-1A02"
         }
     ],
     "tarifs": {
