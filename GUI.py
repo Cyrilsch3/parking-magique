@@ -12,7 +12,6 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import QTimer, Qt, QDateTime
 
-
 # ------------------ Chargement des données comme la version console ------------------
 def charger_parking_depuis_fichier(fichier):
     from les_classes import Parking, Tarif, Place, Abonnement

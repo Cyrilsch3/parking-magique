@@ -1,0 +1,663 @@
+{
+    "places": [
+        {
+            "id": "-1A01",
+            "etage": -1,
+            "zone": "A",
+            "numero": "01",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "-1A02",
+            "etage": -1,
+            "zone": "A",
+            "numero": "02",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "-1A03",
+            "etage": -1,
+            "zone": "A",
+            "numero": "03",
+            "type_place": "Compacte",
+            "plaque": "",
+            "temp": "2025-12-10T16:10:06.684057"
+        },
+        {
+            "id": "-1A04",
+            "etage": -1,
+            "zone": "A",
+            "numero": "04",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "-1B01",
+            "etage": -1,
+            "zone": "B",
+            "numero": "01",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "-1B02",
+            "etage": -1,
+            "zone": "B",
+            "numero": "02",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "-1B03",
+            "etage": -1,
+            "zone": "B",
+            "numero": "03",
+            "type_place": "Compacte",
+            "plaque": "",
+            "temp": "2025-12-10T16:09:58.871774"
+        },
+        {
+            "id": "-1B04",
+            "etage": -1,
+            "zone": "B",
+            "numero": "04",
+            "type_place": "Compacte",
+            "plaque": "",
+            "temp": "2025-12-10T16:08:31.592825"
+        },
+        {
+            "id": "-1C01",
+            "etage": -1,
+            "zone": "C",
+            "numero": "01",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "-1C02",
+            "etage": -1,
+            "zone": "C",
+            "numero": "02",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "-1C03",
+            "etage": -1,
+            "zone": "C",
+            "numero": "03",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "-1C04",
+            "etage": -1,
+            "zone": "C",
+            "numero": "04",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "0A01",
+            "etage": 0,
+            "zone": "A",
+            "numero": "01",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "0A02",
+            "etage": 0,
+            "zone": "A",
+            "numero": "02",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "0A03",
+            "etage": 0,
+            "zone": "A",
+            "numero": "03",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "0A04",
+            "etage": 0,
+            "zone": "A",
+            "numero": "04",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "0A05",
+            "etage": 0,
+            "zone": "A",
+            "numero": "05",
+            "type_place": "PMR",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "0A06",
+            "etage": 0,
+            "zone": "A",
+            "numero": "06",
+            "type_place": "PMR",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "0B01",
+            "etage": 0,
+            "zone": "B",
+            "numero": "01",
+            "type_place": "Électrique",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "0B02",
+            "etage": 0,
+            "zone": "B",
+            "numero": "02",
+            "type_place": "Électrique",
+            "plaque": "GHJ",
+            "temp": "2025-12-09T13:35:26.916458"
+        },
+        {
+            "id": "0B03",
+            "etage": 0,
+            "zone": "B",
+            "numero": "03",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "0B04",
+            "etage": 0,
+            "zone": "B",
+            "numero": "04",
+            "type_place": "Compacte",
+            "plaque": "",
+            "temp": "2025-12-10T16:08:52.740686"
+        },
+        {
+            "id": "0C01",
+            "etage": 0,
+            "zone": "C",
+            "numero": "01",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "0C02",
+            "etage": 0,
+            "zone": "C",
+            "numero": "02",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "0C03",
+            "etage": 0,
+            "zone": "C",
+            "numero": "03",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "0C04",
+            "etage": 0,
+            "zone": "C",
+            "numero": "04",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "1A01",
+            "etage": 1,
+            "zone": "A",
+            "numero": "01",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "1A02",
+            "etage": 1,
+            "zone": "A",
+            "numero": "02",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "1A03",
+            "etage": 1,
+            "zone": "A",
+            "numero": "03",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "1A04",
+            "etage": 1,
+            "zone": "A",
+            "numero": "04",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "1A05",
+            "etage": 1,
+            "zone": "A",
+            "numero": "05",
+            "type_place": "PMR",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "1B01",
+            "etage": 1,
+            "zone": "B",
+            "numero": "01",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "1B02",
+            "etage": 1,
+            "zone": "B",
+            "numero": "02",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "1B03",
+            "etage": 1,
+            "zone": "B",
+            "numero": "03",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "1B04",
+            "etage": 1,
+            "zone": "B",
+            "numero": "04",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "1B12",
+            "etage": 1,
+            "zone": "B",
+            "numero": "12",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "1C01",
+            "etage": 1,
+            "zone": "C",
+            "numero": "01",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "1C02",
+            "etage": 1,
+            "zone": "C",
+            "numero": "02",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2A01",
+            "etage": 2,
+            "zone": "A",
+            "numero": "01",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2A02",
+            "etage": 2,
+            "zone": "A",
+            "numero": "02",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2A03",
+            "etage": 2,
+            "zone": "A",
+            "numero": "03",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2A04",
+            "etage": 2,
+            "zone": "A",
+            "numero": "04",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2A05",
+            "etage": 2,
+            "zone": "A",
+            "numero": "05",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2B01",
+            "etage": 2,
+            "zone": "B",
+            "numero": "01",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2B02",
+            "etage": 2,
+            "zone": "B",
+            "numero": "02",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2B03",
+            "etage": 2,
+            "zone": "B",
+            "numero": "03",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2B04",
+            "etage": 2,
+            "zone": "B",
+            "numero": "04",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2C01",
+            "etage": 2,
+            "zone": "C",
+            "numero": "01",
+            "type_place": "Électrique",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2C02",
+            "etage": 2,
+            "zone": "C",
+            "numero": "02",
+            "type_place": "Électrique",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2C03",
+            "etage": 2,
+            "zone": "C",
+            "numero": "03",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "2C04",
+            "etage": 2,
+            "zone": "C",
+            "numero": "04",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "3A01",
+            "etage": 3,
+            "zone": "A",
+            "numero": "01",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "3A02",
+            "etage": 3,
+            "zone": "A",
+            "numero": "02",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "3A03",
+            "etage": 3,
+            "zone": "A",
+            "numero": "03",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "3A04",
+            "etage": 3,
+            "zone": "A",
+            "numero": "04",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "3B01",
+            "etage": 3,
+            "zone": "B",
+            "numero": "01",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "3B02",
+            "etage": 3,
+            "zone": "B",
+            "numero": "02",
+            "type_place": "Compacte",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "3B03",
+            "etage": 3,
+            "zone": "B",
+            "numero": "03",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "3B04",
+            "etage": 3,
+            "zone": "B",
+            "numero": "04",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "3C01",
+            "etage": 3,
+            "zone": "C",
+            "numero": "01",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "3C02",
+            "etage": 3,
+            "zone": "C",
+            "numero": "02",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "3C03",
+            "etage": 3,
+            "zone": "C",
+            "numero": "03",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        },
+        {
+            "id": "3C04",
+            "etage": 3,
+            "zone": "C",
+            "numero": "04",
+            "type_place": "Large",
+            "plaque": null,
+            "temp": null
+        }
+    ],
+    "abonnements": [
+        {
+            "id": "00000",
+            "nom": "Dupuis",
+            "prenom": "Marie",
+            "plaque": "AA-452-KM",
+            "duree": 12,
+            "date_debut": "2025-01-01",
+            "place": "2A05"
+        },
+        {
+            "id": "00001",
+            "nom": "Bernard",
+            "prenom": "Luc",
+            "plaque": "DB-793-QF",
+            "duree": 6,
+            "date_debut": "2025-03-15",
+            "place": "1B12"
+        },
+        {
+            "id": "00002",
+            "nom": "Leclerc",
+            "prenom": "Antoine",
+            "plaque": "FG-219-LR",
+            "duree": 12,
+            "date_debut": "2025-02-01",
+            "place": "0A02"
+        },
+        {
+            "id": "00003",
+            "nom": "Martin",
+            "prenom": "Céline",
+            "plaque": "JH-887-PN",
+            "duree": 3,
+            "date_debut": "2025-04-01",
+            "place": null
+        },
+        {
+            "id": "00004",
+            "nom": "Roche",
+            "prenom": "Damien",
+            "plaque": "KL-045-TZ",
+            "duree": 12,
+            "date_debut": "2025-01-10",
+            "place": null
+        },
+        {
+            "id": "00005",
+            "nom": "Morel",
+            "prenom": "Sophie",
+            "plaque": "BC-338-JC",
+            "duree": 6,
+            "date_debut": "2025-02-20",
+            "place": null
+        },
+        {
+            "id": "00006",
+            "nom": "Gonzalez",
+            "prenom": "Thierry",
+            "plaque": "EV-612-NV",
+            "duree": 3,
+            "date_debut": "2025-04-05",
+            "place": null
+        },
+        {
+            "id": "00007",
+            "nom": "Petit",
+            "prenom": "Hélène",
+            "plaque": "QW-901-HS",
+            "duree": 12,
+            "date_debut": "2025-03-01",
+            "place": null
+        },
+        {
+            "id": "00008",
+            "nom": "th",
+            "prenom": "th",
+            "plaque": "TH",
+            "duree": 1,
+            "date_debut": "2025-12-10",
+            "place": null
+        }
+    ],
+    "tarifs": {
+        "gratuit_minutes": 15,
+        "prix_premiere_heure": 2,
+        "prix_deuxieme_heure": 2,
+        "prix_heures_suivantes": 1.5,
+        "prix_max_10h": 15,
+        "prix_abonnement_simple": 70,
+        "prix_abonnement_reserver": 90
+    }
+}

@@ -24,8 +24,8 @@
             "zone": "A",
             "numero": "03",
             "type_place": "Compacte",
-            "plaque": null,
-            "temp": null
+            "plaque": "",
+            "temp": "2025-12-10T16:10:06.684057"
         },
         {
             "id": "-1A04",
@@ -60,8 +60,8 @@
             "zone": "B",
             "numero": "03",
             "type_place": "Compacte",
-            "plaque": null,
-            "temp": null
+            "plaque": "",
+            "temp": "2025-12-10T16:09:58.871774"
         },
         {
             "id": "-1B04",
@@ -69,8 +69,8 @@
             "zone": "B",
             "numero": "04",
             "type_place": "Compacte",
-            "plaque": null,
-            "temp": null
+            "plaque": "",
+            "temp": "2025-12-10T16:08:31.592825"
         },
         {
             "id": "-1C01",
@@ -177,8 +177,8 @@
             "zone": "B",
             "numero": "02",
             "type_place": "Électrique",
-            "plaque": "GHJ",
-            "temp": "2025-12-09T13:35:26.916458"
+            "plaque": null,
+            "temp": null
         },
         {
             "id": "0B03",
@@ -186,8 +186,8 @@
             "zone": "B",
             "numero": "03",
             "type_place": "Compacte",
-            "plaque": null,
-            "temp": null
+            "plaque": "XHFCGVH",
+            "temp": "2025-12-10T16:21:03.308003"
         },
         {
             "id": "0B04",
@@ -195,8 +195,8 @@
             "zone": "B",
             "numero": "04",
             "type_place": "Compacte",
-            "plaque": null,
-            "temp": null
+            "plaque": "",
+            "temp": "2025-12-10T16:08:52.740686"
         },
         {
             "id": "0C01",
@@ -639,6 +639,15 @@
             "plaque": "QW-901-HS",
             "duree": 12,
             "date_debut": "2025-03-01",
+            "place": null
+        },
+        {
+            "id": "00008",
+            "nom": "th",
+            "prenom": "th",
+            "plaque": "TH",
+            "duree": 1,
+            "date_debut": "2025-12-10",
             "place": null
         }
     ],
