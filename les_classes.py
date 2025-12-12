@@ -45,7 +45,12 @@ class Parking:
     # ----- MÉTHODES EXISTANTES -----
     @classmethod
     def places_occupees(cls):
-        return [p for p in cls.places() if p.plaque is not None]
+        return list(filter(lambda p: p.plaque is not None, cls.places()))
+    @classmethod
+    def iter_abonnements_valides(cls):
+        for ab in cls.abonnements():
+            if ab.date_fin() > date.today():
+                yield ab
 
     @classmethod
 
@@ -235,14 +240,7 @@ class Parking:
         # 1. Liste tous les fichiers parking_*.json
         backup_files = [fn for fn in os.listdir('.') if fn.startswith('parking_') and fn.endswith('.json')]
         # 2. Trie par date extraite du nom de fichier
-        def extract_date(fn):
-            try:
-                # Format attendu : parking_YYYY-MM-DD_HH-MM-SS.json
-                base = fn.replace('parking_', '').replace('.json', '')
-                return datetime.strptime(base, '%Y-%m-%d_%H-%M-%S')
-            except Exception:
-                return datetime.min
-        backup_files.sort(key=extract_date)
+        backup_files.sort(key=lambda fn: datetime.strptime(fn.replace('parking_', '').replace('.json', ''), '%Y-%m-%d_%H-%M-%S'))
         # 3. Supprime les plus anciens pour ne garder que les 5 derniers
         while len(backup_files) >= 5:
             to_remove = backup_files.pop(0)
