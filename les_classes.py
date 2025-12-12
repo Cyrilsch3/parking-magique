@@ -53,7 +53,6 @@ class Parking:
                 yield ab
 
     @classmethod
-
     def places_abonnes(cls):
         #Retourne la liste des places réservées avec plaque, uniquement pour les abonnements encore valides
         result = []
