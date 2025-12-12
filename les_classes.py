@@ -2,6 +2,7 @@ from datetime import datetime , date
 import random #Pour définir un id d'abonnement client
 import json
 import os
+import re
 from dateutil.relativedelta import relativedelta
 
 # -------------------- Fonctions utilitaires --------------------
@@ -550,7 +551,14 @@ class Abonnement:
     def plaque(self, value):
         if not isinstance(value, str) or not value.strip():
             raise ValueError("Plaque invalide")
-        self._plaque = value.strip().upper()
+
+        value = value.strip().upper()
+
+        pattern = r"^[A-Z]{1,3}[- ]?[0-9]{1,4}[- ]?[A-Z]{0,3}$"
+        if not re.match(pattern, value):
+            raise ValueError("Format de plaque européenne invalide")
+
+        self._plaque = value
 
     # ---------- DUREE ----------
     @property
