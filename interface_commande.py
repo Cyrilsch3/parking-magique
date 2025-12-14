@@ -302,11 +302,11 @@ def menu_abonnement():
                 duree_abonnement = int(input("Entrez la durée de l'abonnement (en mois) : "))
 
                 # ---- DATE DEBUT ----
+                date_debut_abonnement = date.today()
                 while True:
                     try:
                         choix_date_debut = int(input("Voulez-vous une date de début ?\n[0] Non\n[1] Oui : "))
                         if choix_date_debut == 0:
-                            date_debut_abonnement = date.today()
                             print(f"Votre abonnement commence le {date_debut_abonnement}")
                             break
                         elif choix_date_debut == 1:
