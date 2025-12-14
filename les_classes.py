@@ -2,6 +2,7 @@ from datetime import datetime , date
 import random #Pour définir un id d'abonnement client
 import json
 import os
+import re
 from dateutil.relativedelta import relativedelta
 
 # -------------------- Fonctions utilitaires --------------------
@@ -9,6 +10,8 @@ def confirmation(question):
     reponse = input(f"{question}  (o/n) : ").strip().lower()
     return reponse in ['o', 'oui', 'y', 'yes']
 
+class DateAbonnementInvalide(Exception):
+    pass
 class Parking:
     _places = []
     _abonnements = []
@@ -44,10 +47,14 @@ class Parking:
     # ----- MÉTHODES EXISTANTES -----
     @classmethod
     def places_occupees(cls):
-        return [p for p in cls.places() if p.plaque is not None]
+        return list(filter(lambda p: p.plaque is not None, cls.places()))
+    @classmethod
+    def iter_abonnements_valides(cls):
+        for ab in cls.abonnements():
+            if ab.date_fin() > date.today():
+                yield ab
 
     @classmethod
-
     def places_abonnes(cls):
         #Retourne la liste des places réservées avec plaque, uniquement pour les abonnements encore valides
         result = []
@@ -234,14 +241,7 @@ class Parking:
         # 1. Liste tous les fichiers parking_*.json
         backup_files = [fn for fn in os.listdir('.') if fn.startswith('parking_') and fn.endswith('.json')]
         # 2. Trie par date extraite du nom de fichier
-        def extract_date(fn):
-            try:
-                # Format attendu : parking_YYYY-MM-DD_HH-MM-SS.json
-                base = fn.replace('parking_', '').replace('.json', '')
-                return datetime.strptime(base, '%Y-%m-%d_%H-%M-%S')
-            except Exception:
-                return datetime.min
-        backup_files.sort(key=extract_date)
+        backup_files.sort(key=lambda fn: datetime.strptime(fn.replace('parking_', '').replace('.json', ''), '%Y-%m-%d_%H-%M-%S'))
         # 3. Supprime les plus anciens pour ne garder que les 5 derniers
         while len(backup_files) >= 5:
             to_remove = backup_files.pop(0)
@@ -550,7 +550,14 @@ class Abonnement:
     def plaque(self, value):
         if not isinstance(value, str) or not value.strip():
             raise ValueError("Plaque invalide")
-        self._plaque = value.strip().upper()
+
+        value = value.strip().upper()
+
+        pattern = r"^[A-Z]{1,3}[- ]?[0-9]{1,4}[- ]?[A-Z]{0,3}$"
+        if not re.match(pattern, value):
+            raise ValueError("Format de plaque européenne invalide")
+
+        self._plaque = value
 
     # ---------- DUREE ----------
     @property
