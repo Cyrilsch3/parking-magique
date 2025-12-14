@@ -3,6 +3,7 @@ from les_classes import Tarif
 from les_classes import Place
 from les_classes import Abonnement
 from les_classes import ajout_des_donnees_du_client
+from les_classes import DateAbonnementInvalide
 from datetime import datetime, date
 import os
 import json
@@ -310,11 +311,12 @@ def menu_abonnement():
                                 try:
                                     date_debut_abonnement = datetime.strptime(date_str, "%d-%m-%y").date()
                                     if date_debut_abonnement < date.today():
-                                        print("Erreur, la date que vous avez entrée est déjà passée.")
-                                    else:
-                                        break
+                                        raise DateAbonnementInvalide("Erreur : la date que vous avez entrée est dans le passée.")
+                                    break#si date valide
                                 except ValueError:
                                     print("Format invalide, réessayez.")
+                                except DateAbonnementInvalide as e:
+                                    print(e)
                             break  # Sort de la boucle principale après saisie réussie
                         else:
                             print("Veuillez taper 0 ou 1.")
