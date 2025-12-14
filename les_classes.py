@@ -12,6 +12,10 @@ def confirmation(question):
 
 class DateAbonnementInvalide(Exception):
     pass
+
+class PlaceInvalideException(Exception):
+    pass
+
 class Parking:
     _places = []
     _abonnements = []
@@ -129,27 +133,26 @@ class Parking:
 
     @classmethod
     def occuper_place(cls, place_id, plaque):
-        try: 
-            place = next((p for p in cls.places() if p.id == place_id.upper()), None)
-        except ValueError: 
-            return "Place non valide"
+            
+        place = next((p for p in cls.places() if p.id == place_id.upper()), None)
+
         if place is None:
-            return "Place inexistante"
+            raise PlaceInvalideException(f"La place {place_id} n'existe pas.")
+        
         plaque = plaque.strip().upper()
 
         # Vérifier si cette plaque a déjà une place réservée
         abo_reserve = next((ab for ab in cls.abonnements() if ab.plaque == plaque and ab.place is not None), None)
         if abo_reserve and abo_reserve.place != place.id:
-            return f"Vous avez une place réservée : {abo_reserve.place}. Merci d'utiliser votre place."
+            raise PlaceInvalideException(f"Vous avez une place réservée : {abo_reserve.place}. Merci d'utiliser votre place.")
 
         # Vérification si la place est déjà occupée physiquement
         if place.plaque is not None:
-            return f"Place déjà occupée par {place.plaque}"
-
+            raise PlaceInvalideException(f"La place {place.id} est déjà occupée par {place.plaque}.")
         # Vérification des places réservées par un autre abonné
         abo_autre = next((ab for ab in cls.abonnements() if ab.place == place.id), None)
         if abo_autre and abo_autre.plaque != plaque:
-            return f"La place {place.id} est réservée pour l'abonné {abo_autre.plaque}"
+            raise PlaceInvalideException(f"La place {place.id} est réservée pour l'abonné {abo_autre.plaque}.")
 
         # Attribution
         place.plaque = plaque

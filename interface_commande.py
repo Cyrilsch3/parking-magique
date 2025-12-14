@@ -4,9 +4,11 @@ from les_classes import Place
 from les_classes import Abonnement
 from les_classes import ajout_des_donnees_du_client
 from les_classes import DateAbonnementInvalide
+from les_classes import PlaceInvalideException
 from datetime import datetime, date
 import os
 import json
+
 
 def afficher_places_par_etage(places):
     etage_actuel = None
@@ -240,7 +242,11 @@ def arrivee_vehicule():
             afficher_places_par_etage(places_libres)
 
             choix_place = input("\nVotre choix de place : ").strip().upper()
-            print(Parking.occuper_place(choix_place, plaque))
+            try:
+                message = Parking.occuper_place(choix_place,plaque)
+                print(message)
+            except PlaceInvalideException as e:
+                print(f"erreur : {e}")
 
             input("\nAppuyez sur Entrée pour revenir au menu...")
             print("Historique des choix :", historique_choix)
