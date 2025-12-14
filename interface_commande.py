@@ -202,6 +202,8 @@ def stat_parking():
 
 
 def arrivee_vehicule():
+    historique_choix = [] 
+
     os.system('cls')
     while True:
         print("\nArrivée véhicule : faites votre choix\n")
@@ -211,12 +213,14 @@ def arrivee_vehicule():
 
         try:
             choix = int(input("\nVotre choix : "))
+            historique_choix.append(choix)  
         except ValueError:
             print("Veuillez entrer un nombre entier.")
             continue
 
         # ----- RETOUR -----
         if choix == 0:
+            print("Historique des choix :", historique_choix)
             menu_demarrage()
             return
 
@@ -238,6 +242,7 @@ def arrivee_vehicule():
             print(Parking.occuper_place(choix_place, plaque))
 
             input("\nAppuyez sur Entrée pour revenir au menu...")
+            print("Historique des choix :", historique_choix)
             menu_demarrage()
             return
 
