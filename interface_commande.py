@@ -203,8 +203,81 @@ def stat_parking():
 
 
 def arrivee_vehicule():
-    
+    historique_choix = [] 
 
+    os.system('cls')
+    while True:
+        print("\nArrivée véhicule : faites votre choix\n")
+        print("[0] Retour")
+        print("[1] Attribuer une place")
+        print("[2] Prendre un abonnement")
+
+        try:
+            choix = int(input("\nVotre choix : "))
+            historique_choix.append(choix)  
+        except ValueError:
+            print("Veuillez entrer un nombre entier.")
+            continue
+
+        # ----- RETOUR -----
+        if choix == 0:
+            print("Historique des choix :", historique_choix)
+            menu_demarrage()
+            return
+
+        # ----- ATTRIBUTION DE PLACE -----
+        elif choix == 1:
+            os.system('cls')
+            plaque = input("Entrer la plaque du véhicule : ").strip().upper()
+
+            places_libres = sorted(Parking.places_libres(), key=lambda p: p.id)
+            if not places_libres:
+                os.system('cls')
+                print("Aucune place libre disponible.")
+                continue
+
+            print("\nVoici les places libres :")
+            afficher_places_par_etage(places_libres)
+
+            choix_place = input("\nVotre choix de place : ").strip().upper()
+            print(Parking.occuper_place(choix_place, plaque))
+
+            input("\nAppuyez sur Entrée pour revenir au menu...")
+            print("Historique des choix :", historique_choix)
+            menu_demarrage()
+            return
+
+        # ----- ABONNEMENT -----
+        elif choix == 2:
+            menu_abonnement()
+            return
+
+        else:
+            print("Choix invalide.")
+
+
+def sortie_vehicule():
+    places_occupees = Parking.places_occupees()
+
+    if not places_occupees:
+        os.system('cls')
+        print("Aucune place occupée.")
+        input("Appuyez sur Entrée pour revenir au menu...")
+        menu_demarrage()
+        return
+
+    os.system('cls')
+    print("\nVoici les places occupées :")
+    for place in places_occupees:
+        print(f" - {place.id}")
+
+    place_id = input("\nEntrez l'ID de la place à libérer : ").strip().upper()
+
+    success, message = Parking.liberer_place(place_id) # optimisation des interaction du code récupère deucx valeurs en 1 appel 
+    print(message)
+
+    input("\nAppuyez sur Entrée pour revenir au menu...")
+    menu_demarrage()
 
 def menu_abonnement():
     print("Abonnement existant ? \n[0] Non \n[1] Oui \n[2] Annuler")
