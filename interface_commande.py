@@ -297,31 +297,54 @@ def menu_abonnement():
                 duree_abonnement = int(input("Entrez la durée de l'abonnement (en mois) : "))
 
                 # ---- DATE DEBUT ----
-                while True:
-                    try:
-                        choix_date_debut = int(input("Voulez-vous une date de début ?\n[0] Non\n[1] Oui : "))
-                        if choix_date_debut == 0:
-                            date_debut_abonnement = date.today()
-                            print(f"Votre abonnement commence le {date_debut_abonnement}")
-                            break
-                        elif choix_date_debut == 1:
+                try:
+                    date_debut_abonnement = date.today()
+
+                    while True:
+                        try:
+                            # On protège l'input contre une interruption brutale (Ctrl+C)
+                            choix_date = input("Définir une date de début personnalisée ?\n[0] Non (Aujourd'hui)\n[1] Oui\nVotre choix : ").strip()
+                        except (KeyboardInterrupt, EOFError):
+                            print("\nAnnulation par l'utilisateur.")
+                            break # Ou return selon ton besoin
+                        
+                        if choix_date == "0":
+                            break 
+                        
+                        elif choix_date == "1":
                             while True:
-                                date_str = input("Entrer une date (dd-mm-yy) : ")
+                                # Ici, on gère spécifiquement le format de date
                                 try:
-                                    date_debut_abonnement = datetime.strptime(date_str, "%d-%m-%y").date()
-                                    if date_debut_abonnement < date.today():
-                                        print("Erreur, la date que vous avez entrée est déjà passée.")
+                                    date_str = input("Entrer une date (format JJ-MM-AA) : ").strip()
+                                    date_saisie = datetime.strptime(date_str, "%d-%m-%y").date()
+
+                                    if date_saisie < date.today():
+                                        print("Erreur : La date ne peut pas être dans le passé.")
                                     else:
-                                        break
+                                        date_debut_abonnement = date_saisie
+                                        break 
                                 except ValueError:
-                                    print("Format invalide, réessayez.")
-                            break  # Sort de la boucle principale après saisie réussie
+                                    print("Format invalide. Utilisez le format Jour-Mois-Année (ex: 25-12-24).")
+                                except (KeyboardInterrupt, EOFError):
+                                    print("\nAnnulation de la saisie.")
+                                    break # On sort de la boucle de date
+                            break 
+                        
                         else:
-                            print("Veuillez taper 0 ou 1.")
-                    except ValueError:
-                        print("Entrée invalide, veuillez taper un nombre 0 ou 1.")
+                            print("Choix invalide. Tapez 0 ou 1.")
 
+                    # Résumé et fin
+                    # On ajoute un try ici au cas où les variables (nom_client, etc.) n'auraient pas été définies avant
+                    try:
+                        print(f"\nSuccès ! Abonnement créé pour {nom_client} {prenom_client}.")
+                        print(f"Début : {date_debut_abonnement}")
+                        print(f"Plaque : {plaque_client} | Durée : {duree_abonnement} mois.")
+                    except NameError as e:
+                        print(f"Erreur lors de l'affichage du résumé : variable manquante ({e}).")
 
+                except Exception as e:
+                    # Filet de sécurité global pour toute autre erreur imprévue
+                    print(f"Une erreur inattendue est survenue : {e}")
 
 
                 # ---- PLACE RÉSERVÉE ----
@@ -417,7 +440,7 @@ def menu_abonnement():
             elif choix_creation_abo == 2:
                 return menu_demarrage()
             else:
-                print("Choix invalide")
+                print("Commande inconnue, veuillez choisir 0, 1 ou 2.")
         except ValueError:
             print("Veuillez entrer un nombre entier.")
 
