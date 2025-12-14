@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # ---------- gui.py ----------
-from les_classes import Parking, Tarif, Place, Abonnement, ajout_des_donnees_du_client
+from les_classes import Parking, Tarif, Place, Abonnement, ajout_des_donnees_du_client, DateAbonnementInvalide
 import uuid
 from datetime import datetime, date
 import json, glob, os, sys
@@ -294,32 +294,39 @@ Taux          : {tx} %
         ok=QPushButton("Créer abonnement"); form.addRow(ok)
 
         def create():
-            d_debut = date_debut.date().toPyDate()
-            if d_debut < date.today():
-                erreur.setText("La date doit être dans le futur.")
+            try:
+                d_debut = date_debut.date().toPyDate()
+                
+                # Création de l'abonnement
+                abo = Abonnement(
+                    nom.text(),
+                    prenom.text(),
+                    plaque.text().strip().upper(),
+                    duree.value(),
+                    d_debut,
+                    place.currentText().strip().upper() if place.currentText() else None
+                )
+
+                erreur.hide()  # si tout va bien, on cache l'erreur
+                Parking.save_all()
+
+                # Affichage du prix
+                if not place.currentText().strip():
+                    prix_abonnement = Tarif._prix_abonnement_simple
+                else:
+                    prix_abonnement = Tarif._prix_abonnement_reserver
+                prix_a_payer = prix_abonnement * duree.value()
+                msg = f"Abonnement ajouté pour {abo.nom} {abo.prenom} ({abo.plaque}), date début : ({abo.date_debut}), durée : {abo.duree} mois, place : {abo.place or 'Aucune'}\nLe prix à payer est de : {prix_a_payer} €"
+                QMessageBox.information(self,"OK",msg)
+                dlg.accept()
+                self.update_all()
+            except DateAbonnementInvalide as e:#exception personnalisée
+                erreur.setText(str(e))
+                erreur.setStyleSheet("color:red; font-weight:bold")
                 erreur.show()
-                return
-            else:
-                erreur.hide()
-            # Création de l'abonnement, capture message si besoin
-            abo = Abonnement(
-                nom.text(),
-                prenom.text(),
-                plaque.text().strip().upper(),
-                duree.value(),
-                d_debut,
-                place.currentText().strip().upper() if place.currentText() else None
-            )
-            Parking.save_all()
-            # Affichage d'un message personnalisé
-            if not place.currentText().strip():
-                prix_abonnement = Tarif._prix_abonnement_simple
-            else:
-                prix_abonnement = Tarif._prix_abonnement_reserver
-            prix_a_payer = prix_abonnement * duree.value()
-            msg = f"Abonnement ajouté pour {abo.nom} {abo.prenom} ({abo.plaque}), date début : ({abo.date_debut}), durée : {abo.duree} mois, place : {abo.place or 'Aucune'}\nLe prix à payer est de : {prix_a_payer} €"
-            QMessageBox.information(self,"OK",msg)
-            dlg.accept();self.update_all()
+
+            except Exception as e:
+                QMessageBox.critical(self, "Erreur", str(e))
 
         ok.clicked.connect(create)
         dlg.exec()

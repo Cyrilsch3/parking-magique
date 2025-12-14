@@ -581,6 +581,8 @@ class Abonnement:
             value = value.date()
         if not isinstance(value, date):
             raise TypeError("date_debut doit être une date")
+        if value < date.today():
+            raise DateAbonnementInvalide("La date doit être dans le futur.")
         self._date_debut = value
     # ---------- PLACE ATTRIBUEE ----------
     @property
