@@ -10,6 +10,8 @@ def confirmation(question):
     reponse = input(f"{question}  (o/n) : ").strip().lower()
     return reponse in ['o', 'oui', 'y', 'yes']
 
+class DateAbonnementInvalide(Exception):
+    pass
 class Parking:
     _places = []
     _abonnements = []
