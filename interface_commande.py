@@ -3,9 +3,12 @@ from les_classes import Tarif
 from les_classes import Place
 from les_classes import Abonnement
 from les_classes import ajout_des_donnees_du_client
+from les_classes import DateAbonnementInvalide
+from les_classes import PlaceInvalideException
 from datetime import datetime, date
 import os
 import json
+
 
 def afficher_places_par_etage(places):
     etage_actuel = None
@@ -239,7 +242,11 @@ def arrivee_vehicule():
             afficher_places_par_etage(places_libres)
 
             choix_place = input("\nVotre choix de place : ").strip().upper()
-            print(Parking.occuper_place(choix_place, plaque))
+            try:
+                message = Parking.occuper_place(choix_place,plaque)
+                print(message)
+            except PlaceInvalideException as e:
+                print(f"erreur : {e}")
 
             input("\nAppuyez sur Entrée pour revenir au menu...")
             print("Historique des choix :", historique_choix)
@@ -278,8 +285,6 @@ def sortie_vehicule():
     input("\nAppuyez sur Entrée pour revenir au menu...")
     menu_demarrage()
 
-
-
 def menu_abonnement():
     print("Abonnement existant ? \n[0] Non \n[1] Oui \n[2] Annuler")
 
@@ -297,53 +302,32 @@ def menu_abonnement():
                 duree_abonnement = int(input("Entrez la durée de l'abonnement (en mois) : "))
 
                 # ---- DATE DEBUT ----
-                try:
-                    date_debut_abonnement = date.today()
-
-                    while True:
-                        try:
-                            # On protège l'input contre une interruption brutale (Ctrl+C)
-                            choix_date = input("Définir une date de début personnalisée ?\n[0] Non (Aujourd'hui)\n[1] Oui\nVotre choix : ").strip()
-                        except (KeyboardInterrupt, EOFError):
-                            print("\nAnnulation par l'utilisateur.")
-                            break 
-                        
-                        if choix_date == "0":
-                            break 
-                        
-                        elif choix_date == "1":
-                            while True:
-                                try:
-                                    date_str = input("Entrer une date (format JJ-MM-AA) : ").strip()
-                                    date_saisie = datetime.strptime(date_str, "%d-%m-%y").date()
-
-                                    if date_saisie < date.today():
-                                        print("Erreur : La date ne peut pas être dans le passé.")
-                                    else:
-                                        date_debut_abonnement = date_saisie
-                                        break 
-                                except ValueError:
-                                    print("Format invalide. Utilisez le format Jour-Mois-Année (ex: 25-12-24).")
-                                except (KeyboardInterrupt, EOFError):
-                                    print("\nAnnulation de la saisie.")
-                                    break # On sort de la boucle de date
-                            break 
-                        
-                        else:
-                            print("Choix invalide. Tapez 0 ou 1.")
-
-                    # Résumé et fin
-                    # On ajoute un try ici au cas où les variables (nom_client, etc.) n'auraient pas été définies avant
+                while True:
                     try:
-                        print(f"\nSuccès ! Abonnement créé pour {nom_client} {prenom_client}.")
-                        print(f"Début : {date_debut_abonnement}")
-                        print(f"Plaque : {plaque_client} | Durée : {duree_abonnement} mois.")
-                    except NameError as e:
-                        print(f"Erreur lors de l'affichage du résumé : variable manquante ({e}).")
+                        choix_date_debut = int(input("Voulez-vous une date de début ?\n[0] Non\n[1] Oui : "))
+                        if choix_date_debut == 0:
+                            date_debut_abonnement = date.today()
+                            print(f"Votre abonnement commence le {date_debut_abonnement}")
+                            break
+                        elif choix_date_debut == 1:
+                            while True:
+                                date_str = input("Entrer une date (dd-mm-yy) : ")
+                                try:
+                                    date_debut_abonnement = datetime.strptime(date_str, "%d-%m-%y").date()
+                                    if date_debut_abonnement < date.today():
+                                        raise DateAbonnementInvalide("Erreur : la date que vous avez entrée est dans le passée.")
+                                    break#si date valide
+                                except ValueError:
+                                    print("Format invalide, réessayez.")
+                                except DateAbonnementInvalide as e:
+                                    print(e)
+                            break  # Sort de la boucle principale après saisie réussie
+                        else:
+                            print("Veuillez taper 0 ou 1.")
+                    except ValueError:
+                        print("Entrée invalide, veuillez taper un nombre 0 ou 1.")
 
-                except Exception as e:
-                    # Filet de sécurité global pour toute autre erreur imprévue
-                    print(f"Une erreur inattendue est survenue : {e}")
+
 
 
                 # ---- PLACE RÉSERVÉE ----
@@ -439,7 +423,7 @@ def menu_abonnement():
             elif choix_creation_abo == 2:
                 return menu_demarrage()
             else:
-                print("Commande inconnue, veuillez choisir 0, 1 ou 2.")
+                print("Choix invalide")
         except ValueError:
             print("Veuillez entrer un nombre entier.")
 
