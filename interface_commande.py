@@ -323,12 +323,14 @@ def menu_abonnement():
                                     date_saisie = datetime.strptime(date_str, "%d-%m-%y").date()
 
                                     if date_saisie < date.today():
-                                        print("Erreur : La date ne peut pas être dans le passé.")
+                                        raise DateAbonnementInvalide
                                     else:
                                         date_debut_abonnement = date_saisie
                                         break 
                                 except ValueError:
                                     print("Format invalide. Utilisez le format Jour-Mois-Année (ex: 25-12-24).")
+                                except DateAbonnementInvalide as e:
+                                    print("La date ne peut pas être dans le passé.")
                                 except (KeyboardInterrupt, EOFError):
                                     print("\nAnnulation de la saisie.")
                                     break # On sort de la boucle de date
