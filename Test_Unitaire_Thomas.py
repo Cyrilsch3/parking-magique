@@ -3,7 +3,6 @@ from datetime import datetime, date
 from les_classes import Parking, Place, Tarif, Abonnement
 
 class TestParkingSpec(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         Parking.set_places([])  # Vide le parking
