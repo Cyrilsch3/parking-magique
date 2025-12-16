@@ -301,33 +301,55 @@ def menu_abonnement():
                 duree_abonnement = int(input("Entrez la durée de l'abonnement (en mois) : "))
 
                 # ---- DATE DEBUT ----
-                while True:
-                    try:
-                        choix_date_debut = int(input("Voulez-vous une date de début ?\n[0] Non\n[1] Oui : "))
-                        if choix_date_debut == 0:
-                            date_debut_abonnement = date.today()
-                            print(f"Votre abonnement commence le {date_debut_abonnement}")
-                            break
-                        elif choix_date_debut == 1:
+                try:
+                    date_debut_abonnement = date.today()
+
+                    while True:
+                        try:
+                            # On protège l'input contre une interruption brutale (Ctrl+C)
+                            choix_date = input("Définir une date de début personnalisée ?\n[0] Non (Aujourd'hui)\n[1] Oui\nVotre choix : ").strip()
+                        except (KeyboardInterrupt, EOFError):
+                            print("\nAnnulation par l'utilisateur.")
+                            break 
+                        
+                        if choix_date == "0":
+                            break 
+                        
+                        elif choix_date == "1":
                             while True:
-                                date_str = input("Entrer une date (dd-mm-yy) : ")
                                 try:
-                                    date_debut_abonnement = datetime.strptime(date_str, "%d-%m-%y").date()
-                                    if date_debut_abonnement < date.today():
-                                        raise DateAbonnementInvalide("Erreur : la date que vous avez entrée est dans le passée.")
-                                    break#si date valide
+                                    date_str = input("Entrer une date (format JJ-MM-AA) : ").strip()
+                                    date_saisie = datetime.strptime(date_str, "%d-%m-%y").date()
+
+                                    if date_saisie < date.today():
+                                        raise DateAbonnementInvalide
+                                    else:
+                                        date_debut_abonnement = date_saisie
+                                        break 
                                 except ValueError:
-                                    print("Format invalide, réessayez.")
+                                    print("Format invalide. Utilisez le format Jour-Mois-Année (ex: 25-12-24).")
                                 except DateAbonnementInvalide as e:
-                                    print(e)
-                            break  # Sort de la boucle principale après saisie réussie
+                                    print("La date ne peut pas être dans le passé.")
+                                except (KeyboardInterrupt, EOFError):
+                                    print("\nAnnulation de la saisie.")
+                                    break # On sort de la boucle de date
+                            break 
+                        
                         else:
-                            print("Veuillez taper 0 ou 1.")
-                    except ValueError:
-                        print("Entrée invalide, veuillez taper un nombre 0 ou 1.")
+                            print("Choix invalide. Tapez 0 ou 1.")
 
+                    # Résumé et fin
+                    # On ajoute un try ici au cas où les variables (nom_client, etc.) n'auraient pas été définies avant
+                    try:
+                        print(f"\nSuccès ! Abonnement créé pour {nom_client} {prenom_client}.")
+                        print(f"Début : {date_debut_abonnement}")
+                        print(f"Plaque : {plaque_client} | Durée : {duree_abonnement} mois.")
+                    except NameError as e:
+                        print(f"Erreur lors de l'affichage du résumé : variable manquante ({e}).")
 
-
+                except Exception as e:
+                    # Filet de sécurité global pour toute autre erreur imprévue
+                    print(f"Une erreur inattendue est survenue : {e}")
 
                 # ---- PLACE RÉSERVÉE ----
                 while True:

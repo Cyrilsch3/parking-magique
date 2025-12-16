@@ -160,7 +160,6 @@ class Parking:
 
     @classmethod
     def liberer_place(cls, place_id):
-       def liberer_place(cls, place_id):
         place_id = place_id.strip().upper()
         place = next((p for p in Parking.places() if p.id == place_id), None)
     

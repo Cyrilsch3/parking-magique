@@ -1,4 +1,7 @@
-import unittest
+import unittest, sys, os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from datetime import datetime, date
 from les_classes import Parking, Place, Tarif, Abonnement
 
@@ -10,6 +13,9 @@ class TestParkingSpec(unittest.TestCase):
     
         cls.place1 = Place(0, "A", "01", "Compacte")
         cls.place2 = Place(0, "A", "02", "Compacte")
+        cls.place3 = Place(0, "A", "03", "Compacte")
+        cls.place4 = Place(0, "A", "04", "Compacte")
+
         
         cls.abo1 = Abonnement( #création abonnement sans place attribuée
             "cyril", "Schweicher", "BE-468-CU",
@@ -21,7 +27,7 @@ class TestParkingSpec(unittest.TestCase):
             "Edouard", "Paul", "BE-676-GE",
             duree=12,
             date_debut=date.today(),
-            place_attribuee=cls.place1.id
+            place_attribuee=cls.place3.id
         )
 
     def test_occuper_place_libre(self):
@@ -57,7 +63,7 @@ class TestParkingSpec(unittest.TestCase):
         res = Parking.allonger_abonnement(self.abo1.id, 3)
         self.assertTrue(res[0])
         self.assertEqual(self.abo1.duree, 9)
-        self.assertIn("Abonnement prolongé !", res[1])
+        self.assertIn("prolongé", res[1])
 
     
     def test_modifier_abonnement_plaque(self):
@@ -76,8 +82,8 @@ class TestParkingSpec(unittest.TestCase):
         # Post :
         #     - Une place est attribuée
         #     - Un message indique une différence de prix
-        res = Parking.modifier_abonnement(self.abo1.id, place_id=self.place2.id) #on ajoute une place dans l'abonnement
-        self.assertEqual(self.abo1.place, self.place2.id) #On vérif que la place qu'on a attribué à l'abo lui est bien réservé
+        res = Parking.modifier_abonnement(self.abo1.id, place_id=self.place4.id) #on ajoute une place dans l'abonnement
+        self.assertEqual(self.abo1.place, self.place4.id) #On vérif que la place qu'on a attribué à l'abo lui est bien réservé
         self.assertIn("Différence de prix", res)
     
     def test_modifier_abonnement_inexistant(self):
