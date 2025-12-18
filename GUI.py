@@ -208,12 +208,19 @@ Taux          : {tx} %
         txt = QLineEdit(); form.addRow("Plaque :",txt)
         ok = QPushButton("Valider entrée"); form.addRow(ok)
 
-        ok.clicked.connect(lambda:(
-            QMessageBox.information(self,"Info", Parking.occuper_place(p.id,txt.text())),
-            Parking.save_all(),
-            dlg.accept(),
-            self.update_all()
-        ))
+        def handle_entree():
+            try:
+                message = Parking.occuper_place(p.id, txt.text())
+                Parking.save_all()
+                QMessageBox.information(self, "Info", message)
+                dlg.accept()
+                self.update_all()
+            except ValueError as e:
+                QMessageBox.warning(self, "Place indisponible", str(e))
+            except Exception as e:
+                QMessageBox.critical(self, "Erreur", str(e))
+
+        ok.clicked.connect(handle_entree)
         dlg.exec()
 
 
