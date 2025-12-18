@@ -115,6 +115,15 @@ class TestPlace(unittest.TestCase):
         place.plaque = "AA-123-BB"
         with self.assertRaises(ValueError):
             place.plaque = "CC-456-DD"
+    
+    def test_type_place_invalide(self):
+        # Pré :
+        #     - Une place existe avec un type valide
+        # Post :
+        #     - Une erreur est levée si le type est invalide
+        place = Place(0, "A", "02", "Compacte")
+        with self.assertRaises(ValueError):
+            place.type_place = "Volante"
 
 class TestTarif(unittest.TestCase):
     pass
