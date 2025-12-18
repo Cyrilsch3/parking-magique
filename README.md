@@ -69,19 +69,6 @@ Les autres modules utilisés sont inclus par défaut avec Python.
 
 ---
 
-## 📁 Structure du projet
-
-```
-parking-magique/
-│
-├── GUI.py                # Interface graphique
-├── les_classes.py        # Logique métier (Parking, Place, Abonnement, Tarif)
-├── parking_*.json        # Sauvegardes automatiques
-└── README.md
-```
-
----
-
 ## ▶️ Lancer l’application
 
 Depuis le dossier du projet :
