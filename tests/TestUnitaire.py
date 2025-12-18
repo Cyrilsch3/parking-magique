@@ -133,6 +133,13 @@ class TestTarif(unittest.TestCase):
         #     - Le prix retourné est 0€
         self.assertEqual(Tarif.calcul(10), 0)
 
+    def test_premiere_heure(self):
+        # Pré :
+        #     - Une durée de 60 minutes
+        # Post :
+        #     - Le prix correspond à la première heure
+        self.assertEqual(Tarif.calcul(60), Tarif.prix_premiere_heure())
+
 class TestAbonnement(unittest.TestCase):
     pass
 
