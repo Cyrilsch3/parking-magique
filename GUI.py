@@ -222,8 +222,12 @@ Taux          : {tx} %
         ok = QPushButton("Valider entrée"); form.addRow(ok)
 
         def handle_entree():
+            plaque = txt.text().strip()
+            if not plaque:
+                QMessageBox.warning(self, "Entrée invalide", "Veuillez entrer une plaque d'immatriculation.")
+                return
             try:
-                message = Parking.occuper_place(p.id, txt.text())
+                message = Parking.occuper_place(p.id, plaque)
                 Parking.save_all()
                 QMessageBox.information(self, "Info", message)
                 dlg.accept()
