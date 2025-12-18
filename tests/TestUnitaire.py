@@ -95,7 +95,16 @@ class TestParkingSpec(unittest.TestCase):
         self.assertIn("Aucun abonnement trouvé", res)
 
 class TestPlace(unittest.TestCase):
-    pass
+    def setUp(self):
+        Parking.set_places([])
+    
+    def test_creation_place_id(self):
+        # Pré :
+        #     - Création d'une place avec étage, zone et numéro
+        # Post :
+        #     - L'ID est correctement généré (etage + zone + numero)
+        place = Place(1, "B", "04", "Large")
+        self.assertEqual(place.id, "1B04")
 
 class TestTarif(unittest.TestCase):
     pass
