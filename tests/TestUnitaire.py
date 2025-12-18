@@ -126,7 +126,12 @@ class TestPlace(unittest.TestCase):
             place.type_place = "Volante"
 
 class TestTarif(unittest.TestCase):
-    pass
+    def test_gratuit(self):
+        # Pré :
+        #     - Une durée inférieure au temps gratuit
+        # Post :
+        #     - Le prix retourné est 0€
+        self.assertEqual(Tarif.calcul(10), 0)
 
 class TestAbonnement(unittest.TestCase):
     pass
