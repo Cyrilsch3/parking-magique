@@ -10,9 +10,6 @@ def confirmation(question):
     reponse = input(f"{question}  (o/n) : ").strip().lower()
     return reponse in ['o', 'oui', 'y', 'yes']
 
-class DateAbonnementInvalide(Exception):
-    pass
-
 
 class Parking:
     _places = []
@@ -583,7 +580,7 @@ class Abonnement:
         if not isinstance(value, date):
             raise TypeError("date_debut doit être une date")
         if value < date.today():
-            raise DateAbonnementInvalide("La date doit être dans le futur.")
+            raise ValueError("La date doit être dans le futur.")
         self._date_debut = value
     # ---------- PLACE ATTRIBUEE ----------
     @property
