@@ -148,6 +148,14 @@ class TestTarif(unittest.TestCase):
         expected = Tarif.prix_premiere_heure() + Tarif.prix_deuxieme_heure()
         self.assertEqual(Tarif.calcul(120), expected)
 
+    def test_heures_supplementaires(self):
+        # Pré :
+        #     - Une durée supérieure à 2 heures
+        # Post :
+        #     - Le prix augmente avec les heures supplémentaires
+        prix = Tarif.calcul(180) #car 3h
+        self.assertGreater(prix, Tarif.prix_premiere_heure())
+
 class TestAbonnement(unittest.TestCase):
     pass
 
