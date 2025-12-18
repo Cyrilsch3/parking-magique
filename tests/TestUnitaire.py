@@ -105,6 +105,16 @@ class TestPlace(unittest.TestCase):
         #     - L'ID est correctement généré (etage + zone + numero)
         place = Place(1, "B", "04", "Large")
         self.assertEqual(place.id, "1B04")
+    
+    def test_place_occupee_interdite(self):
+        # Pré :
+        #     - Une place est déjà occupée par une plaque
+        # Post :
+        #     - Une erreur est levée si on tente de changer la plaque
+        place = Place(0, "A", "01", "Compacte")
+        place.plaque = "AA-123-BB"
+        with self.assertRaises(ValueError):
+            place.plaque = "CC-456-DD"
 
 class TestTarif(unittest.TestCase):
     pass
