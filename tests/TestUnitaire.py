@@ -156,6 +156,13 @@ class TestTarif(unittest.TestCase):
         prix = Tarif.calcul(180) #car 3h
         self.assertGreater(prix, Tarif.prix_premiere_heure())
 
+    def test_prix_max(self):
+        # Pré :
+        #     - Une durée supérieure à 10 heures
+        # Post :
+        #     - Le prix maximal est appliqué
+        self.assertEqual(Tarif.calcul(700), Tarif.prix_max_10h())
+
 class TestAbonnement(unittest.TestCase):
     pass
 
