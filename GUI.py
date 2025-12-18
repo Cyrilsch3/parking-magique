@@ -17,32 +17,45 @@ from PyQt6.QtWidgets import QDateEdit
 # ------------------ Chargement des données comme la version console ------------------
 def charger_parking_depuis_fichier(fichier):
     from les_classes import Parking, Tarif, Place, Abonnement
-    with open(fichier, "r", encoding="utf-8") as f:
-        data = json.load(f)
+    try:
+        with open(fichier, "r", encoding="utf-8") as f:
+            data = json.load(f)
 
-    # = Places =
-    Parking.set_places([])
-    for p in data.get("places", []):
-        place = Place(p["etage"], p["zone"], p["numero"], p["type_place"], p.get("plaque"))
-        if p.get("temp"): place.temp = datetime.fromisoformat(p["temp"])
+        # = Places =
+        Parking.set_places([])
+        for p in data.get("places", []):
+            place = Place(p["etage"], p["zone"], p["numero"], p["type_place"], p.get("plaque"))
+            if p.get("temp"):
+                place.temp = datetime.fromisoformat(p["temp"])
 
-    # = Abonnements =
-    Parking.set_abonnements([])
-    for a in data.get("abonnements", []):
-        Abonnement(a["nom"], a["prenom"], a["plaque"], a["duree"],
-                   datetime.fromisoformat(a["date_debut"]).date(),
-                   a.get("place"))
+        # = Abonnements =
+        Parking.set_abonnements([])
+        for a in data.get("abonnements", []):
+            Abonnement(
+                a["nom"],
+                a["prenom"],
+                a["plaque"],
+                a["duree"],
+                datetime.fromisoformat(a["date_debut"]).date(),
+                a.get("place")
+            )
 
-    # = Tarifs =
-    tarifs = data.get("tarifs", {})
-    from les_classes import Tarif
-    if "gratuit_minutes" in tarifs: Tarif.set_gratuit_minutes(tarifs["gratuit_minutes"])
-    if "prix_premiere_heure" in tarifs: Tarif.set_prix_premiere_heure(tarifs["prix_premiere_heure"])
-    if "prix_deuxieme_heure" in tarifs: Tarif.set_prix_deuxieme_heure(tarifs["prix_deuxieme_heure"])
-    if "prix_heures_suivantes" in tarifs: Tarif.set_prix_heures_suivantes(tarifs["prix_heures_suivantes"])
-    if "prix_max_10h" in tarifs: Tarif.set_prix_max_10h(tarifs["prix_max_10h"])
-    if "prix_abonnement_simple" in tarifs: Tarif.set_prix_abonnement_simple(tarifs["prix_abonnement_simple"])
-    if "prix_abonnement_reserver" in tarifs: Tarif.set_prix_abonnement_reserver(tarifs["prix_abonnement_reserver"])
+        # = Tarifs =
+        tarifs = data.get("tarifs", {})
+        if "gratuit_minutes" in tarifs: Tarif.set_gratuit_minutes(tarifs["gratuit_minutes"])
+        if "prix_premiere_heure" in tarifs: Tarif.set_prix_premiere_heure(tarifs["prix_premiere_heure"])
+        if "prix_deuxieme_heure" in tarifs: Tarif.set_prix_deuxieme_heure(tarifs["prix_deuxieme_heure"])
+        if "prix_heures_suivantes" in tarifs: Tarif.set_prix_heures_suivantes(tarifs["prix_heures_suivantes"])
+        if "prix_max_10h" in tarifs: Tarif.set_prix_max_10h(tarifs["prix_max_10h"])
+        if "prix_abonnement_simple" in tarifs: Tarif.set_prix_abonnement_simple(tarifs["prix_abonnement_simple"])
+        if "prix_abonnement_reserver" in tarifs: Tarif.set_prix_abonnement_reserver(tarifs["prix_abonnement_reserver"])
+
+    except Exception as e:
+        # En cas de fichier corrompu ou illisible, on repart sur des données par défaut
+        print(f"Erreur lors du chargement du backup ({fichier}) : {e}")
+        Parking.set_places([])
+        Parking.set_abonnements([])
+        ajout_des_donnees_du_client()
 
 
 def charger_dernier_backup():
@@ -208,12 +221,23 @@ Taux          : {tx} %
         txt = QLineEdit(); form.addRow("Plaque :",txt)
         ok = QPushButton("Valider entrée"); form.addRow(ok)
 
-        ok.clicked.connect(lambda:(
-            QMessageBox.information(self,"Info", Parking.occuper_place(p.id,txt.text())),
-            Parking.save_all(),
-            dlg.accept(),
-            self.update_all()
-        ))
+        def handle_entree():
+            plaque = txt.text().strip()
+            if not plaque:
+                QMessageBox.warning(self, "Entrée invalide", "Veuillez entrer une plaque d'immatriculation.")
+                return
+            try:
+                message = Parking.occuper_place(p.id, plaque)
+                Parking.save_all()
+                QMessageBox.information(self, "Info", message)
+                dlg.accept()
+                self.update_all()
+            except ValueError as e:
+                QMessageBox.warning(self, "Place indisponible", str(e))
+            except Exception as e:
+                QMessageBox.critical(self, "Erreur", str(e))
+
+        ok.clicked.connect(handle_entree)
         dlg.exec()
 
 

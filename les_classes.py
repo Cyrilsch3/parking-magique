@@ -120,6 +120,8 @@ class Parking:
     
     @classmethod
     def calcul_prix(cls, place, mtn=None):
+        if place.temp is None:
+            raise ValueError("Impossible de calculer le prix : aucune heure d'entrée enregistrée.")
         if mtn is None:
             mtn = datetime.now()
         duree = mtn - place.temp
@@ -284,8 +286,12 @@ class Parking:
             }
         }
 
-        with open(fichier, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
+        try:
+            with open(fichier, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4, ensure_ascii=False)
+        except Exception as e:
+            raise IOError(f"Erreur lors de la sauvegarde du parking : {e}")
+
         return f"Parking sauvegardé dans {fichier}"
         
 # ---- Classe Tarif ----
