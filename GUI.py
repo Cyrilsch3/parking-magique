@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # ---------- gui.py ----------
-from les_classes import Parking, Tarif, Place, Abonnement, ajout_des_donnees_du_client, DateAbonnementInvalide
+from les_classes import Parking, Tarif, Place, Abonnement, ajout_des_donnees_du_client 
 import uuid
 from datetime import datetime, date
 import json, glob, os, sys
@@ -320,7 +320,7 @@ Taux          : {tx} %
                 QMessageBox.information(self,"OK",msg)
                 dlg.accept()
                 self.update_all()
-            except DateAbonnementInvalide as e:#exception personnalisée
+            except ValueError as e:
                 erreur.setText(str(e))
                 erreur.setStyleSheet("color:red; font-weight:bold")
                 erreur.show()
