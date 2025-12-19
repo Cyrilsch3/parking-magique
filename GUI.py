@@ -4,7 +4,7 @@ from les_classes import Parking, Tarif, Place, Abonnement, ajout_des_donnees_du_
 import uuid
 from datetime import datetime, date
 import json, glob, os, sys
-
+from Erreur_perso.ERREURS import PlaceOccupeeError # ajoutez ici vos erreurs avec une virgule et supprimez le texte
 
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
@@ -232,8 +232,8 @@ Taux          : {tx} %
                 QMessageBox.information(self, "Info", message)
                 dlg.accept()
                 self.update_all()
-            except ValueError as e:
-                QMessageBox.warning(self, "Place indisponible", str(e))
+            except PlaceOccupeeError as e:
+                QMessageBox.warning(self, "Place occupée", str(e))
             except Exception as e:
                 QMessageBox.critical(self, "Erreur", str(e))
 

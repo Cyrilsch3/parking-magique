@@ -5,6 +5,8 @@ import os
 import re
 from dateutil.relativedelta import relativedelta
 
+from Erreur_perso.ERREURS import PlaceOccupeeError # ajoutez ici vos erreurs avec une virgule et supprimez le texte
+
 # -------------------- Fonctions utilitaires --------------------
 def confirmation(question):
     reponse = input(f"{question}  (o/n) : ").strip().lower()
@@ -145,7 +147,7 @@ class Parking:
 
         # Vérification si la place est déjà occupée physiquement
         if place.plaque is not None:
-            raise ValueError(f"La place {place.id} est déjà occupée par {place.plaque}.")
+            raise PlaceOccupeeError(f"La place {place.id} est déjà occupée par {place.plaque}.")
         # Vérification des places réservées par un autre abonné
         abo_autre = next((ab for ab in cls.abonnements() if ab.place == place.id), None)
         if abo_autre and abo_autre.plaque != plaque:
