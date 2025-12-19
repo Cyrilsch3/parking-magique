@@ -193,6 +193,20 @@ class TestAbonnement(unittest.TestCase):
             place_attribuee=None
         )
         self.assertGreater(abo.date_fin(), abo.date_debut)
+    
+    def test_duree_invalide(self):
+        # Pré :
+        #     - Abonnement existant
+        # Post :
+        #     - Une erreur est levée si la durée est négative
+        abo = Abonnement(
+            "Test", "User", "AA-111-AA",
+            duree=6,
+            date_debut=date.today(),
+            place_attribuee=None
+        )
+        with self.assertRaises(ValueError):
+            abo.duree = -2
 
 if __name__ == "__main__":
     unittest.main()
