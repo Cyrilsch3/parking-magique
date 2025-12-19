@@ -164,7 +164,22 @@ class TestTarif(unittest.TestCase):
         self.assertEqual(Tarif.calcul(700), Tarif.prix_max_10h())
 
 class TestAbonnement(unittest.TestCase):
-    pass
+    def setUp(self):
+        Parking.set_abonnements([])
+    
+    def test_creation_abonnement(self):
+        # Pré :
+        #     - Création d'un abonnement valide
+        # Post :
+        #     - Les attributs sont correctement initialisés
+        abo = Abonnement(
+            "Dupont", "Alice", "AB-123-CD",
+            duree=6,
+            date_debut=date.today(),
+            place_attribuee=None
+        )
+        self.assertEqual(abo.nom, "Dupont")
+        self.assertEqual(abo.duree, 6)
 
 if __name__ == "__main__":
     unittest.main()
