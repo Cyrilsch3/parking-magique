@@ -180,6 +180,19 @@ class TestAbonnement(unittest.TestCase):
         )
         self.assertEqual(abo.nom, "Dupont")
         self.assertEqual(abo.duree, 6)
+    
+    def test_date_fin(self):
+        # Pré :
+        #     - Abonnement avec une durée définie
+        # Post :
+        #     - La date de fin est postérieure à la date de début
+        abo = Abonnement(
+            "Martin", "Paul", "ZZ-999-ZZ",
+            duree=3,
+            date_debut=date.today(),
+            place_attribuee=None
+        )
+        self.assertGreater(abo.date_fin(), abo.date_debut)
 
 if __name__ == "__main__":
     unittest.main()
