@@ -4,6 +4,7 @@ from les_classes import Place
 from les_classes import Abonnement
 from les_classes import ajout_des_donnees_du_client
 from datetime import datetime, date
+from Erreur_perso.ERREURS import PlaceInvalideException
 import os
 import json
 
@@ -243,7 +244,7 @@ def arrivee_vehicule():
             try:
                 message = Parking.occuper_place(choix_place,plaque)
                 print(message)
-            except ValueError as e:
+            except PlaceInvalideException as e:
                 print(f"erreur : {e}")
 
             input("\nAppuyez sur Entrée pour revenir au menu...")

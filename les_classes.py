@@ -4,8 +4,7 @@ import json
 import os
 import re
 from dateutil.relativedelta import relativedelta
-
-from Erreur_perso.ERREURS import PlaceOccupeeError # ajoutez ici vos erreurs avec une virgule et supprimez le texte
+from Erreur_perso.ERREURS import PlaceOccupeeError , PlaceInvalideException # ajoutez ici vos erreurs avec une virgule et supprimez le texte
 
 # -------------------- Fonctions utilitaires --------------------
 def confirmation(question):
@@ -136,14 +135,14 @@ class Parking:
         place = next((p for p in cls.places() if p.id == place_id.upper()), None)
 
         if place is None:
-            raise ValueError(f"La place {place_id} n'existe pas.")
+            raise PlaceInvalideException(f"La place {place_id} n'existe pas.")
         
         plaque = plaque.strip().upper()
 
         # Vérifier si cette plaque a déjà une place réservée
         abo_reserve = next((ab for ab in cls.abonnements() if ab.plaque == plaque and ab.place is not None), None)
         if abo_reserve and abo_reserve.place != place.id:
-            raise ValueError(f"Vous avez une place réservée : {abo_reserve.place}. Merci d'utiliser votre place.")
+            raise PlaceInvalideException(f"Vous avez une place réservée : {abo_reserve.place}. Merci d'utiliser votre place.")
 
         # Vérification si la place est déjà occupée physiquement
         if place.plaque is not None:
@@ -151,7 +150,7 @@ class Parking:
         # Vérification des places réservées par un autre abonné
         abo_autre = next((ab for ab in cls.abonnements() if ab.place == place.id), None)
         if abo_autre and abo_autre.plaque != plaque:
-            raise ValueError(f"La place {place.id} est réservée pour l'abonné {abo_autre.plaque}.")
+            raise PlaceInvalideException(f"La place {place.id} est réservée pour l'abonné {abo_autre.plaque}.")
 
         # Attribution
         place.plaque = plaque
