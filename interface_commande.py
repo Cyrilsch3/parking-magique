@@ -4,7 +4,7 @@ from les_classes import Place
 from les_classes import Abonnement
 from les_classes import ajout_des_donnees_du_client
 from datetime import datetime, date
-from Erreur_perso.ERREURS import PlaceInvalideException
+from Erreur_perso.ERREURS import PlaceInvalideException, DateAbonnementInvalide
 import os
 import json
 
@@ -322,12 +322,14 @@ def menu_abonnement():
                                     date_saisie = datetime.strptime(date_str, "%d-%m-%y").date()
 
                                     if date_saisie < date.today():
-                                        print("\nLa date que vous avez entrée est déjà passée.\n")
+                                        raise DateAbonnementInvalide("Erreur, la date que vous avez entrée est invalide !")
                                     else:
                                         date_debut_abonnement = date_saisie
                                         break 
                                 except ValueError:
                                     print("Format invalide. Utilisez le format Jour-Mois-Année (ex: 25-12-24).")
+                                except DateAbonnementInvalide as e:
+                                    print(e)
                                 except (KeyboardInterrupt, EOFError):
                                     print("\nAnnulation de la saisie.")
                                     break # On sort de la boucle de date
