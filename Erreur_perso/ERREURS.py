@@ -9,3 +9,7 @@ class PlaceInvalideException(Exception):
 #ici tu mets ton exception puis 
 # tu remplaces le value error que tu veux dans les classes 
 # et apres tu vas dans GUI et tu changes aussi le value error par le nom de ton exception
+
+class DateAbonnementInvalide(Exception):
+    # La date entrée n'est pas valide
+    pass
