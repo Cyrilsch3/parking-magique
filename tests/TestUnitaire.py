@@ -1,4 +1,5 @@
 import unittest, sys, os
+from unittest.mock import patch
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -55,43 +56,48 @@ class TestParkingSpec(unittest.TestCase):
     
     def test_allonger_abonnement_valide(self):
         # Pré :
-        #     - L’abonnement self.abo1 existe
-        #     - Durée initiale = 6 mois (ligne 17)
+        #     - L'abonnement doit exister
+        #     - La durée de temps à ajouter doit être un nombre entier positif.
         # Post :
-        #     - La durée est augmentée de 3 mois
+        #     - La durée est augmentée par le nombre de mois ajouté (ici 3 mois)
         #     - Le message indique une prolongation
         res = Parking.allonger_abonnement(self.abo1.id, 3)
         self.assertTrue(res[0])
         self.assertEqual(self.abo1.duree, 9)
         self.assertIn("prolongé", res[1])
 
-    
-    def test_modifier_abonnement_plaque(self):
+    @patch("builtins.input", return_value="NV-212-PL")
+    def test_modifier_abonnement_plaque(self, mock_input):
         # Pré :
-        #     - L’abonnement self.abo1 a une plaque AA-111-AA
+        #     - L’abonnement self.abo1 a une plaque sous un format "AA-111-AA"
         # Post :
-        #     - La plaque est modifiée
-        res = Parking.modifier_abonnement(self.abo1.id, plaque="NV-212-PL")
-        self.assertIn("NV-212-PL", res)
-        self.assertEqual(self.abo1.plaque, "NV-212-PL") #vérifie la maj de la nouvelle plaque
+        #     - La plaque initiale est remplacée par la nouvelle plaque entrée
+        nouvelle_plaque = input("Entrer nouvelle plaque : ").strip().upper() #simule un input grâce au patch
+        res = Parking.modifier_abonnement(self.abo1.id, plaque=nouvelle_plaque)
+        self.assertIn(nouvelle_plaque, res)
+        self.assertEqual(self.abo1.plaque, nouvelle_plaque) #vérifie la maj de la nouvelle plaque
 
-    def test_modifier_abonnement_place(self):
+    @patch("builtins.input", return_value="4")
+    def test_modifier_abonnement_place(self, mock_input):
         # Pré :
-        #     - L'abonnement abo1 existe
-        #     - L’abonnement self.abo1 n’a pas de place réservée
+        #     - L'abonnement entré existe
+        #     - L’abonnement de doit pas avoir de place réservée
         # Post :
-        #     - Une place est attribuée
-        #     - Un message indique une différence de prix
-        res = Parking.modifier_abonnement(self.abo1.id, place_id=self.place4.id) #on ajoute une place dans l'abonnement
-        self.assertEqual(self.abo1.place, self.place4.id) #On vérif que la place qu'on a attribué à l'abo lui est bien réservé
+        #     - Une place est attribuée à l'abonnement
+        #     - Un message est renvoyé et indique une différence de prix
+        place_id = int(input("Entrer l'ID de la place à attribuer : ").strip())  # simulé
+        res = Parking.modifier_abonnement(self.abo1.id, place_id=place_id)
+        self.assertEqual(self.abo1.place, place_id)
         self.assertIn("Différence de prix", res)
-    
+
+    @patch("builtins.input", return_value="YU-868-MM") #simulation du test avec plaque YU-868-MM
     def test_modifier_abonnement_inexistant(self):
         # Pré :
-        #     - Aucun abonnement avec cet ID
+        #     - La plaque doit être entrée sous un format AA-111-AA
         # Post :
-        #     - Un message d’erreur est retourné
-        res = Parking.modifier_abonnement("99999", plaque="YU-868-MM")
+        #     - Un message d’erreur est retourné et précise que aucun abonnement ne correspond à cet id
+        plaque = input("Entrer la plaque : ").strip().upper()  # simulé
+        res = Parking.modifier_abonnement("99999", plaque=plaque)
         self.assertIn("Aucun abonnement trouvé", res)
 
 class TestPlace(unittest.TestCase):
