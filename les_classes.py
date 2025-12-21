@@ -57,13 +57,15 @@ class Parking:
     @classmethod
     def places_abonnes(cls):
         #Retourne la liste des places réservées avec plaque, uniquement pour les abonnements encore valides
-        result = []
-        for ab in cls.abonnements():
-            if ab.place is not None and ab.date_fin() > date.today():
-                place_obj = next((p for p in cls.places() if p.id.upper() == ab.place.upper()), None)
-                if place_obj:
-                    result.append((place_obj, ab.plaque))
-        return result
+        today = date.today()
+        abonnements_valides = filter(lambda ab: ab.place is not None and ab.date_fin() > today, cls.abonnements())
+        result = list(
+            map(
+                lambda ab: (next((p for p in cls.places() if p.id.upper() == ab.place.upper()), None), ab.plaque),
+                abonnements_valides
+            )
+        )
+        return [t for t in result if t[0] is not None]
 
 
     @classmethod
