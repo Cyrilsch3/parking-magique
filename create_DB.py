@@ -185,7 +185,7 @@ def charger_abonnements():
             date_debut=date.fromisoformat(date_debut),
             place_attribuee=place
         )
-        a._id = id_   # IMPORTANT
+        a._id = id_ 
         abos.append(a)
 
     conn.close()
