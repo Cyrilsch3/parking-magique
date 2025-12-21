@@ -289,6 +289,7 @@ class Place:
         if self.plaque_reservee and voiture != self.plaque_reservee:
             print(f"l'étage {self.etage}, Place {self.zone + self.numero} est reservée pour {self.plaque_reservee} !")
             print(f"Veuillez introduire une autre place pour vous garer !!")
+            return False
         if not self.est_occupe:
             self.voiture = voiture
             self.est_occupe = True
@@ -393,7 +394,8 @@ class Abonne:
 
 
 # --- Section de Tests --- 
-terminal = Terminal()
+if __name__ == "__main__":
+    terminal = Terminal()
 
 """
 print("\n--- Liste des abonnés ---")
