@@ -1,6 +1,7 @@
 from datetime import datetime 
 import os
 import unittest
+from Erreur_perso.ERREURS import erreurMvp
 
 
 # -------------------- Class --------------------
@@ -241,6 +242,7 @@ class Terminal:
         try:
             input("\nAppuyez sur [Entrée] Pour voir le Menu...")
         except EOFError:
+
             return
 
 # ---------- class pour les places --------------
@@ -299,33 +301,40 @@ class Place:
         
     def parti(self, voiture):
         """
-        cette fonction va en gros calculer sur base de la variable tarifs combien le client doit payer quand il veux sortir du parkin
-        :parma tarfis: contient tout les tarfis que le client nous a fourni pour calculer combien un client dois payer
+        Cette fonction calcule combien le client doit payer quand il veut sortir du parking
+        et met à jour l'état de la place.
         """
-        try:
-            if self.plaque_reservee:
-                print("OUf rien a payer le client garer ici a réserver ça place donc est au tarifs abonnées")
-                self.voiture = None
-                self.est_occupe = False
-                self.dateArrivee = None
-            else:
-                Temps_du_client = datetime.today() - self.dateArrivee
-                Temps_du_client = round(Temps_du_client.total_seconds() / 3600, 2)
-        
-                if Temps_du_client <= 0.30:
-                    print(f"Le client doit payer un motant totale de {self.tarifs_horaire[0][1]}")
-                elif Temps_du_client <= 1.00 and Temps_du_client > 0.30:
-                    print(f"Le client doit payer un motant totale de {self.tarifs_horaire[1][1]}")
-                elif Temps_du_client >= 24.00:
-                    print(f"Le cient a atteint le plafond de 24h il payera donc {self.tarifs_horaire[3][1]}")
-                else:
-                    print(f"Le client doit payer un motant totale de {Temps_du_client * self.tarifs_horaire[2][1]}")
-        
+        if self.plaque_reservee:
+            print("OUF rien à payer : le client a réservé sa place, tarifs abonnés appliqués.")
             self.voiture = None
             self.est_occupe = False
             self.dateArrivee = None
-        except:
-            print("Une erreur d'origine inconnue est survenue suite au calcule des tarifs, veuillez contacter le support si l'erreur pérsiste")
+            return
+
+        # Vérifie que la voiture est bien garée
+        if not self.dateArrivee:
+            raise erreurMvp("Impossible de calculer le tarif : la date d'arrivée est inexistante !")
+
+        # Calcul du temps passé
+        Temps_du_client = datetime.today() - self.dateArrivee
+        Temps_du_client = round(Temps_du_client.total_seconds() / 3600, 2)
+
+        # Calcul du tarif selon le temps
+        if Temps_du_client <= 0.30:
+            montant = self.tarifs_horaire[0][1]
+        elif Temps_du_client <= 1.00:
+            montant = self.tarifs_horaire[1][1]
+        elif Temps_du_client >= 24.00:
+            montant = self.tarifs_horaire[3][1]
+        else:
+            montant = Temps_du_client * self.tarifs_horaire[2][1]
+    
+        print(f"Le client doit payer un montant total de {montant} €.")
+    
+        # Libération de la place
+        self.voiture = None
+        self.est_occupe = False
+        self.dateArrivee = None
 
 
 

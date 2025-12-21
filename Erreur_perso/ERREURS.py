@@ -13,3 +13,7 @@ class ErreurDansLaDB(Exception):
 class DateAbonnementInvalide(Exception):
     # La date entrée n'est pas valide
     pass
+
+class erreurMvp(Exception):
+    # toutes les erreurs qui sont propre a la db remonteront ici
+    pass
