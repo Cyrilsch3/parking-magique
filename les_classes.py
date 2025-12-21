@@ -70,16 +70,21 @@ class Parking:
     def places_libres(cls):
         # Liste des IDs de places réservées par des abonnés valides
         today = date.today()
-        places_reservees_ids = [
-            ab.place.upper() for ab in cls.abonnements()
-            if ab.place is not None and ab.date_fin() > today
-        ]
+        ab_valides = filter(
+        lambda ab: ab.place is not None and ab.date_fin() > today,
+        cls.abonnements()
+        )
+
+        #majuscule
+        places_reservees_ids = list(map(lambda ab: ab.place.upper(), ab_valides))
+
+        #places libres
+        places_libres = filter(
+        lambda p: p.plaque is None and p.id.upper() not in places_reservees_ids,
+        cls.places()
+        )
         
-        # Filtrer les places non occupées physiquement et non réservées
-        return [
-            p for p in cls.places()
-            if p.plaque is None and p.id.upper() not in places_reservees_ids
-        ]
+        return list(places_libres)
 
     @classmethod
     def liste_place(cls):
