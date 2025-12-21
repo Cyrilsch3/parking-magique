@@ -3,6 +3,7 @@ import os
 import sys
 import traceback
 from Erreur_perso.ERREURS import ErreurDansLaDB
+import re
 
 fichier_db = "parking.db"
 
@@ -107,6 +108,10 @@ def get_tables():
 
 
 def verifierTables(table):
+
+    if not re.match(r"^[A-Za-z0-9_]+$", table):
+        raise ErreurDansLaDB(f"Nom de table invalide : {table}")
+
     try:
         conn = sqlite3.connect(fichier_db)
         cursor = conn.cursor()
