@@ -3,6 +3,8 @@ import os
 import re
 from Erreur_perso.ERREURS import ErreurDansLaDB
 from functools import wraps
+from les_classes import Place, Abonnement
+from datetime import date
 
 fichier_db = "parking.db"
 
@@ -140,7 +142,55 @@ def afficher_tables(rows, column_names, tables):
 
     print("-" * 20)
 
-creeTables()
+
+def charger_places():
+    conn = sqlite3.connect(fichier_db)
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT id_place, etage, zone, numero, id_type_place
+        FROM tb_places
+    """)
+
+    places = []
+    for id_place, etage, zone, numero, type_place in cur.fetchall():
+        p = Place(
+            etage=etage,
+            zone=zone,
+            numero=numero,
+            type_place=type_place,
+            plaque=None
+        )
+        places.append(p)
+
+    conn.close()
+    return places
+
+def charger_abonnements():
+    conn = sqlite3.connect(fichier_db)
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT id_abbo, nom, prenom, plaque_imma, duree, date_debut, place_res
+        FROM tb_abonne
+    """)
+
+    abos = []
+    for id_, nom, prenom, plaque, duree, date_debut, place in cur.fetchall():
+        a = Abonnement(
+            nom=nom,
+            prenom=prenom,
+            plaque=plaque,
+            duree=duree,
+            date_debut=date.fromisoformat(date_debut),
+            place_attribuee=place
+        )
+        a._id = id_   # IMPORTANT
+        abos.append(a)
+
+    conn.close()
+    return abos
+
 for t in get_tables():
     rows, cols = verifierTables(t)
     afficher_tables(rows, cols, t)

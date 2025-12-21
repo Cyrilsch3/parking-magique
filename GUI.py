@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # ---------- gui.py ----------
 from les_classes import Parking, Tarif, Place, Abonnement, ajout_des_donnees_du_client 
+from create_DB import creeTables
 import uuid
 from datetime import datetime, date
 import json, glob, os, sys
@@ -595,6 +596,7 @@ Taux          : {tx} %
 
 # ------------------ lancement app ------------------
 if __name__ == '__main__':
+    creeTables()
     app=QApplication(sys.argv)
     w=MainWindow(); w.show()
     sys.exit(app.exec())
