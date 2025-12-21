@@ -2,6 +2,7 @@ import sqlite3
 import os
 import sys
 import traceback
+from Erreur_perso.ERREURS import ErreurDansLaDB
 
 fichier_db = "parking.db"
 
@@ -80,11 +81,11 @@ def creeTables():
 
     except sqlite3.Error as e:
         # Capture toutes les erreurs spécifiques à SQLite
-        print(f"Une erreur SQLite est survenue lors de la connexion ou de l'exécution : {e}")
+        raise ErreurDansLaDB(f"Une erreur SQLite est survenue lors de la connexion ou de l'exécution : {e}") from e
 
     except Exception as e:
         # Capture toutes les autres erreurs imprévues
-        print(f"Une erreur inattendue est survenue : {e}")
+        raise ErreurDansLaDB(f"Une erreur inattendue est survenue : {e}") from e
 
     finally:
         # La connexion est fermée, même en cas d'erreur
@@ -102,7 +103,7 @@ def get_tables():
         return tables
 
     except sqlite3.Error as a:
-        print(f"une erreur est survenue lors de la connection a la base de données!! {a}")
+        raise ErreurDansLaDB(f"une erreur est survenue lors de la connection a la base de données!! {a}") from a
 
 
 def verifierTables(table):
@@ -116,8 +117,8 @@ def verifierTables(table):
 
 
 
-    except sqlite3.Error as a:
-        print(f"une erreur est survenue lors de la connection a la base de données!! {a}")
+    except sqlite3.Error as e:
+       raise ErreurDansLaDB(f"une erreur est survenue lors de la connection a la base de données!! {e}") from e
 
 
 def afficher_tables(rows, column_names, tables):
