@@ -42,6 +42,7 @@ Projet réalisé dans le cadre du cours **DEV II**.
 - **Python 3**
 - **PyQt6** (interface graphique)
 - **JSON** (sauvegarde des données)
+- **SqLite** (La base de données)
 
 ---
 
